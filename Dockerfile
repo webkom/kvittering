@@ -6,6 +6,6 @@ RUN apt-get update && apt-get install -y texlive-latex-base
 
 ADD . /app
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["python", "generate.py"]
