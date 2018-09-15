@@ -1,6 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from subprocess import call
 import json
+import os
+import sys
 
 def addImages(tex, images):
     i = 0
@@ -27,28 +29,22 @@ def generateTex(values):
         f.write(tex)
 
 def generatePdf():
-    call(["pdflatex", "--shell-escape", "out.tex"])
+    call(["pdflatex", "--shell-escape", "out.tex"], stdout=open(os.devnull, 'wb'))
 
-class server(BaseHTTPRequestHandler):
-    def do_POST(self):
-        self.send_response(200)
-        print("POST")
-        varLen = int(self.headers['Content-Length'])
-        body = json.loads(self.rfile.read(varLen).decode())
-        print(body)
-        self.send_header('Content-type','application/pdf')
-        self.end_headers()
+def handle(req):
+    body = json.loads(req)
 
-        generateTex(body)
-        generatePdf()
-        with open("out.pdf", "rb") as f:
-            self.wfile.write(f.read())
-        return
+    generateTex(body)
+    generatePdf()
+    with open("out.pdf", "rb") as f:
+        sys.stdout.buffer.write(f.read())
 
-def run():
-    print('starting server...')
-    server_address = ("0.0.0.0", 8080)
-    httpd = HTTPServer(server_address, server)
-    print('running server...')
-    httpd.serve_forever()
-run()
+def get_stdin():
+    buf = ""
+    for line in sys.stdin:
+        buf = buf + line
+    return buf
+
+if __name__ == "__main__":
+    st = get_stdin()
+    handle(st)
