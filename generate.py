@@ -25,6 +25,7 @@ def generateTex(values):
         tex = "".join(f.readlines())
     for field, value in values.items():
         tex = addImages(tex, value) if field == "images" else tex.replace("%{0}%".format(field.upper()), value)
+    tex = tex.replace("%RECEIPT%", "{0} vedlegg".format(len(values.get("images") or [])))
     with open("out.tex", "w") as f:
         f.write(tex)
 

@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=0.6cm]{geometry}
+\usepackage[margin=1cm]{geometry}
 \usepackage{tabularx}
 
 \title{Kvitteringsskildring}
@@ -14,16 +14,22 @@
 
 \begin{document}
 
-\begin{tabularx}{\textwidth}{XXXX}
- & Sem Sælands vei 7-9 &  &  \\
-Abakus & Gløshaugen & www.abakus.no & Bekk \\
- & 7491 & abakus.abakus.no &  \\
-\end{tabularx}
+%EMBEDDED_IMMEDIATE%
 
+\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}l}
+\includegraphics[scale=0.2]{images/abakus.png} & \includegraphics[scale=0.042]{images/bekk.png}
+\end{tabular*}
 
-{\huge Kvitteringsskildring - \today}
+\vspace{10mm}
 
-%\begin{table}[]
+{
+\begin{center}
+\huge Kvitteringsskildring - \today
+\end{center}
+}
+
+\vspace{10mm}
+
 \begin{tabularx}{\textwidth}{|X|X|}
 \cline{1-2}
 Navn: & Kjøpsdato: \\
@@ -41,25 +47,29 @@ Anledning: & Beløp: \\
 & 
 %AMOUNT% 
 \\ \cline{1-2}
-Kvittering: & Kommentar: \\
- & %COMMENT%
- \\ \cline{2-2}
- & Kommentar økonomiansvarlig: \\
- & %COMMENT2%
- \\ \cline{2-2}
- & Bokføringsdato: \\
- & %DATE2% 
- \\ \cline{1-2}
+Kvittering(er): & Kommentar økonomiansvarlig: \\
+%RECEIPT%
+&
+%COMMENT2%
+\\ \cline{1-2}
+Kommentar: & Bokføringsdato: \\
+%COMMENT%
+&
+%DATE2%
+\\ \cline{1-2}
 Signatur: & Signatur økonomiansvarlig: \\
 %SIGNATURE%
 & 
 %SIGNATURE2%
 \\ \cline{1-2}
 \end{tabularx}
-%\end{table}
 
-
-%EMBEDDED_IMMEDIATE%
+\vfill
+\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}l}
+Sem Sælands vei 7-9 & \\
+Gløshaugen & www.abakus.no \\
+7491 Trondheim & abakus@abakus.no
+\end{tabular*}
 
 %EMBEDDED_GRAPHICS%
 
