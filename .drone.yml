@@ -1,0 +1,16 @@
+---
+pipeline:
+  docker:
+    image: plugins/docker
+    when:
+      branch:
+        - prod
+      event: push
+      status: success
+    registry: https://registry.abakus.no
+    repo: registry.abakus.no/webkom/kvittering
+    secrets: [ docker_username, docker_password ]
+    tags:
+      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+    build_args:
+      - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
