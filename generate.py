@@ -21,6 +21,15 @@ def get_hash(json):
     return hashlib.md5(bytes(json + str(time.time()), 'utf-8')).hexdigest()
 
 
+def is_valid_input(body):
+    required_fields = ['name', 'mailto', 'mailfrom']
+
+    for field in required_fields:
+        if field not in body:
+            return False
+    return True
+
+
 def shorten_line_length(string):
     max_len = 1000
     return '\n'.join([
@@ -91,15 +100,19 @@ def handle(req):
 
     body = json.loads(req)
 
+    if not is_valid_input(body):
+        return
+
     generate_tex(body, directory)
 
     os.chdir(directory)
     generate_pdf()
-    with open('out.pdf', 'rb') as f:
-        sys.stdout.buffer.write(f.read())
+    # with open('out.pdf', 'rb') as f:
+    #     sys.stdout.buffer.write(f.read())
 
-    if 'mailto' in body and len(body['mailto']) > 0:
-        mail.send_mail(body['mailto'], body, ['out.tex', 'out.pdf'])
+    send_to = [body['mailfrom'], body['mailto']]
+
+    mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
 
     os.chdir('/app')
 

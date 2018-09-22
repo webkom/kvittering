@@ -4,7 +4,7 @@ from os.path import basename
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import formatdate
+from email.utils import COMMASPACE, formatdate
 
 
 def send_mail(mail_to, body, files):
@@ -13,7 +13,7 @@ def send_mail(mail_to, body, files):
 
     msg = MIMEMultipart()
     msg['From'] = mail_from
-    msg['To'] = mail_to
+    msg['To'] = COMMASPACE.join(mail_to)
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = 'Kvitteringsskildring fra {0}'.format(body['name'])
 
