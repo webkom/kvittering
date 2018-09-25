@@ -1,10 +1,10 @@
-import smtplib
 import os
-from os.path import basename
+import smtplib
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
+from os.path import basename
 
 
 def send_mail(mail_to, body, files):
@@ -15,13 +15,17 @@ def send_mail(mail_to, body, files):
     msg['From'] = mail_from
     msg['To'] = COMMASPACE.join(mail_to)
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = 'Kvitteringsskildring fra {0}'.format(body['name'])
+    msg['Subject'] = 'Kvitteringsskildring fra {0}'.format(
+        body['name']) if 'tex' not in body else 'Kvitteringsskildring ferdig'
 
-    text = 'Laget av: {0}\n'.format(body.get('name', ''))
-    text += 'Annledning: {0}\n'.format(body.get('occasion', ''))
-    text += 'Beløp: {0}\n'.format(body.get('amount', ''))
-    text += 'Kommentar: {0}\n'.format(body.get('comment', ''))
-    text += 'Kvitteringsskildring er lagt ved i pdf og tex format'
+    text = ''
+
+    if 'tex' not in body:
+        text += 'Laget av: {0}\n'.format(body.get('name', ''))
+        text += 'Annledning: {0}\n'.format(body.get('occasion', ''))
+        text += 'Beløp: {0}\n'.format(body.get('amount', ''))
+        text += 'Kommentar: {0}\n'.format(body.get('comment', ''))
+        text += 'Kvitteringsskildring er lagt ved i pdf og tex format'
 
     msg.attach(MIMEText(text))
 

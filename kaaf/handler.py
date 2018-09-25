@@ -1,10 +1,11 @@
-from subprocess import call
+import hashlib
 import json
+import math
 import os
 import sys
-import hashlib
 import time
-import math
+from subprocess import call
+
 import mail
 
 
@@ -22,12 +23,12 @@ def get_hash(json):
 
 
 def is_valid_input(body):
-    required_fields = ['name', 'mailto', 'mailfrom']
+    required_fields = []
 
     for field in required_fields:
         if field not in body:
             return False
-    return True
+    return "mailto" in body or "mailfrom" in body
 
 
 def shorten_line_length(string):
@@ -58,29 +59,40 @@ def add_images(tex, images):
     return tex
 
 
-def add_signature(tex, signature):
+def add_signature(tex, signature, signature2=False):
     signature = shorten_line_length(signature)
+    filename = 'signature'
+    if signature2:
+        filename += "2"
     embedded = '\\begin{{filecontents*}}{{\jobname.embedded{0}}}\n{1}\n\\end{{filecontents*}}\n'.format(
-        'signature', signature)
+        filename, signature)
     immediate = '\\immediate\\write18{{base64 -d \\jobname.embedded{0} > \\jobname-tmp{0}.pdf}}\n'.format(
-        'signature')
+        filename)
     graphics = '\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{\\jobname-tmp{0}.pdf}}}}'.format(
-        'signature')
-    tex = tex.replace('%EMBEDDED_SIGNATURE%', embedded)
-    tex = tex.replace('%SIGNATURE_IMMEDIATE%', immediate)
-    tex = tex.replace('%SIGNATURE%', graphics)
+        filename)
+    tex = tex.replace(
+        '%EMBEDDED_SIGNATURE{0}%'.format(2 if signature2 else ""), embedded)
+    tex = tex.replace(
+        '%SIGNATURE_IMMEDIATE{0}%'.format(2 if signature2 else ""), immediate)
+    tex = tex.replace('%SIGNATURE{0}%'.format(2 if signature2 else ""),
+                      graphics)
     return tex
 
 
 def generate_tex(values, directory):
     tex = ''
-    with open('template.tex', 'r') as f:
-        tex = ''.join(f.readlines())
+    if "tex" in values:
+        tex = values['tex']
+    else:
+        with open('template.tex', 'r') as f:
+            tex = ''.join(f.readlines())
     for field, value in values.items():
         if field == 'images':
             tex = add_images(tex, value)
         elif field == 'signature':
             tex = add_signature(tex, value)
+        elif field == 'signature2':
+            tex = add_signature(tex, value, True)
         else:
             tex = tex.replace('%{0}%'.format(field.upper()), value)
     tex = tex.replace('%RECEIPT%', '{0} vedlegg'.format(
@@ -110,7 +122,12 @@ def handle(req):
     # with open('out.pdf', 'rb') as f:
     #     sys.stdout.buffer.write(f.read())
 
-    send_to = [body['mailfrom'], body['mailto']]
+    send_to = []
+
+    if "mailfrom" in body:
+        send_to.append(body['mailfrom'])
+    if "mailto" in body:
+        send_to.append(body['mailto'])
 
     mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
 

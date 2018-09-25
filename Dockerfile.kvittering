@@ -1,0 +1,12 @@
+FROM python:3.6-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y curl
+RUN curl -sL https://github.com/openfaas/faas/releases/download/0.9.0/fwatchdog > /usr/bin/fwatchdog \
+    && chmod +x /usr/bin/fwatchdog
+
+ADD ./build /app
+
+ENV fprocess="cat index.html"
+CMD ["fwatchdog"]

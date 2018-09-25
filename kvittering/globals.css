@@ -1,0 +1,32 @@
+.inputLabel {
+  font-weight: bold;
+}
+
+.inputField {
+  padding: 10px;
+}
+
+input {
+  border-radius: 5px;
+  padding: 6px;
+  font-size: 1.2em;
+  margin: 10px;
+}
+
+body {
+  font-family: Raleway, Arial, sans-serif;
+  background: #eae9e8;
+  color: #394b59;
+}
+
+body > div,
+body > div > div,
+body > div > div > div {
+  height: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
