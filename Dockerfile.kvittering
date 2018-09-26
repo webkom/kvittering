@@ -1,4 +1,4 @@
-FROM python:3.6-slim
+FROM node:10 as builder
 
 WORKDIR /app
 
@@ -6,7 +6,15 @@ RUN apt-get update && apt-get install -y curl
 RUN curl -sL https://github.com/openfaas/faas/releases/download/0.9.0/fwatchdog > /usr/bin/fwatchdog \
     && chmod +x /usr/bin/fwatchdog
 
-ADD ./build /app
+COPY package.json .
+RUN yarn
+COPY . /app
+RUN yarn build
+
+FROM alpine
+
+COPY --from=builder /app/build/index.html .
+COPY --from=builder /usr/bin/fwatchdog .
 
 ENV fprocess="cat index.html"
-CMD ["fwatchdog"]
+CMD ["./fwatchdog"]

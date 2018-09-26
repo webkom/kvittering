@@ -1,6 +1,6 @@
 ---
 pipeline:
-  docker:
+  docker-kaaf:
     image: plugins/docker
     when:
       branch:
@@ -9,6 +9,23 @@ pipeline:
       status: success
     registry: https://registry.abakus.no
     repo: registry.abakus.no/webkom/kvittering
+    dockerfile: Dockerfile.kaaf
+    secrets: [ docker_username, docker_password ]
+    tags:
+      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+      - latest
+    build_args:
+      - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+  docker-kvittering:
+    image: plugins/docker
+    when:
+      branch:
+        - prod
+      event: push
+      status: success
+    registry: https://registry.abakus.no
+    repo: registry.abakus.no/webkom/kvittering
+    dockerfile: Dockerfile.kvittering
     secrets: [ docker_username, docker_password ]
     tags:
       - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
