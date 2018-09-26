@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y texlive-latex-base curl
 RUN curl -sL https://github.com/openfaas/faas/releases/download/0.9.0/fwatchdog > /usr/bin/fwatchdog \
     && chmod +x /usr/bin/fwatchdog
 
-ADD . /app
+ADD ./kaaf /app
 
-ENV fprocess="python generate.py"
+ENV fprocess="python handler.py"
 CMD ["fwatchdog"]

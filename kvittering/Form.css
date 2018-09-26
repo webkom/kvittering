@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  padding: 40px;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.submit {
+  padding: 20px;
+  border-radius: 5px;
+  font-size: 1.5em;
+  font-weight: bold;
+  width: 500px;
+  cursor: pointer;
+}
+
+.feedback {
+  font-size: 1.6em;
+  font-weight: bold;
+  text-align: center;
+}
