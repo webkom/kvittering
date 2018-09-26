@@ -6,9 +6,19 @@ import SignatureUpload from './SignatureUpload';
 import styles from './Form.css';
 import globals from './globals.css';
 
+const requiredFields = {
+  date2: true,
+  signature: true,
+  tex: true,
+  mailto: true
+};
+
 const Input = ({ name, value, updateForm, field }) => (
   <div className={globals.inputField}>
-    <div className={globals.inputLabel}>{name}</div>
+    <div className={globals.inputLabel}>
+      {name}
+      {requiredFields[field] && <span style={{ color: '#e90000' }}>*</span>}
+    </div>
     <input
       onChange={e => updateForm({ [field]: e.target.value })}
       value={value}
@@ -16,11 +26,9 @@ const Input = ({ name, value, updateForm, field }) => (
   </div>
 );
 
-const requiredFields = ['tex', 'mailto'];
-
 const inputIsValid = form =>
   Object.keys(form)
-    .filter(field => requiredFields.includes(field))
+    .filter(field => requiredFields[field])
     .filter(field => form[field].length === 0).length === 0;
 
 class Admin extends React.Component {

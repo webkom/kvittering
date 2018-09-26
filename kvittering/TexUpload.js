@@ -21,7 +21,10 @@ class TexUpload extends React.Component {
   render() {
     return (
       <div className={globals.inputField}>
-        <div className={globals.inputLabel}>Tex-fil</div>
+        <div className={globals.inputLabel}>
+          Tex-fil
+          <span style={{ color: '#e90000' }}>*</span>
+        </div>
         <label>
           <input
             type="file"

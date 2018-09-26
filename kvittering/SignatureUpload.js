@@ -23,7 +23,10 @@ class SignatureUpload extends React.Component {
   render() {
     return (
       <div className={globals.inputField}>
-        <div className={globals.inputLabel}>Signatur</div>
+        <div className={globals.inputLabel}>
+          Signatur
+          <span style={{ color: '#e90000' }}>*</span>
+        </div>
         <label>
           <input
             type="file"

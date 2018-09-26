@@ -16,6 +16,12 @@
   align-items: center;
 }
 
+@media (max-width: 600px) {
+  .header {
+    font-size: 40px;
+  }
+}
+
 .logo {
   display: flex;
   font-weight: bold;
@@ -27,4 +33,10 @@
   width: 0.7em;
   height: 0.7em;
   border-radius: 0.35em;
+}
+
+.link {
+  position: absolute;
+  right: 0;
+  padding: 10px 20px;
 }

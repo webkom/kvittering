@@ -13,15 +13,15 @@ const requiredFields = {
   amount: true,
   signature: true,
   images: true,
-  mailto: true,
-  mailfro: true
+  mailfrom: true
 };
 
 const Input = ({ name, value, updateForm, field }) => (
   <div className={globals.inputField}>
-    <div className={globals.inputLabel}>{`${name}${
-      requiredFields[field] ? ' *' : ''
-    }`}</div>
+    <div className={globals.inputLabel}>
+      {name}
+      {requiredFields[field] && <span style={{ color: '#e90000' }}>*</span>}
+    </div>
     <input
       onChange={e => updateForm({ [field]: e.target.value })}
       value={value}

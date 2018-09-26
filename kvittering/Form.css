@@ -1,7 +1,7 @@
 .container {
   display: flex;
   align-items: center;
-  width: 600px;
+  max-width: 600px;
   flex-wrap: wrap;
   justify-content: space-around;
   border: 1px solid rgba(0, 0, 0, 0.09);

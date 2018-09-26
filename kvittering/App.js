@@ -15,6 +15,13 @@ const Abakus = () => (
 
 const App = () => (
   <div>
+    <div className={styles.link}>
+      {window.location.pathname === '/admin' ? (
+        <a href="/">For resten</a>
+      ) : (
+        <a href="/admin">For økans</a>
+      )}
+    </div>
     <div className={styles.header}>
       <Abakus />
       <div>Kvitteringsskildring</div>

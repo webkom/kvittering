@@ -31,7 +31,10 @@ class PictureUpload extends React.Component {
   render() {
     return (
       <div className={globals.inputField}>
-        <div className={globals.inputLabel}>Vedlegg</div>
+        <div className={globals.inputLabel}>
+          Vedlegg
+          <span style={{ color: '#e90000' }}>*</span>
+        </div>
         <label>
           <input
             type="file"
