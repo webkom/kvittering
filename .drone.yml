@@ -8,7 +8,7 @@ pipeline:
       event: push
       status: success
     registry: https://registry.abakus.no
-    repo: registry.abakus.no/webkom/kvittering
+    repo: registry.abakus.no/webkom/kaaf
     dockerfile: Dockerfile.kaaf
     secrets: [ docker_username, docker_password ]
     tags:
