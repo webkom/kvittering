@@ -15,25 +15,24 @@ def send_mail(mail_to, body, files):
     msg['From'] = mail_from
     msg['To'] = COMMASPACE.join(mail_to)
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = 'Kvitteringsskildring fra {0}'.format(
-        body['name']) if 'tex' not in body else 'Kvitteringsskildring ferdig'
+    msg['Subject'] = (f'Kvitteringsskildring fra {body["name"]}'
+                      if 'tex' not in body else 'Kvitteringsskildring ferdig')
 
     text = ''
 
     if 'tex' not in body:
-        text += 'Laget av: {0}\n'.format(body.get('name', ''))
-        text += 'Annledning: {0}\n'.format(body.get('occasion', ''))
-        text += 'Beløp: {0}\n'.format(body.get('amount', ''))
-        text += 'Kommentar: {0}\n'.format(body.get('comment', ''))
-        text += 'Kvitteringsskildring er lagt ved i pdf og tex format'
+        text += f'Laget av: {body.get("name", "")}\n'
+        text += f'Annledning: {body.get("occasion", "")}\n'
+        text += f'Beløp: {body.get("amount", "")}\n'
+        text += f'Kommentar: {body.get("comment", "")}\n'
+        text += f'Kvitteringsskildring er lagt ved i pdf og tex format'
 
     msg.attach(MIMEText(text))
 
     for f in files or []:
-        with open(f, 'rb') as fil:
-            part = MIMEApplication(fil.read(), Name=basename(f))
-        part['Content-Disposition'] = 'attachment; filename="{0}"'.format(
-            basename(f))
+        with open(f, 'rb') as file:
+            part = MIMEApplication(file.read(), Name=basename(f))
+        part['Content-Disposition'] = f'attachment; filename="{basename(f)}"'
         msg.attach(part)
 
     server = smtplib.SMTP('smtp.gmail.com', 587)

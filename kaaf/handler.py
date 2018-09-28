@@ -2,6 +2,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 import time
 from subprocess import call
@@ -22,6 +23,35 @@ def get_hash(json):
     return hashlib.md5(bytes(json + str(time.time()), 'utf-8')).hexdigest()
 
 
+def save_field(tex, field, value):
+    i = tex.index("%SAVED_FIELDS_END%")
+    tex = (tex[:i] + f"%FIELD_BEGIN_{field}%\n" + "\n".join(
+        map(lambda s: "%" + s, value.split("\n"))) + "\n" + tex[i:])
+    return tex
+
+
+def load_fields(tex, body, directory):
+    values = tex[tex.index('%SAVED_FIELDS_BEGIN%'):tex.
+                 index('%SAVED_FIELDS_END%')].split("\n")[1:]
+    value_begin_regex = re.compile("%FIELD_BEGIN_.+%")
+    current_field = ""
+    current_value = ""
+    for line in values:
+        if value_begin_regex.match(line) is not None:
+            if current_field.startswith("image"):
+                create_image_file(directory, current_value, current_field)
+            elif len(current_field) != 0:
+                body[current_field] = current_value
+            current_field = line[1:-1].split("_")[-1]
+            current_value = ""
+        else:
+            current_value += line[1:]
+    if current_field.startswith("image"):
+        create_image_file(directory, current_value, current_field)
+    elif len(current_field) != 0:
+        body[current_field] = current_value
+
+
 def is_valid_input(body):
     required_fields = []
 
@@ -39,22 +69,22 @@ def shorten_line_length(string):
     ])
 
 
-def add_images(tex, images):
+def create_image_file(directory, image, image_file):
+    with open(f"{directory}/{image_file}", "w") as f:
+        f.write(image)
+    with open(f"{directory}/{image_file}.pdf", "w") as f:
+        call(["base64", "-di", f"{directory}/{image_file}"], stdout=f)
+
+
+def add_images(tex, images, directory):
     i = 0
-    embedded = ''
-    immediate = ''
     graphics = ''
     for image in images:
+        create_image_file(directory, image, f"image{i}")
         image = shorten_line_length(image)
-        embedded += '\\begin{{filecontents*}}{{\jobname.embedded{0}}}\n{1}\n\\end{{filecontents*}}\n'.format(
-            i, image)
-        immediate += '\\immediate\\write18{{base64 -d \\jobname.embedded{0} > \\jobname-tmp{0}.pdf}}\n'.format(
-            i)
-        graphics += '\\newpage\n\\fbox{{\\includegraphics[width=\\textwidth,height=\\textheight,keepaspectratio]{{\\jobname-tmp{0}.pdf}}}}'.format(
-            i)
+        tex = save_field(tex, f"image{i}", image)
+        graphics += f'\\newpage\n\\fbox{{\\includegraphics[width=\\textwidth,height=\\textheight,keepaspectratio]{{image{i}.pdf}}}}'
         i += 1
-    tex = tex.replace('%EMBEDDED_IMAGES%', embedded)
-    tex = tex.replace('%EMBEDDED_IMMEDIATE%', immediate)
     tex = tex.replace('%EMBEDDED_GRAPHICS%', graphics)
     return tex
 
@@ -64,18 +94,14 @@ def add_signature(tex, signature, signature2=False):
     filename = 'signature'
     if signature2:
         filename += "2"
-    embedded = '\\begin{{filecontents*}}{{\jobname.embedded{0}}}\n{1}\n\\end{{filecontents*}}\n'.format(
-        filename, signature)
-    immediate = '\\immediate\\write18{{base64 -d \\jobname.embedded{0} > \\jobname-tmp{0}.pdf}}\n'.format(
-        filename)
-    graphics = '\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{\\jobname-tmp{0}.pdf}}}}'.format(
-        filename)
-    tex = tex.replace(
-        '%EMBEDDED_SIGNATURE{0}%'.format(2 if signature2 else ""), embedded)
-    tex = tex.replace(
-        '%SIGNATURE_IMMEDIATE{0}%'.format(2 if signature2 else ""), immediate)
-    tex = tex.replace('%SIGNATURE{0}%'.format(2 if signature2 else ""),
-                      graphics)
+    embedded = f'\\begin{{filecontents*}}{{\jobname.embedded{filename}}}\n{signature}\n\\end{{filecontents*}}\n'
+    immediate = f'\\immediate\\write18{{base64 -d \\jobname.embedded{filename} > \\jobname-tmp{filename}.pdf}}\n'
+    graphics = f'\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{\\jobname-tmp{filename}.pdf}}}}'
+    tex = tex.replace(f'%EMBEDDED_SIGNATURE{2 if signature2 else ""}%',
+                      embedded)
+    tex = tex.replace(f'%SIGNATURE_IMMEDIATE{2 if signature2 else ""}%',
+                      immediate)
+    tex = tex.replace(f'%SIGNATURE{2 if signature2 else ""}%', graphics)
     return tex
 
 
@@ -88,16 +114,16 @@ def generate_tex(values, directory):
             tex = ''.join(f.readlines())
     for field, value in values.items():
         if field == 'images':
-            tex = add_images(tex, value)
+            tex = add_images(tex, value, directory)
         elif field == 'signature':
             tex = add_signature(tex, value)
         elif field == 'signature2':
             tex = add_signature(tex, value, True)
         else:
-            tex = tex.replace('%{0}%'.format(field.upper()), value)
-    tex = tex.replace('%RECEIPT%', '{0} vedlegg'.format(
-        len(values.get('images') or [])))
-    with open('{0}/out.tex'.format(directory), 'w') as f:
+            tex = tex.replace(f'%{field.upper()}%', value)
+    tex = tex.replace('%RECEIPT%',
+                      f'{len(values.get("images") or [])} vedlegg')
+    with open(f'{directory}/out.tex', 'w') as f:
         f.write(tex)
 
 
@@ -114,6 +140,9 @@ def handle(req):
 
     if not is_valid_input(body):
         return
+
+    if "tex" in body:
+        load_fields(body["tex"], body, directory)
 
     generate_tex(body, directory)
 
