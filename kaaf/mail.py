@@ -15,8 +15,7 @@ def send_mail(mail_to, body, files):
     msg['From'] = mail_from
     msg['To'] = COMMASPACE.join(mail_to)
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = (f'Kvitteringsskildring fra {body["name"]}'
-                      if 'tex' not in body else 'Kvitteringsskildring ferdig')
+    msg['Subject'] = f'Kvitteringsskildring fra {body["name"]} ({body["id"]})'
 
     text = ''
 

@@ -109,6 +109,9 @@ def generate_tex(values, directory):
     else:
         with open('template.tex', 'r') as f:
             tex = ''.join(f.readlines())
+        tex = save_field(tex, 'id', values['id'])
+        tex = save_field(tex, 'name', values['name'])
+
     for field, value in values.items():
         if field == 'images':
             tex = add_images(tex, value, directory)
@@ -139,6 +142,8 @@ def handle(req):
 
     if 'tex' in body:
         load_fields(body['tex'], body, directory)
+    else:
+        body['id'] = directory
 
     generate_tex(body, directory)
 
