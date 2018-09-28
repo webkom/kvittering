@@ -24,29 +24,30 @@ def get_hash(json):
 
 
 def save_field(tex, field, value):
-    i = tex.index("%SAVED_FIELDS_END%")
-    tex = (tex[:i] + f"%FIELD_BEGIN_{field}%\n" + "\n".join(
-        map(lambda s: "%" + s, value.split("\n"))) + "\n" + tex[i:])
+    i = tex.index('%SAVED_FIELDS_END%')
+    tex = (tex[:i] + f'%FIELD_BEGIN_{field}%\n' + '\n'.join(
+        map(lambda s: '%' + s, value.split('\n'))) + '\n' + tex[i:])
     return tex
 
 
 def load_fields(tex, body, directory):
     values = tex[tex.index('%SAVED_FIELDS_BEGIN%'):tex.
-                 index('%SAVED_FIELDS_END%')].split("\n")[1:]
-    value_begin_regex = re.compile("%FIELD_BEGIN_.+%")
-    current_field = ""
-    current_value = ""
+                 index('%SAVED_FIELDS_END%')].split('\n')[1:]
+    value_begin_regex = re.compile('%FIELD_BEGIN_.+%')
+    current_field = ''
+    current_value = ''
     for line in values:
         if value_begin_regex.match(line) is not None:
-            if current_field.startswith("image"):
+            if current_field.startswith('image') or current_field.startswith(
+                    'signature'):
                 create_image_file(directory, current_value, current_field)
             elif len(current_field) != 0:
                 body[current_field] = current_value
-            current_field = line[1:-1].split("_")[-1]
-            current_value = ""
+            current_field = line[1:-1].split('_')[-1]
+            current_value = ''
         else:
             current_value += line[1:]
-    if current_field.startswith("image"):
+    if current_field.startswith('image'):
         create_image_file(directory, current_value, current_field)
     elif len(current_field) != 0:
         body[current_field] = current_value
@@ -58,7 +59,7 @@ def is_valid_input(body):
     for field in required_fields:
         if field not in body:
             return False
-    return "mailto" in body or "mailfrom" in body
+    return 'mailto' in body or 'mailfrom' in body
 
 
 def shorten_line_length(string):
@@ -70,44 +71,40 @@ def shorten_line_length(string):
 
 
 def create_image_file(directory, image, image_file):
-    with open(f"{directory}/{image_file}", "w") as f:
+    with open(f'{directory}/{image_file}', 'w') as f:
         f.write(image)
-    with open(f"{directory}/{image_file}.pdf", "w") as f:
-        call(["base64", "-di", f"{directory}/{image_file}"], stdout=f)
+    with open(f'{directory}/{image_file}.pdf', 'w') as f:
+        call(['base64', '-di', f'{directory}/{image_file}'], stdout=f)
 
 
 def add_images(tex, images, directory):
     i = 0
     graphics = ''
     for image in images:
-        create_image_file(directory, image, f"image{i}")
+        create_image_file(directory, image, f'image{i}')
         image = shorten_line_length(image)
-        tex = save_field(tex, f"image{i}", image)
+        tex = save_field(tex, f'image{i}', image)
         graphics += f'\\newpage\n\\fbox{{\\includegraphics[width=\\textwidth,height=\\textheight,keepaspectratio]{{image{i}.pdf}}}}'
         i += 1
     tex = tex.replace('%EMBEDDED_GRAPHICS%', graphics)
     return tex
 
 
-def add_signature(tex, signature, signature2=False):
-    signature = shorten_line_length(signature)
+def add_signature(tex, signature, directory, signature2=False):
     filename = 'signature'
     if signature2:
-        filename += "2"
-    embedded = f'\\begin{{filecontents*}}{{\jobname.embedded{filename}}}\n{signature}\n\\end{{filecontents*}}\n'
-    immediate = f'\\immediate\\write18{{base64 -d \\jobname.embedded{filename} > \\jobname-tmp{filename}.pdf}}\n'
-    graphics = f'\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{\\jobname-tmp{filename}.pdf}}}}'
-    tex = tex.replace(f'%EMBEDDED_SIGNATURE{2 if signature2 else ""}%',
-                      embedded)
-    tex = tex.replace(f'%SIGNATURE_IMMEDIATE{2 if signature2 else ""}%',
-                      immediate)
+        filename += '2'
+    create_image_file(directory, signature, filename)
+    signature = shorten_line_length(signature)
+    tex = save_field(tex, filename, signature)
+    graphics = f'\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{{filename}.pdf}}}}'
     tex = tex.replace(f'%SIGNATURE{2 if signature2 else ""}%', graphics)
     return tex
 
 
 def generate_tex(values, directory):
     tex = ''
-    if "tex" in values:
+    if 'tex' in values:
         tex = values['tex']
     else:
         with open('template.tex', 'r') as f:
@@ -116,9 +113,9 @@ def generate_tex(values, directory):
         if field == 'images':
             tex = add_images(tex, value, directory)
         elif field == 'signature':
-            tex = add_signature(tex, value)
+            tex = add_signature(tex, value, directory)
         elif field == 'signature2':
-            tex = add_signature(tex, value, True)
+            tex = add_signature(tex, value, directory, True)
         else:
             tex = tex.replace(f'%{field.upper()}%', value)
     tex = tex.replace('%RECEIPT%',
@@ -128,8 +125,7 @@ def generate_tex(values, directory):
 
 
 def generate_pdf():
-    call(['pdflatex', '--shell-escape', 'out.tex'],
-         stdout=open(os.devnull, 'wb'))
+    call(['pdflatex', 'out.tex'], stdout=open(os.devnull, 'wb'))
 
 
 def handle(req):
@@ -141,8 +137,8 @@ def handle(req):
     if not is_valid_input(body):
         return
 
-    if "tex" in body:
-        load_fields(body["tex"], body, directory)
+    if 'tex' in body:
+        load_fields(body['tex'], body, directory)
 
     generate_tex(body, directory)
 
@@ -153,9 +149,9 @@ def handle(req):
 
     send_to = []
 
-    if "mailfrom" in body:
+    if 'mailfrom' in body:
         send_to.append(body['mailfrom'])
-    if "mailto" in body:
+    if 'mailto' in body:
         send_to.append(body['mailto'])
 
     mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
