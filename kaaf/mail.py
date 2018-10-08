@@ -7,6 +7,28 @@ from email.utils import COMMASPACE, formatdate
 from os.path import basename
 
 
+def create_mail(msg, body):
+    msg['Subject'] = f'Kvitteringsskildring fra {body["name"]} ({body["id"]})'
+
+    text = ''
+
+    text += f'Laget av: {body.get("name", "")}\n'
+    text += f'Annledning: {body.get("occasion", "")}\n'
+    text += f'Beløp: {body.get("amount", "")}\n'
+    text += f'Kommentar: {body.get("comment", "")}\n'
+    text += f'Kvitteringsskildring er lagt ved i pdf og tex format'
+
+    msg.attach(MIMEText(text))
+
+
+def create_template_mail(msg, body):
+    msg['Subject'] = f'Personlig skildringsmal for {body["name"]} ({body["id"]})'
+
+    text = 'Last opp .tex filen neste gang du skal lage en kvitteringssklidring, så slipper du å fylle ut en del felter'
+
+    msg.attach(MIMEText(text))
+
+
 def send_mail(mail_to, body, files):
     mail_from = os.environ['MAIL_ADDRESS']
     mail_password = os.environ['MAIL_PASSWORD']
@@ -15,23 +37,19 @@ def send_mail(mail_to, body, files):
     msg['From'] = mail_from
     msg['To'] = COMMASPACE.join(mail_to)
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = f'Kvitteringsskildring fra {body["name"]} ({body["id"]})'
 
-    text = ''
+    create_template = 'create_template' in body and body['create_template']
 
-    if 'tex' not in body:
-        text += f'Laget av: {body.get("name", "")}\n'
-        text += f'Annledning: {body.get("occasion", "")}\n'
-        text += f'Beløp: {body.get("amount", "")}\n'
-        text += f'Kommentar: {body.get("comment", "")}\n'
-        text += f'Kvitteringsskildring er lagt ved i pdf og tex format'
-
-    msg.attach(MIMEText(text))
+    if create_template:
+        create_template_mail(msg, body)
+    else:
+        create_mail(msg, body)
 
     for f in files or []:
+        filename = f'{"skildringsmal" if create_template else "kvitteringsskildring"}.{basename(f).split(".")[1]}'
         with open(f, 'rb') as file:
-            part = MIMEApplication(file.read(), Name=basename(f))
-        part['Content-Disposition'] = f'attachment; filename="{basename(f)}"'
+            part = MIMEApplication(file.read(), Name=filename)
+        part['Content-Disposition'] = f'attachment; filename="{filename}"'
         msg.attach(part)
 
     server = smtplib.SMTP('smtp.gmail.com', 587)

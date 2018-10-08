@@ -90,15 +90,12 @@ def add_images(tex, images, directory):
     return tex
 
 
-def add_signature(tex, signature, directory, signature2=False):
-    filename = 'signature'
-    if signature2:
-        filename += '2'
-    create_image_file(directory, signature, filename)
+def add_signature(tex, signature, directory):
+    create_image_file(directory, signature, 'signature')
     signature = shorten_line_length(signature)
-    tex = save_field(tex, filename, signature)
-    graphics = f'\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{{filename}.pdf}}}}'
-    tex = tex.replace(f'%SIGNATURE{2 if signature2 else ""}%', graphics)
+    tex = save_field(tex, 'signature', signature)
+    graphics = '\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{signature.pdf}}}}'
+    tex = tex.replace('%SIGNATURE%', graphics)
     return tex
 
 
@@ -111,18 +108,31 @@ def generate_tex(values, directory):
             tex = ''.join(f.readlines())
         tex = save_field(tex, 'id', values['id'])
         tex = save_field(tex, 'name', values['name'])
+        tex = save_field(tex, 'mailfrom', values['mailfrom'])
 
-    for field, value in values.items():
-        if field == 'images':
-            tex = add_images(tex, value, directory)
-        elif field == 'signature':
-            tex = add_signature(tex, value, directory)
-        elif field == 'signature2':
-            tex = add_signature(tex, value, directory, True)
-        else:
-            tex = tex.replace(f'%{field.upper()}%', value)
-    tex = tex.replace('%RECEIPT%',
-                      f'{len(values.get("images") or [])} vedlegg')
+    tex_fields = [
+        'date',
+        'occasion',
+        'amount',
+        'comment',
+        'name',
+        'committee',
+        'accountNumber',
+    ]
+
+    for field in tex_fields:
+        if field in values:
+            tex = tex.replace(f'%{field.upper()}%', values[field])
+
+    if 'images' in values:
+        tex = add_images(tex, values['images'], directory)
+    if 'signature' in values:
+        tex = add_signature(tex, values['signature'], directory)
+
+    if 'create_template' not in values:
+        tex = tex.replace('%RECEIPT%',
+                          f'{len(values.get("images") or [])} vedlegg')
+
     with open(f'{directory}/out.tex', 'w') as f:
         f.write(tex)
 

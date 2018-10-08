@@ -21,17 +21,14 @@ class TexUpload extends React.Component {
   render() {
     return (
       <div className={globals.inputField}>
-        <div className={globals.inputLabel}>
-          Tex-fil
-          <span style={{ color: '#e90000' }}>*</span>
-        </div>
+        <div className={globals.inputLabel}>Personlig mal</div>
         <label>
           <input
             type="file"
             className={styles.fileInput}
             onChange={e => this.handleUpload(e)}
           />
-          <div className={styles.fileLabel}>
+          <div className={styles.texLabel}>
             {this.state.hasUploaded ? (
               <div className={styles.uploaded}>Lastet opp</div>
             ) : (
@@ -39,6 +36,10 @@ class TexUpload extends React.Component {
             )}
           </div>
         </label>
+        <div>
+          Har du laget en mal kan du laste den opp her, så slipper du å fylle
+          inn alle feltene. Du kan lage det <a href="/template">her</a>
+        </div>
       </div>
     );
   }

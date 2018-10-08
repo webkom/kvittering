@@ -1,6 +1,5 @@
 .container {
   display: flex;
-  align-items: center;
   max-width: 600px;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -16,7 +15,7 @@
   border-radius: 5px;
   font-size: 1.5em;
   font-weight: bold;
-  width: 500px;
+  width: 90%;
   cursor: pointer;
 }
 
@@ -24,4 +23,11 @@
   font-size: 1.6em;
   font-weight: bold;
   text-align: center;
+}
+
+.info {
+  padding: 25px;
+  margin: 0 25px;
+  border: 1px dotted black;
+  border-radius: 5px;
 }
