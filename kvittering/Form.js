@@ -75,7 +75,6 @@ class Form extends React.Component {
             name="Komité"
             value={this.state.form.committee}
             field="committee"
-            required
             updateForm={updateForm}
           />,
           <Input
