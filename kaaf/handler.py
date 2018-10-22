@@ -101,7 +101,7 @@ def add_signature(tex, signature, directory):
 
 def generate_tex(values, directory):
     tex = ''
-    if 'tex' in values:
+    if 'tex' in values and len(values['tex']) > 0:
         tex = values['tex']
     else:
         with open('template.tex', 'r') as f:
@@ -150,7 +150,7 @@ def handle(req):
     if not is_valid_input(body):
         return
 
-    if 'tex' in body:
+    if 'tex' in body and len(body['tex']) > 0:
         load_fields(body['tex'], body, directory)
     else:
         body['id'] = directory
