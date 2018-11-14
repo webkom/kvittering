@@ -121,7 +121,7 @@ def generate_tex(values, directory):
     ]
 
     for field in tex_fields:
-        if field in values:
+        if field in values and len(values[field]) > 0:
             tex = tex.replace(f'%{field.upper()}%', values[field])
 
     if 'images' in values:
