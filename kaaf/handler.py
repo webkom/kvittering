@@ -1,26 +1,10 @@
-import hashlib
 import json
-import math
 import os
 import re
-import sys
-import time
-from subprocess import call
 
 import mail
-
-
-def mkdir(out):
-    call(['mkdir', out])
-    call(['cp', '-r', 'images', out])
-
-
-def rmdir(out):
-    call(['rm', '-r', out])
-
-
-def get_hash(json):
-    return hashlib.md5(bytes(json + str(time.time()), 'utf-8')).hexdigest()
+from utils import (create_image_file, generate_pdf, get_hash, get_stdin, log,
+                   mkdir, rmdir, shorten_line_length)
 
 
 def save_field(tex, field, value):
@@ -59,22 +43,7 @@ def is_valid_input(body):
     for field in required_fields:
         if field not in body:
             return False
-    return 'mailto' in body or 'mailfrom' in body
-
-
-def shorten_line_length(string):
-    max_len = 1000
-    return '\n'.join([
-        string[i * max_len:(i + 1) * max_len]
-        for i in range(0, math.ceil(len(string) / max_len))
-    ])
-
-
-def create_image_file(directory, image, image_file):
-    with open(f'{directory}/{image_file}', 'w') as f:
-        f.write(image)
-    with open(f'{directory}/{image_file}.pdf', 'w') as f:
-        call(['base64', '-di', f'{directory}/{image_file}'], stdout=f)
+    return 'mailfrom' in body or 'tex' in body
 
 
 def add_images(tex, images, directory):
@@ -137,52 +106,66 @@ def generate_tex(values, directory):
         f.write(tex)
 
 
-def generate_pdf():
-    call(['pdflatex', 'out.tex'], stdout=open(os.devnull, 'wb'))
-
-
-def handle(req):
-    directory = get_hash(req)
-    mkdir(directory)
-
+def handle(req, req_id):
     body = json.loads(req)
 
     if not is_valid_input(body):
-        return
+        raise Exception('Request body is invalid')
+
+    directory = req_id
+    mkdir(directory)
 
     if 'tex' in body and len(body['tex']) > 0:
         load_fields(body['tex'], body, directory)
-    else:
-        body['id'] = directory
+
+    body['id'] = req_id
 
     generate_tex(body, directory)
 
     os.chdir(directory)
-    generate_pdf()
-    # with open('out.pdf', 'rb') as f:
-    #     sys.stdout.buffer.write(f.read())
+    try:
+        generate_pdf()
+        # with open('out.pdf', 'rb') as f:
+        #     sys.stdout.buffer.write(f.read())
+        if not os.path.isfile('./out.pdf'):
+            pdf_log = ''
+            with open('./out.log') as f:
+                pdf_log = '\n'.join(f.readlines())
+            raise Exception(pdf_log)
 
-    send_to = []
+        send_to = []
 
-    if 'mailfrom' in body:
-        send_to.append(body['mailfrom'])
-    if 'mailto' in body:
-        send_to.append(body['mailto'])
+        if 'mailfrom' in body:
+            send_to.append(body['mailfrom'])
+        if 'mailto' in body:
+            send_to.append(body['mailto'])
 
-    mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
-
-    os.chdir('/app')
-
-    rmdir(directory)
-
-
-def get_stdin():
-    buf = ''
-    for line in sys.stdin:
-        buf = buf + line
-    return buf
+        mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
+    finally:
+        os.chdir('/app')
+        rmdir(directory)
 
 
 if __name__ == '__main__':
     st = get_stdin()
-    handle(st)
+    req_id = get_hash(st)
+    log({
+        'id': req_id,
+        'type': 'info',
+        'message': 'Request recieved',
+    })
+    try:
+        handle(st, req_id)
+    except Exception as e:
+        log({
+            'id': req_id,
+            'type': 'exception',
+            'message': 'Exception during handle',
+            'exception': repr(e)
+        })
+    else:
+        log({
+            'id': req_id,
+            'type': 'info',
+            'message': 'Request finished',
+        })

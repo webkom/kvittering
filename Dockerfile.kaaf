@@ -8,5 +8,7 @@ RUN curl -sL https://github.com/openfaas/faas/releases/download/0.9.0/fwatchdog 
 
 ADD ./kaaf /app
 
+ENV combine_output=false
+
 ENV fprocess="python handler.py"
 CMD ["fwatchdog"]
