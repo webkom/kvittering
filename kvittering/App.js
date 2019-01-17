@@ -16,7 +16,7 @@ const App = () => (
   <div>
     <div className={styles.header}>
       <Abakus />
-      <div title="something">Kvitteringsskildring</div>
+      <div>Kvitteringsskildring</div>
     </div>
     <div className={styles.container}>
       {window.location.pathname === '/template' ? <CreateTemplate /> : <Form />}

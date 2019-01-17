@@ -64,8 +64,8 @@ class Form extends React.Component {
         {this.state.form.tex.length === 0 && [
           <Input
             key="name"
-            name="Navn Y dis dont work"
-            class="tooltip"
+            name="Navn"
+            title="Navnet til kjøper"
             value={this.state.form.name}
             field="name"
             required
@@ -76,7 +76,7 @@ class Form extends React.Component {
           <Input
             key="committee"
             name="Komité"
-            title="c'mon dude"
+            title="Komitéen det er kjøpt på vegne av"
             value={this.state.form.committee}
             field="committee"
             updateForm={updateForm}
@@ -84,6 +84,7 @@ class Form extends React.Component {
           <Input
             key="accountNumber"
             name="Kontonummer"
+            title="Der pengene skal tilbake til, ofte ditt eget kontonummer"
             value={this.state.form.accountNumber}
             field="accountNumber"
             required
@@ -92,22 +93,28 @@ class Form extends React.Component {
           <Input
             key="mailfrom"
             name="Din epost"
+            title="Du vil få en kopi av kvitteringsskildringen på mail"
             value={this.state.form.mailfrom}
             field="mailfrom"
             required
             updateForm={updateForm}
           />,
-          <SignatureUpload key="signature" updateForm={updateForm} />
+          <SignatureUpload
+            key="signature"
+            title="Din håndskrevne signatur"
+            updateForm={updateForm} />
         ]}
         <Input
           name="Kjøpsdato"
+          title="Datoen det ble kjøpt, gjerne samme som på kvittering"
           value={this.state.form.date}
           field="date"
           required
           updateForm={updateForm}
         />
         <Input
-          name="Annledning"
+          name="Anledning"
+          title="I hvilken anledning ble dette kjøpt?"
           value={this.state.form.occasion}
           field="occasion"
           updateForm={updateForm}
@@ -121,18 +128,22 @@ class Form extends React.Component {
         />
         <Input
           name="Kommentar"
+          title="Her kan du skrive ytterligere informasjon"
           value={this.state.form.comment}
           field="comment"
           updateForm={updateForm}
         />
         <Input
           name="Økans (epost)"
+          title="Epostadressen til økonomiansvarlig"
           value={this.state.form.mailto}
           field="mailto"
           required
           updateForm={updateForm}
         />
-        <PictureUpload updateForm={updateForm} />
+        <PictureUpload
+          title="Last opp kvitteringer, vedlegg osv."
+          updateForm={updateForm} />
 
         {inputIsValid(this.state.form) &&
           !this.state.submitted && (
