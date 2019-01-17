@@ -8,7 +8,7 @@ import styles from './App.css';
 const Abakus = () => (
   <div className={styles.logo}>
     <div className={styles.circle} />
-    <div>Abakus</div>
+    <div className = {styles.Abakus}> Abakus </div>
   </div>
 );
 
@@ -16,7 +16,7 @@ const App = () => (
   <div>
     <div className={styles.header}>
       <Abakus />
-      <div>Kvitteringsskildring</div>
+      <div title="something">Kvitteringsskildring</div>
     </div>
     <div className={styles.container}>
       {window.location.pathname === '/template' ? <CreateTemplate /> : <Form />}

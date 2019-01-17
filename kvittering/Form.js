@@ -64,15 +64,19 @@ class Form extends React.Component {
         {this.state.form.tex.length === 0 && [
           <Input
             key="name"
-            name="Navn"
+            name="Navn Y dis dont work"
+            class="tooltip"
             value={this.state.form.name}
             field="name"
             required
             updateForm={updateForm}
-          />,
+          >
+            <h1 class="tooltiptext">Tooltip text here</h1>
+          </Input>,
           <Input
             key="committee"
             name="Komité"
+            title="c'mon dude"
             value={this.state.form.committee}
             field="committee"
             updateForm={updateForm}
