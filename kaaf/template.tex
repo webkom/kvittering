@@ -3,6 +3,8 @@
 \usepackage[margin=2cm]{geometry}
 \usepackage{tabularx}
 
+\newcommand\cincludegraphics[2][]{\raisebox{-0.5\height}{\includegraphics[#1]{#2}}}
+
 \title{Kvitteringsskildring}
 \author{
 %NAME%
@@ -16,7 +18,11 @@
 \begin{document}
 
 \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}l}
-\includegraphics[scale=0.2]{images/abakus.png} & \includegraphics[scale=0.042]{images/bekk.png}
+\centering
+\cincludegraphics[scale=0.2]{images/abakus.png}
+&
+\centering
+\cincludegraphics[scale=0.4]{images/netcompany.png}
 \end{tabular*}
 
 \vspace{10mm}
