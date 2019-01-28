@@ -78,8 +78,8 @@ class CreateTemplate extends React.Component {
                 console.log(this.state);
                 this.setState({ submitted: true });
                 fetch(
-                  //'/kaaf', {
-                  'https://kaaf.abakus.no/async',
+                  //'/kaaf',
+                  'https://kaaf.abakus.no/',
                   {
                     method: 'POST',
                     body: JSON.stringify(this.state.form)
