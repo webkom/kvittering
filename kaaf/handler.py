@@ -109,6 +109,10 @@ def generate_tex(values, directory):
 def handle(req, req_id):
     body = json.loads(req)
 
+    for key in list(body.keys()):
+        if isinstance(body[key], str) and len(body[key]) == 0:
+            del body[key]
+
     if not is_valid_input(body):
         raise Exception('Request body is invalid')
 
@@ -156,7 +160,11 @@ if __name__ == '__main__':
     })
     try:
         handle(st, req_id)
+        print("Kvitteringsskildring generert og sendt på mail.")
     except Exception as e:
+        print(
+            "Det skjedde noe galt under behandling av forespørselen, kontakt Webkom eller prøv igjen."
+        )
         log({
             'id': req_id,
             'type': 'exception',

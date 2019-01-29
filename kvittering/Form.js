@@ -53,7 +53,9 @@ class Form extends React.Component {
       accountNumber: '',
       mailfrom: ''
     },
-    submitted: false
+    submitted: false,
+    finished: false,
+    response: ''
   };
   render() {
     const updateForm = state =>
@@ -144,7 +146,14 @@ class Form extends React.Component {
                     method: 'POST',
                     body: JSON.stringify(this.state.form)
                   }
-                );
+                )
+                  .then(r => {
+                    return r.text();
+                  })
+                  .then(text => {
+                    this.setState({ finished: true, response: text });
+                  })
+                  .catch(() => this.setState({ finished: true }));
               }}
             >
               Generer kvitteringsskildring
@@ -153,8 +162,11 @@ class Form extends React.Component {
 
         {this.state.submitted && (
           <div className={styles.feedback}>
-            Genererer kvitteringsskildring, den vil bli sendt på mail når den er
-            ferdig
+            {this.state.finished
+              ? this.state.response.length != 0
+                ? this.state.response
+                : 'Det skjedde en uventet feil, kontakt Webkom eller prøv igjen.'
+              : 'Genererer kvitteringsskildring...'}
           </div>
         )}
       </div>

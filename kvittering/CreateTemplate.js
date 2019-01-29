@@ -29,7 +29,9 @@ class CreateTemplate extends React.Component {
       mailfrom: '',
       create_template: true
     },
-    submitted: false
+    submitted: false,
+    finished: false,
+    response: ''
   };
   render() {
     const updateForm = state =>
@@ -84,7 +86,14 @@ class CreateTemplate extends React.Component {
                     method: 'POST',
                     body: JSON.stringify(this.state.form)
                   }
-                );
+                )
+                  .then(r => {
+                    return r.text();
+                  })
+                  .then(text => {
+                    this.setState({ finished: true, response: text });
+                  })
+                  .catch(() => this.setState({ finished: true }));
               }}
             >
               Generer mal
@@ -93,7 +102,11 @@ class CreateTemplate extends React.Component {
 
         {this.state.submitted && (
           <div className={styles.feedback}>
-            Genererer mal, du vil få den på mail når den er ferdig
+            {this.state.finished
+              ? this.state.response.length != 0
+                ? this.state.response
+                : 'Det skjedde en uventet feil, kontakt Webkom eller prøv igjen.'
+              : 'Genererer mal...'}
           </div>
         )}
       </div>
