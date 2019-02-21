@@ -5,44 +5,34 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
-loaders.push({
-  test: /\.scss$/,
-  loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap&localIdentName=[local]___[hash:base64:5]!sass-loader?outputStyle=expanded'}),
-  exclude: ['node_modules']
-});
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-  entry: [
-    './kvittering/index.js'
-  ],
+  mode: 'production',
+  entry: './kvittering/index.js',
   output: {
     publicPath: './',
     path: path.join(__dirname, 'build'),
     filename: '[chunkhash].js'
   },
-  resolve: {
-    extensions: ['.js', '.jsx'],
-    alias: {
-      "styles": path.resolve(__dirname, 'styles/'),
-    }
-  },
   module: {
-    loaders
+    rules: loaders
+  },
+  resolve: {
+    extensions: ['.js', '.css', '.json'],
+    modules: [
+      path.join(__dirname, 'kvittering'),
+      path.join(__dirname, 'node_modules')
+    ]
+  },
+  optimization: {
+    minimizer: [new UglifyJsPlugin()]
   },
   plugins: [
     new WebpackCleanupPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        screw_ie8: true,
-        drop_console: true,
-        drop_debugger: true
       }
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
@@ -54,7 +44,7 @@ module.exports = {
       template: './kvittering/template.html',
       files: {
         css: ['style.css'],
-        js: ['bundle.js'],
+        js: ['bundle.js']
       },
       inlineSource: '.(js|css)$'
     }),
