@@ -1,10 +1,12 @@
 import json
 import os
 import re
+import sys
 
 import mail
-from utils import (create_image_file, generate_pdf, get_hash, get_stdin, log,
-                   mkdir, rmdir, shorten_line_length)
+from raven import Client
+from utils import (create_image_file, generate_pdf, get_hash, get_stdin, mkdir,
+                   rmdir, shorten_line_length)
 
 
 def save_field(tex, field, value):
@@ -124,6 +126,9 @@ def handle(req, req_id):
 
     body['id'] = req_id
 
+    if (client is not None):
+        client.user_context({'email': body.get('mailfrom')})
+
     generate_tex(body, directory)
 
     os.chdir(directory)
@@ -151,29 +156,26 @@ def handle(req, req_id):
 
 
 if __name__ == '__main__':
+    if ('SENTRY_KEY' in os.environ and 'SENTRY_SECRET' in os.environ
+            and 'SENTRY_PROJECT' in os.environ):
+        client = Client(
+            dsn=
+            f'https://{os.environ["SENTRY_KEY"]}:{os.environ["SENTRY_SECRET"]}@sentry.abakus.no/{os.environ["SENTRY_PROJECT"]}',
+        )
     st = get_stdin()
     req_id = get_hash(st)
-    log({
-        'id': req_id,
-        'type': 'info',
-        'message': 'Request recieved',
-    })
     try:
         handle(st, req_id)
         print("Kvitteringsskildring generert og sendt på mail.")
     except Exception as e:
+        if (client is not None):
+            client.captureException()
         print(
             "Det skjedde noe galt under behandling av forespørselen, kontakt Webkom eller prøv igjen."
         )
-        log({
-            'id': req_id,
-            'type': 'exception',
-            'message': 'Exception during handle',
-            'exception': repr(e)
-        })
     else:
-        log({
-            'id': req_id,
-            'type': 'info',
-            'message': 'Request finished',
-        })
+        pass
+    finally:
+        # Prevents sentry from writing to stdout at process termination
+        # (and adding it to the response)
+        sys.stdout = sys.stderr

@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 from os.path import basename
 
-from utils import log
+# from utils import log
 
 
 def create_mail(msg, body):
@@ -60,8 +60,8 @@ def send_mail(mail_to, body, files):
     server.sendmail(mail_from, mail_to, msg.as_string())
     server.close()
 
-    log({
-        'id': body['id'],
-        'type': 'info',
-        'message': f'Mail sendt to: {", ".join(mail_to)}'
-    })
+    # log({
+    #     'id': body['id'],
+    #     'type': 'info',
+    #     'message': f'Mail sendt to: {", ".join(mail_to)}'
+    # })
