@@ -2,8 +2,6 @@ const webpack = require('webpack');
 const path = require('path');
 const loadersConf = require('./webpack.loaders');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 const HOST = process.env.HOST || '127.0.0.1';
@@ -46,10 +44,6 @@ module.exports = {
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin({
-      filename: 'style.css',
-      allChunks: true
-    }),
     new HtmlWebpackPlugin({
       template: './kvittering/template.html',
       files: {

@@ -4,7 +4,6 @@ var loaders = require('./webpack.loaders');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
@@ -36,10 +35,6 @@ module.exports = {
       }
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new ExtractTextPlugin({
-      filename: 'style.css',
-      allChunks: true
-    }),
     new HtmlWebpackPlugin({
       template: './kvittering/template.html',
       files: {
