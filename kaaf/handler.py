@@ -127,6 +127,11 @@ def handle(req, req_id):
     body['id'] = req_id
 
     if (client is not None):
+        client.context.merge({
+            'state': {
+                'using_template': len(body.get('tex', '')) > 0
+            }
+        })
         client.user_context({'email': body.get('mailfrom')})
 
     generate_tex(body, directory)
@@ -140,7 +145,8 @@ def handle(req, req_id):
             pdf_log = ''
             with open('./out.log') as f:
                 pdf_log = '\n'.join(f.readlines())
-            raise Exception(pdf_log)
+            client.context.merge({'logs': {'pdflatex': pdf_log[-300:]}})
+            raise Exception("PDF file could not be produced")
 
         send_to = []
 
@@ -162,6 +168,8 @@ if __name__ == '__main__':
             dsn=
             f'https://{os.environ["SENTRY_KEY"]}:{os.environ["SENTRY_SECRET"]}@sentry.abakus.no/{os.environ["SENTRY_PROJECT"]}',
         )
+    else:
+        client = None
     st = get_stdin()
     req_id = get_hash(st)
     try:
