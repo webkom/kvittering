@@ -79,10 +79,13 @@ class CreateTemplate extends React.Component {
               onClick={() => {
                 console.log(this.state);
                 this.setState({ submitted: true });
-                fetch(process.env.API_URL || 'https://kaaf.abakus.no/', {
-                  method: 'POST',
-                  body: JSON.stringify(this.state.form)
-                })
+                fetch(
+                  process.env.API_URL ? 'kaaf' : 'https://kaaf.abakus.no/',
+                  {
+                    method: 'POST',
+                    body: JSON.stringify(this.state.form)
+                  }
+                )
                   .then(r => {
                     return r.text();
                   })
