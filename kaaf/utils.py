@@ -1,15 +1,9 @@
 import hashlib
-import json
 import math
 import os
-import re
 import sys
 import time
 from subprocess import call
-
-
-def log(message):
-    print(json.dumps(message), file=sys.stderr)
 
 
 def mkdir(out):
@@ -21,8 +15,8 @@ def rmdir(out):
     call(['rm', '-r', out])
 
 
-def get_hash(json):
-    return hashlib.md5(bytes(json + str(time.time()), 'utf-8')).hexdigest()
+def get_hash(body):
+    return hashlib.md5(bytes(body + str(time.time()), 'utf-8')).hexdigest()
 
 
 def generate_pdf():
