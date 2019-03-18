@@ -1,12 +1,12 @@
 import json
 import os
 import re
-import sys
 
 import mail
 from raven import Client
-from utils import (create_image_file, generate_pdf, get_hash, get_stdin, mkdir,
-                   rmdir, shorten_line_length)
+from utils import (InvalidBodyException, PdfGenerationException,
+                   create_image_file, generate_pdf, get_hash, mkdir, rmdir,
+                   shorten_line_length)
 
 
 def save_field(tex, field, value):
@@ -108,15 +108,18 @@ def generate_tex(values, directory):
         f.write(tex)
 
 
-def handle(req, req_id):
-    body = json.loads(req)
+def handle(req, req_id, client):
+    try:
+        body = json.loads(req)
+    except Exception as e:
+        raise InvalidBodyException('Could not decode json')
 
     for key in list(body.keys()):
         if isinstance(body[key], str) and len(body[key]) == 0:
             del body[key]
 
     if not is_valid_input(body):
-        raise Exception('Request body is invalid')
+        raise InvalidBodyException('Request body is invalid')
 
     directory = req_id
     mkdir(directory)
@@ -146,7 +149,7 @@ def handle(req, req_id):
             with open('./out.log') as f:
                 pdf_log = '\n'.join(f.readlines())
             client.context.merge({'logs': {'pdflatex': pdf_log[-300:]}})
-            raise Exception("PDF file could not be produced")
+            raise PdfGenerationException("PDF file could not be produced")
 
         send_to = []
 
@@ -161,7 +164,7 @@ def handle(req, req_id):
         rmdir(directory)
 
 
-if __name__ == '__main__':
+def req_handler(req):
     if ('SENTRY_KEY' in os.environ and 'SENTRY_SECRET' in os.environ
             and 'SENTRY_PROJECT' in os.environ):
         client = Client(
@@ -170,20 +173,20 @@ if __name__ == '__main__':
         )
     else:
         client = None
-    st = get_stdin()
-    req_id = get_hash(st)
+    # st = get_stdin()
+    req_id = get_hash(req)
     try:
-        handle(st, req_id)
-        print("Kvitteringsskildring generert og sendt på mail.")
+        handle(req, req_id, client)
+    except InvalidBodyException as e:
+        if (client is not None):
+            client.captureException()
+        return "Det var noe galt med dataen som ble sendt inn", 400
+    except PdfGenerationException as e:
+        if (client is not None):
+            client.captureException()
+        return "Det skjedde noe galt under genereringen av PDF", 500
     except Exception as e:
         if (client is not None):
             client.captureException()
-        print(
-            "Det skjedde noe galt under behandling av forespørselen, kontakt Webkom eller prøv igjen."
-        )
-    else:
-        pass
-    finally:
-        # Prevents sentry from writing to stdout at process termination
-        # (and adding it to the response)
-        sys.stdout = sys.stderr
+        return "Det skjedde noe galt under behandling av forespørselen, kontakt Webkom eller prøv igjen.", 500
+    return "Kvitteringsskildring generert og sendt på mail.", 200

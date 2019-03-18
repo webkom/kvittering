@@ -1,7 +1,6 @@
 import hashlib
 import math
 import os
-import sys
 import time
 from subprocess import call
 
@@ -38,8 +37,9 @@ def create_image_file(directory, image, image_file):
         call(['base64', '-di', f'{directory}/{image_file}'], stdout=f)
 
 
-def get_stdin():
-    buf = ''
-    for line in sys.stdin:
-        buf = buf + line
-    return buf
+class InvalidBodyException(Exception):
+    pass
+
+
+class PdfGenerationException(Exception):
+    pass

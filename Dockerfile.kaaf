@@ -3,13 +3,18 @@ FROM python:3.6-slim
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y texlive-latex-base curl
-RUN curl -sL https://github.com/openfaas/faas/releases/download/0.9.0/fwatchdog > /usr/bin/fwatchdog \
+RUN curl -sSLf https://github.com/openfaas-incubator/of-watchdog/releases/download/0.4.6/of-watchdog > /usr/bin/fwatchdog \
     && chmod +x /usr/bin/fwatchdog
 
-ADD ./kaaf /app
+ADD ./kaaf/req.txt /app
 RUN pip install -r ./req.txt
+ADD ./kaaf /app
 
-ENV combine_output=false
+ENV mode="http"
+ENV cgi_headers="true"
+ENV upstream_url="http://127.0.0.1:5000"
 
-ENV fprocess="python handler.py"
+HEALTHCHECK --interval=5s CMD [ -e /tmp/.lock ] || exit 1
+
+ENV fprocess="python server.py"
 CMD ["fwatchdog"]
