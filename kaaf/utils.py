@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import math
 import os
@@ -31,10 +32,12 @@ def shorten_line_length(string):
 
 
 def create_image_file(directory, image, image_file):
-    with open(f'{directory}/{image_file}', 'w') as f:
-        f.write(image)
-    with open(f'{directory}/{image_file}.pdf', 'w') as f:
-        call(['base64', '-di', f'{directory}/{image_file}'], stdout=f)
+    try:
+        decoded = base64.standard_b64decode(image)
+    except ValueError as e:
+        raise InvalidBodyException(str(e))
+    with open(f'/app/{directory}/{image_file}.pdf', 'wb') as f:
+        f.write(decoded)
 
 
 class InvalidBodyException(Exception):
@@ -42,4 +45,8 @@ class InvalidBodyException(Exception):
 
 
 class PdfGenerationException(Exception):
+    pass
+
+
+class MailConfigurationException(Exception):
     pass

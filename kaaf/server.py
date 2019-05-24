@@ -1,3 +1,5 @@
+import sys
+
 from flask import Flask, request
 from gevent.pywsgi import WSGIServer
 from handler import req_handler
@@ -16,6 +18,13 @@ def fix_transfer_encoding():
 def main_route(path):
     response, status = req_handler(request.get_data().decode('utf-8'))
     return response, status
+
+
+@app.after_request
+def flush_streams(response):
+    sys.stdout.flush()
+    sys.stderr.flush()
+    return response
 
 
 if __name__ == '__main__':

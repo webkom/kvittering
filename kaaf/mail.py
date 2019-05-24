@@ -6,6 +6,8 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 from os.path import basename
 
+from utils import MailConfigurationException
+
 
 def create_mail(msg, body):
     msg['Subject'] = f'Kvitteringsskildring fra {body["name"]} ({body["id"]})'
@@ -30,6 +32,8 @@ def create_template_mail(msg, body):
 
 
 def send_mail(mail_to, body, files):
+    if 'MAIL_ADDRESS' not in os.environ or 'MAIL_PASSWORD' not in os.environ:
+        raise MailConfigurationException()
     mail_from = os.environ['MAIL_ADDRESS']
     mail_password = os.environ['MAIL_PASSWORD']
 

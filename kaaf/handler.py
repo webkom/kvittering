@@ -33,19 +33,28 @@ def load_fields(tex, body, directory):
             current_value = ''
         else:
             current_value += line[1:]
-    if current_field.startswith('image'):
+    if current_field.startswith('image') or current_field.startswith(
+            'signature'):
         create_image_file(directory, current_value, current_field)
     elif len(current_field) != 0:
         body[current_field] = current_value
 
 
 def is_valid_input(body):
-    required_fields = []
+    if 'create_template' in body:
+        required_fields = ['name', 'accountNumber', 'mailfrom', 'signature']
+    elif 'tex' in body:
+        required_fields = ['date', 'amount', 'images']
+    else:
+        required_fields = [
+            'date', 'amount', 'name', 'accountNumber', 'mailfrom', 'signature',
+            'images'
+        ]
 
     for field in required_fields:
         if field not in body:
             return False
-    return 'mailfrom' in body or 'tex' in body
+    return True
 
 
 def add_images(tex, images, directory):
@@ -53,8 +62,7 @@ def add_images(tex, images, directory):
     graphics = ''
     for image in images:
         create_image_file(directory, image, f'image{i}')
-        image = shorten_line_length(image)
-        tex = save_field(tex, f'image{i}', image)
+        tex = save_field(tex, f'image{i}', shorten_line_length(image))
         graphics += f'\\newpage\n\\fbox{{\\includegraphics[width=\\textwidth,height=\\textheight,keepaspectratio]{{image{i}.pdf}}}}'
         i += 1
     tex = tex.replace('%EMBEDDED_GRAPHICS%', graphics)
@@ -63,9 +71,8 @@ def add_images(tex, images, directory):
 
 def add_signature(tex, signature, directory):
     create_image_file(directory, signature, 'signature')
-    signature = shorten_line_length(signature)
-    tex = save_field(tex, 'signature', signature)
-    graphics = '\\newpage\n\\fbox{{\\includegraphics[width=6cm]{{signature.pdf}}}}'
+    tex = save_field(tex, 'signature', shorten_line_length(signature))
+    graphics = '\\fbox{{\\includegraphics[width=6cm]{{signature.pdf}}}}'
     tex = tex.replace('%SIGNATURE%', graphics)
     return tex
 
@@ -75,7 +82,7 @@ def generate_tex(values, directory):
     if 'tex' in values and len(values['tex']) > 0:
         tex = values['tex']
     else:
-        with open('template.tex', 'r') as f:
+        with open('/app/template.tex', 'r') as f:
             tex = ''.join(f.readlines())
         tex = save_field(tex, 'id', values['id'])
         tex = save_field(tex, 'name', values['name'])
@@ -104,7 +111,7 @@ def generate_tex(values, directory):
         tex = tex.replace('%RECEIPT%',
                           f'{len(values.get("images") or [])} vedlegg')
 
-    with open(f'{directory}/out.tex', 'w') as f:
+    with open(f'/app/{directory}/out.tex', 'w') as f:
         f.write(tex)
 
 
@@ -117,12 +124,16 @@ def handle(req, req_id, client):
     for key in list(body.keys()):
         if isinstance(body[key], str) and len(body[key]) == 0:
             del body[key]
+    if 'create_template' in body:
+        if (not isinstance(body['create_template'],
+                           bool)) or (not body['create_template']):
+            del body['create_template']
 
     if not is_valid_input(body):
         raise InvalidBodyException('Request body is invalid')
 
     directory = req_id
-    mkdir(directory)
+    mkdir(f'/app/{directory}/')
 
     if 'tex' in body and len(body['tex']) > 0:
         load_fields(body['tex'], body, directory)
@@ -130,38 +141,35 @@ def handle(req, req_id, client):
     body['id'] = req_id
 
     if (client is not None):
-        client.context.merge({
-            'state': {
-                'using_template': len(body.get('tex', '')) > 0
-            }
-        })
         client.user_context({'email': body.get('mailfrom')})
 
     generate_tex(body, directory)
+    os.chdir(f'/app/{directory}')
+    generate_pdf()
+    if not os.path.isfile(f'/app/{directory}/out.pdf'):
+        pdf_log = ''
+        with open(f'/app/{directory}/out.log', 'r') as f:
+            pdf_log = f.read()
+        print(pdf_log)
+        raise PdfGenerationException("PDF file could not be produced")
 
-    os.chdir(directory)
+    send_to = []
+
+    if 'mailfrom' in body:
+        send_to.append(body['mailfrom'])
+    if 'mailto' in body:
+        send_to.append(body['mailto'])
+
+    mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
+
+
+def handle_with_cleanup(req, req_id, client):
     try:
-        generate_pdf()
-        # with open('out.pdf', 'rb') as f:
-        #     sys.stdout.buffer.write(f.read())
-        if not os.path.isfile('./out.pdf'):
-            pdf_log = ''
-            with open('./out.log') as f:
-                pdf_log = '\n'.join(f.readlines())
-            client.context.merge({'logs': {'pdflatex': pdf_log[-300:]}})
-            raise PdfGenerationException("PDF file could not be produced")
-
-        send_to = []
-
-        if 'mailfrom' in body:
-            send_to.append(body['mailfrom'])
-        if 'mailto' in body:
-            send_to.append(body['mailto'])
-
-        mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
+        handle(req, req_id, client)
     finally:
-        os.chdir('/app')
-        rmdir(directory)
+        if os.path.isdir(f'/app/{req_id}'):
+            os.chdir('/app')
+            rmdir(f'/app/{req_id}')
 
 
 def req_handler(req):
@@ -173,10 +181,9 @@ def req_handler(req):
         )
     else:
         client = None
-    # st = get_stdin()
     req_id = get_hash(req)
     try:
-        handle(req, req_id, client)
+        handle_with_cleanup(req, req_id, client)
     except InvalidBodyException as e:
         if (client is not None):
             client.captureException()
@@ -189,4 +196,5 @@ def req_handler(req):
         if (client is not None):
             client.captureException()
         return "Det skjedde noe galt under behandling av forespørselen, kontakt Webkom eller prøv igjen.", 500
+
     return "Kvitteringsskildring generert og sendt på mail.", 200
