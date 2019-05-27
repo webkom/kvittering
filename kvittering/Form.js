@@ -3,7 +3,6 @@ import React from 'react';
 import Input from './Input';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
-import TexUpload from './TexUpload';
 
 import styles from './Form.css';
 import globals from './globals.css';
@@ -23,16 +22,9 @@ const personalFields = {
 };
 
 const inputIsValid = form => {
-  if (form.tex.lenght === 0) {
-    return (
-      Object.keys(form)
-        .filter(field => requiredFields[field] || personalFields[field])
-        .filter(field => form[field].length === 0).length === 0
-    );
-  }
   return (
     Object.keys(form)
-      .filter(field => requiredFields[field])
+      .filter(field => requiredFields[field] || personalFields[field])
       .filter(field => form[field].length === 0).length === 0
   );
 };
@@ -46,7 +38,6 @@ class Form extends React.Component {
       amount: '',
       comment: '',
       mailto: '',
-      tex: '',
       signature: '',
       name: '',
       committee: '',
@@ -62,41 +53,38 @@ class Form extends React.Component {
       this.setState({ form: { ...this.state.form, ...state } });
     return (
       <div className={styles.container}>
-        <TexUpload field="tex" updateForm={updateForm} />
-        {this.state.form.tex.length === 0 && [
-          <Input
-            key="name"
-            name="Navn"
-            value={this.state.form.name}
-            field="name"
-            required
-            updateForm={updateForm}
-          />,
-          <Input
-            key="committee"
-            name="Komité"
-            value={this.state.form.committee}
-            field="committee"
-            updateForm={updateForm}
-          />,
-          <Input
-            key="accountNumber"
-            name="Kontonummer"
-            value={this.state.form.accountNumber}
-            field="accountNumber"
-            required
-            updateForm={updateForm}
-          />,
-          <Input
-            key="mailfrom"
-            name="Din epost"
-            value={this.state.form.mailfrom}
-            field="mailfrom"
-            required
-            updateForm={updateForm}
-          />,
-          <SignatureUpload key="signature" updateForm={updateForm} />
-        ]}
+        <Input
+          key="name"
+          name="Navn"
+          value={this.state.form.name}
+          field="name"
+          required
+          updateForm={updateForm}
+        />
+        <Input
+          key="committee"
+          name="Komité"
+          value={this.state.form.committee}
+          field="committee"
+          updateForm={updateForm}
+        />
+        <Input
+          key="accountNumber"
+          name="Kontonummer"
+          value={this.state.form.accountNumber}
+          field="accountNumber"
+          required
+          updateForm={updateForm}
+        />
+        <Input
+          key="mailfrom"
+          name="Din epost"
+          value={this.state.form.mailfrom}
+          field="mailfrom"
+          required
+          updateForm={updateForm}
+        />
+        <SignatureUpload key="signature" updateForm={updateForm} />
         <Input
           name="Kjøpsdato"
           value={this.state.form.date}

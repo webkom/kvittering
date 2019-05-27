@@ -5,51 +5,15 @@ import re
 import mail
 from raven import Client
 from utils import (InvalidBodyException, PdfGenerationException,
-                   create_image_file, generate_pdf, get_hash, mkdir, rmdir,
-                   shorten_line_length)
-
-
-def save_field(tex, field, value):
-    i = tex.index('%SAVED_FIELDS_END%')
-    tex = (tex[:i] + f'%FIELD_BEGIN_{field}%\n' + '\n'.join(
-        map(lambda s: '%' + s, value.split('\n'))) + '\n' + tex[i:])
-    return tex
-
-
-def load_fields(tex, body, directory):
-    values = tex[tex.index('%SAVED_FIELDS_BEGIN%'):tex.
-                 index('%SAVED_FIELDS_END%')].split('\n')[1:]
-    value_begin_regex = re.compile('%FIELD_BEGIN_.+%')
-    current_field = ''
-    current_value = ''
-    for line in values:
-        if value_begin_regex.match(line) is not None:
-            if current_field.startswith('image') or current_field.startswith(
-                    'signature'):
-                create_image_file(directory, current_value, current_field)
-            elif len(current_field) != 0:
-                body[current_field] = current_value
-            current_field = line[1:-1].split('_')[-1]
-            current_value = ''
-        else:
-            current_value += line[1:]
-    if current_field.startswith('image') or current_field.startswith(
-            'signature'):
-        create_image_file(directory, current_value, current_field)
-    elif len(current_field) != 0:
-        body[current_field] = current_value
+                   create_image_file, escape_latex, generate_pdf, get_hash,
+                   mkdir, rmdir, shorten_line_length)
 
 
 def is_valid_input(body):
-    if 'create_template' in body:
-        required_fields = ['name', 'accountNumber', 'mailfrom', 'signature']
-    elif 'tex' in body:
-        required_fields = ['date', 'amount', 'images']
-    else:
-        required_fields = [
-            'date', 'amount', 'name', 'accountNumber', 'mailfrom', 'signature',
-            'images'
-        ]
+    required_fields = [
+        'date', 'amount', 'name', 'accountNumber', 'mailfrom', 'signature',
+        'images'
+    ]
 
     for field in required_fields:
         if field not in body:
@@ -62,7 +26,6 @@ def add_images(tex, images, directory):
     graphics = ''
     for image in images:
         create_image_file(directory, image, f'image{i}')
-        tex = save_field(tex, f'image{i}', shorten_line_length(image))
         graphics += f'\\newpage\n\\fbox{{\\includegraphics[width=\\textwidth,height=\\textheight,keepaspectratio]{{image{i}.pdf}}}}'
         i += 1
     tex = tex.replace('%EMBEDDED_GRAPHICS%', graphics)
@@ -71,7 +34,6 @@ def add_images(tex, images, directory):
 
 def add_signature(tex, signature, directory):
     create_image_file(directory, signature, 'signature')
-    tex = save_field(tex, 'signature', shorten_line_length(signature))
     graphics = '\\fbox{{\\includegraphics[width=6cm]{{signature.pdf}}}}'
     tex = tex.replace('%SIGNATURE%', graphics)
     return tex
@@ -79,14 +41,8 @@ def add_signature(tex, signature, directory):
 
 def generate_tex(values, directory):
     tex = ''
-    if 'tex' in values and len(values['tex']) > 0:
-        tex = values['tex']
-    else:
-        with open('/app/template.tex', 'r') as f:
-            tex = ''.join(f.readlines())
-        tex = save_field(tex, 'id', values['id'])
-        tex = save_field(tex, 'name', values['name'])
-        tex = save_field(tex, 'mailfrom', values['mailfrom'])
+    with open('/app/template.tex', 'r') as f:
+        tex = f.read()
 
     tex_fields = [
         'date',
@@ -100,16 +56,16 @@ def generate_tex(values, directory):
 
     for field in tex_fields:
         if field in values and len(values[field]) > 0:
-            tex = tex.replace(f'%{field.upper()}%', values[field])
+            tex = tex.replace(f'%{field.upper()}%',
+                              escape_latex(values[field]))
 
     if 'images' in values:
         tex = add_images(tex, values['images'], directory)
     if 'signature' in values:
         tex = add_signature(tex, values['signature'], directory)
 
-    if 'create_template' not in values:
-        tex = tex.replace('%RECEIPT%',
-                          f'{len(values.get("images") or [])} vedlegg')
+    tex = tex.replace('%RECEIPT%',
+                      f'{len(values.get("images") or [])} vedlegg')
 
     with open(f'/app/{directory}/out.tex', 'w') as f:
         f.write(tex)
@@ -124,21 +80,13 @@ def handle(req, req_id, client):
     for key in list(body.keys()):
         if isinstance(body[key], str) and len(body[key]) == 0:
             del body[key]
-    if 'create_template' in body:
-        if (not isinstance(body['create_template'],
-                           bool)) or (not body['create_template']):
-            del body['create_template']
 
     if not is_valid_input(body):
         raise InvalidBodyException('Request body is invalid')
 
+    body['id'] = req_id
     directory = req_id
     mkdir(f'/app/{directory}/')
-
-    if 'tex' in body and len(body['tex']) > 0:
-        load_fields(body['tex'], body, directory)
-
-    body['id'] = req_id
 
     if (client is not None):
         client.user_context({'email': body.get('mailfrom')})

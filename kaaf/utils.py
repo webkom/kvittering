@@ -40,6 +40,22 @@ def create_image_file(directory, image, image_file):
         f.write(decoded)
 
 
+def escape_latex(string):
+    string = string.replace('\\', '')
+    string = string.replace('[', '')
+    string = string.replace(']', '')
+    string = string.replace('&', '\\&')
+    string = string.replace('%', '\\%')
+    string = string.replace('$', '\\$')
+    string = string.replace('#', '\\#')
+    string = string.replace('_', '\\_')
+    string = string.replace('^', '\\^')
+    string = string.replace('{', '\\{')
+    string = string.replace('}', '\\}')
+    string = string.replace('~', '\\~')
+    return string
+
+
 class InvalidBodyException(Exception):
     pass
 

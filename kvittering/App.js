@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Form from './Form.js';
-import CreateTemplate from './CreateTemplate.js';
 
 import styles from './App.css';
 
@@ -19,7 +18,7 @@ const App = () => (
       <div>Kvitteringsskildring</div>
     </div>
     <div className={styles.container}>
-      {window.location.pathname === '/template' ? <CreateTemplate /> : <Form />}
+      <Form />
     </div>
   </div>
 );
