@@ -93,7 +93,7 @@ class Form extends React.Component {
           updateForm={updateForm}
         />
         <Input
-          name="Annledning"
+          name="Anledning"
           value={this.state.form.occasion}
           field="occasion"
           updateForm={updateForm}

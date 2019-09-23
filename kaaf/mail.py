@@ -15,7 +15,7 @@ def create_mail(msg, body):
     text = ''
 
     text += f'Laget av: {body.get("name", "")}\n'
-    text += f'Annledning: {body.get("occasion", "")}\n'
+    text += f'Anledning: {body.get("occasion", "")}\n'
     text += f'Beløp: {body.get("amount", "")}\n'
     text += f'Kommentar: {body.get("comment", "")}\n'
     text += f'Kvitteringsskildring er lagt ved i pdf og tex format'
