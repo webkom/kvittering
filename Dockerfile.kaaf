@@ -1,10 +1,12 @@
+FROM openfaas/of-watchdog:0.7.2 as watchdog
 FROM python:3.6-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y texlive-latex-base curl
-RUN curl -sSLf https://github.com/openfaas-incubator/of-watchdog/releases/download/0.4.6/of-watchdog > /usr/bin/fwatchdog \
-    && chmod +x /usr/bin/fwatchdog
+RUN apt-get update && apt-get install -y texlive-latex-base
+
+COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
+RUN chmod +x /usr/bin/fwatchdog
 
 ADD ./kaaf/req.txt /app
 RUN pip install -r ./req.txt
