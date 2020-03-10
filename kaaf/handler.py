@@ -106,7 +106,8 @@ def handle(req, req_id, client):
     if 'mailfrom' in body:
         send_to.append(body['mailfrom'])
     if 'mailto' in body:
-        send_to.append(body['mailto'])
+        send_to.append('abakus@bilag.fiken.no')
+        send_to.append(body['mailto']
 
     mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
 
