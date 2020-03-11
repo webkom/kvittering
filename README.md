@@ -19,7 +19,8 @@ To run the backend/everything:
 * Install packages with `pip install -r kaaf/req.txt`
 * Start the server with `python kaaf/server.py`
 * If the frontend is exported, the webapp will be available at localhost:5000
-* To actually send the generated PDF's, you need to set the `MAIL_ADDRESS` and `MAIL_PASSWORD` env variables
+* To actually send the generated PDF's, you need to set the `MAIL_ADDRESS` and `MAIL_PASSWORD` env variables. 
+* To test with Fiken you can also set `MAIL_FIKEN` as an env variable.
 
 ### Deployment
 
