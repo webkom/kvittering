@@ -2,147 +2,115 @@ import json
 import os
 import re
 
+import tempfile
+import base64
+
+from fpdf import FPDF
+
 import mail
-from raven import Client
-from utils import (InvalidBodyException, PdfGenerationException,
-                   create_image_file, escape_latex, generate_pdf, get_hash,
-                   mkdir, rmdir, shorten_line_length)
+
+field_title_map = {
+    "date": "Dato:",
+    "occasion": "Anledning:",
+    "amount": "Beløp:",
+    "comment": "Kommentar:",
+    "name": "Navn:",
+    "committee": "Komite:",
+    "accountNumber": "Kontonummer",
+}
 
 
-def is_valid_input(body):
-    required_fields = [
-        'date', 'amount', 'name', 'accountNumber', 'mailfrom', 'signature',
-        'images'
+def data_is_valid(data):
+    fields = [
+        "images",
+        "date",
+        "amount",
+        "mailto",
+        "signature",
+        "name",
+        "accountNumber",
+        "mailfrom",
     ]
-
-    for field in required_fields:
-        if field not in body:
-            return False
-    return True
+    return [f for f in fields if f not in data or len(data[f]) == 0]
 
 
-def add_images(tex, images, directory):
-    i = 0
-    graphics = ''
+class PDF(FPDF):
+    def header(self):
+        self.image("images/abakus.png", 10, 13, 33)
+        self.image("images/netcompany.png", 160, 5, 40)
+        self.set_font("Arial", "B", 15)
+        self.cell(80)
+        self.cell(30, 14, "Kvitteringsskildring", 0, 0, "C")
+        self.ln(20)
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font("Arial", "I", 8)
+        self.cell(0, 10, f"Side {str(self.page_no())}/{{nb}}", 0, 0, "C")
+
+
+def create_image_file(image):
+    parts = image.split(";base64,")
+    decoded = base64.b64decode(parts[1])
+    suffix = parts[0].split("image/")[1]
+    f = tempfile.NamedTemporaryFile(suffix=f".{suffix}")
+    f.write(decoded)
+    f.flush()
+
+    return {"file": f, "type": suffix.upper()}
+
+
+def modify_data(data):
+    signature = data.pop("signature")
+    images = data.pop("images")
+
+    data["signature"] = create_image_file(signature)
+    data["images"] = [create_image_file(img) for img in images]
+
+    return data
+
+
+def create_pdf(data):
+    pdf = PDF()
+    pdf.alias_nb_pages()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+
+    signature = data.pop("signature")
+    images = data.pop("images")
+
+    pdf.set_font("Arial", "", 12)
+    for key in field_title_map.keys():
+        pdf.set_font("", "B")
+        pdf.cell(0, 5, txt=field_title_map[key], ln=1)
+        pdf.set_font("", "")
+        pdf.multi_cell(0, 5, txt=data[key])
+
+    pdf.set_font("", "B")
+    pdf.cell(0, 5, txt="Signatur:", ln=1)
+    pdf.image(signature["file"].name, h=30, type=signature["type"])
+    signature["file"].close()
+    pdf.cell(0, 5, txt="Vedlegg:", ln=1)
     for image in images:
-        create_image_file(directory, image, f'image{i}')
-        graphics += f'\\newpage\n\\fbox{{\\includegraphics[width=\\textwidth,height=\\textheight,keepaspectratio]{{image{i}.pdf}}}}'
-        i += 1
-    tex = tex.replace('%EMBEDDED_GRAPHICS%', graphics)
-    return tex
+        pdf.image(image["file"].name, w=50, type=image["type"])
+        image["file"].close()
+    return pdf.output(dest="S")
 
 
-def add_signature(tex, signature, directory):
-    create_image_file(directory, signature, 'signature')
-    graphics = '\\fbox{{\\includegraphics[width=6cm]{{signature.pdf}}}}'
-    tex = tex.replace('%SIGNATURE%', graphics)
-    return tex
+def handle(data):
+    req_fields = data_is_valid(data)
+    if len(req_fields) > 0:
+        return f'Requires fields {", ".join(req_fields)}', 400
 
-
-def generate_tex(values, directory):
-    tex = ''
-    with open('/app/template.tex', 'r') as f:
-        tex = f.read()
-
-    tex_fields = [
-        'date',
-        'occasion',
-        'amount',
-        'comment',
-        'name',
-        'committee',
-        'accountNumber',
-    ]
-
-    for field in tex_fields:
-        if field in values and len(values[field]) > 0:
-            tex = tex.replace(f'%{field.upper()}%',
-                              escape_latex(values[field]))
-
-    if 'images' in values:
-        tex = add_images(tex, values['images'], directory)
-    if 'signature' in values:
-        tex = add_signature(tex, values['signature'], directory)
-
-    tex = tex.replace('%RECEIPT%',
-                      f'{len(values.get("images") or [])} vedlegg')
-
-    with open(f'/app/{directory}/out.tex', 'w') as f:
-        f.write(tex)
-
-
-def handle(req, req_id, client):
+    data = modify_data(data)
     try:
-        body = json.loads(req)
+        file = create_pdf(data)
+        mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
+    except RuntimeError as e:
+        return f"Klarte ikke å generere pdf: {e}", 500
+    except mail.MailConfigurationException as e:
+        return f"Klarte ikke å sende mail: {e}", 500
     except Exception as e:
-        raise InvalidBodyException('Could not decode json')
+        return f"Noe uventet skjedde: {e}", 500
 
-    for key in list(body.keys()):
-        if isinstance(body[key], str) and len(body[key]) == 0:
-            del body[key]
-
-    if not is_valid_input(body):
-        raise InvalidBodyException('Request body is invalid')
-
-    body['id'] = req_id
-    directory = req_id
-    mkdir(f'/app/{directory}/')
-
-    if (client is not None):
-        client.user_context({'email': body.get('mailfrom')})
-
-    generate_tex(body, directory)
-    os.chdir(f'/app/{directory}')
-    generate_pdf()
-    if not os.path.isfile(f'/app/{directory}/out.pdf'):
-        pdf_log = ''
-        with open(f'/app/{directory}/out.log', 'r') as f:
-            pdf_log = f.read()
-        print(pdf_log)
-        raise PdfGenerationException("PDF file could not be produced")
-
-    send_to = []
-
-    if 'mailfrom' in body:
-        send_to.append(body['mailfrom'])
-    if 'mailto' in body:
-        send_to.append(body['mailto'])
-
-    mail.send_mail(send_to, body, ['out.tex', 'out.pdf'])
-
-
-def handle_with_cleanup(req, req_id, client):
-    try:
-        handle(req, req_id, client)
-    finally:
-        if os.path.isdir(f'/app/{req_id}'):
-            os.chdir('/app')
-            rmdir(f'/app/{req_id}')
-
-
-def req_handler(req):
-    if ('SENTRY_KEY' in os.environ and 'SENTRY_SECRET' in os.environ
-            and 'SENTRY_PROJECT' in os.environ):
-        client = Client(
-            dsn=
-            f'https://{os.environ["SENTRY_KEY"]}:{os.environ["SENTRY_SECRET"]}@sentry.abakus.no/{os.environ["SENTRY_PROJECT"]}',
-        )
-    else:
-        client = None
-    req_id = get_hash(req)
-    try:
-        handle_with_cleanup(req, req_id, client)
-    except InvalidBodyException as e:
-        if (client is not None):
-            client.captureException()
-        return "Det var noe galt med dataen som ble sendt inn", 400
-    except PdfGenerationException as e:
-        if (client is not None):
-            client.captureException()
-        return "Det skjedde noe galt under genereringen av PDF", 500
-    except Exception as e:
-        if (client is not None):
-            client.captureException()
-        return "Det skjedde noe galt under behandling av forespørselen, kontakt Webkom eller prøv igjen.", 500
-
-    return "Kvitteringsskildring generert og sendt på mail.", 200
+    return "Kvitteringsskildring generert og sendt på mail!", 200

@@ -1,5 +1,4 @@
-node_modules
-
-Dockerfile.kaaf
-Dockerfile.kvittering
-build
+node_modules/
+webapp/.next/
+webapp/out/
+venv/

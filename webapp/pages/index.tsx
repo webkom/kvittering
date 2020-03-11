@@ -1,8 +1,6 @@
-import React from 'react';
+import Form from "components/Form";
 
-import Form from './Form.js';
-
-import styles from './App.css';
+import styles from "./index.module.css";
 
 const Abakus = () => (
   <div className={styles.logo}>

@@ -1,11 +1,3 @@
-.inputLabel {
-  font-weight: bold;
-}
-
-.inputField {
-  padding: 10px;
-}
-
 input {
   border-radius: 5px;
   padding: 6px;
@@ -19,9 +11,7 @@ body {
   color: #394b59;
 }
 
-body > div,
-body > div > div,
-body > div > div > div {
+body > div {
   height: 100%;
 }
 
