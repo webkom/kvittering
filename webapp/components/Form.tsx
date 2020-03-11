@@ -88,7 +88,7 @@ const Form = () => {
             .catch(e => setResponseMessage(e.text()));
         }}
       >
-        Generer kvitteringsskildring
+        Generer kvitteringsskjema
       </button>
     </div>
   );

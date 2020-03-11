@@ -77,7 +77,7 @@ def create_pdf(data):
     signature = data.pop("signature")
     images = data.pop("images")
 
-    pdf.cell(0, 14, "Kvitteringsskildring", ln=1)
+    pdf.cell(0, 14, "Kvitteringsskjema", ln=1)
 
     pdf.set_font("Arial", "", 12)
     for key in field_title_map.keys():
@@ -117,4 +117,4 @@ def handle(data):
         return f"Noe uventet skjedde: {e}", 500
 
     logging.info("Successfully generated pdf and sent mail")
-    return "Kvitteringsskildring generert og sendt på mail!", 200
+    return "Kvitteringsskjema generert og sendt på mail!", 200
