@@ -28,7 +28,7 @@ def create_mail(msg, body):
 
 
 def send_mail(mail_to, body, file):
-    if "MAIL_ADDRESS" not in os.environ or "MAIL_PASSWORD" not in os.environ or "MAIL_FIKEN" not in os.environ:
+    if "MAIL_ADDRESS" not in os.environ or "MAIL_PASSWORD" not in os.environ:
         raise MailConfigurationException("Mail isn't configured properly. MAIL_FIKEN can be none")
     mail_from = os.environ["MAIL_ADDRESS"]
     mail_fiken = os.environ["MAIL_FIKEN"]
