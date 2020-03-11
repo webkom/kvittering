@@ -1,8 +1,9 @@
-import sys
 import os
+import sys
 
 from flask import Flask, request
 from gevent.pywsgi import WSGIServer
+
 from handler import handle
 
 static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")

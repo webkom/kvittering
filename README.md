@@ -21,6 +21,16 @@ To run the backend/everything:
 * If the frontend is exported, the webapp will be available at localhost:5000
 * To actually send the generated PDF's, you need to set the `MAIL_ADDRESS` and `MAIL_PASSWORD` env variables
 
+### Generating PDFs
+
+It might be nice to be able to quickly generate PDFs when developing, without having to start up everything. To do this you can run:
+
+```
+python kaaf/generate-example.py signature.png output.pdf image0.png image1.png ...
+```
+
+Where `signature.png` and `imageN.png` are paths to image files (the latter images are optional)
+
 ### Deployment
 
 New versions are automatically built and deployed when pushing to the `prod` branch. Use `faas-cli` if you want to deploy manually.

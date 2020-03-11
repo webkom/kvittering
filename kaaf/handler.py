@@ -1,9 +1,9 @@
-import logging
+import base64
 import json
+import logging
 import os
 import re
 import tempfile
-import base64
 
 from fpdf import FPDF
 
