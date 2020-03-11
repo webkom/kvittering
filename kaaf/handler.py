@@ -10,13 +10,13 @@ from fpdf import FPDF
 import mail
 
 field_title_map = {
+    "name": "Navn:",
+    "committee": "Komite:",
+    "accountNumber": "Kontonummer",
     "date": "Dato:",
     "occasion": "Anledning:",
     "amount": "Beløp:",
     "comment": "Kommentar:",
-    "name": "Navn:",
-    "committee": "Komite:",
-    "accountNumber": "Kontonummer",
 }
 
 
@@ -36,11 +36,9 @@ def data_is_valid(data):
 
 class PDF(FPDF):
     def header(self):
-        self.image("images/abakus.png", 10, 13, 33)
-        self.image("images/netcompany.png", 160, 5, 40)
+        self.image("images/abakus.png", 10, 18, 33)
+        self.image("images/netcompany.png", 160, 11, 40)
         self.set_font("Arial", "B", 15)
-        self.cell(80)
-        self.cell(30, 14, "Kvitteringsskildring", 0, 0, "C")
         self.ln(20)
 
     def footer(self):
@@ -79,10 +77,12 @@ def create_pdf(data):
     signature = data.pop("signature")
     images = data.pop("images")
 
+    pdf.cell(0, 14, "Kvitteringsskildring", ln=1)
+
     pdf.set_font("Arial", "", 12)
     for key in field_title_map.keys():
         pdf.set_font("", "B")
-        pdf.cell(0, 5, txt=field_title_map[key], ln=1)
+        pdf.cell(90, 5, txt=field_title_map[key])
         pdf.set_font("", "")
         pdf.multi_cell(0, 5, txt=data[key])
 
@@ -92,7 +92,7 @@ def create_pdf(data):
     signature["file"].close()
     pdf.cell(0, 5, txt="Vedlegg:", ln=1)
     for image in images:
-        pdf.image(image["file"].name, w=50, type=image["type"])
+        pdf.image(image["file"].name, h=100, type=image["type"])
         image["file"].close()
     return pdf.output(dest="S")
 
