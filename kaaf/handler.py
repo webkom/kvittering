@@ -1,7 +1,7 @@
+import logging
 import json
 import os
 import re
-
 import tempfile
 import base64
 
@@ -107,10 +107,14 @@ def handle(data):
         file = create_pdf(data)
         mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
     except RuntimeError as e:
+        logging.warning(f"Failed to generate pdf with exception: {e}")
         return f"Klarte ikke å generere pdf: {e}", 500
     except mail.MailConfigurationException as e:
+        logging.warning(f"Failed to send mail: {e}")
         return f"Klarte ikke å sende mail: {e}", 500
     except Exception as e:
+        logging.error(f"Failed with exception: {e}")
         return f"Noe uventet skjedde: {e}", 500
 
+    logging.info("Successfully generated pdf and sent mail")
     return "Kvitteringsskildring generert og sendt på mail!", 200

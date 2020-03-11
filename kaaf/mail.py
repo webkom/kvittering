@@ -1,3 +1,4 @@
+import logging
 import os
 import smtplib
 from email.mime.application import MIMEApplication
@@ -43,6 +44,8 @@ def send_mail(mail_to, body, file):
     part = MIMEApplication(file, Name=filename)
     part["Content-Disposition"] = f'attachment; filename="{filename}"'
     msg.attach(part)
+
+    logging.info(f'Sending mail to {", ".join(mail_to)}')
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
