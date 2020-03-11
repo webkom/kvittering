@@ -1,33 +1,25 @@
-# kaaf/kvittering
-Two functions that run in OpenFaaS:
+# Kvittering (as a function)
 
-`kvittering` - frontend written in React
-
-`kaaf` - backend written in Python
+A docker image that runs in [OpenFaaS](https://www.openfaas.com/)
 
 Running on https://kvittering.abakus.no (Note: only available from NTNU/eduroam)
 
 ### Getting started
 
-Start the frontend by running `yarn start`. You can set a custom backend url by setting the `API_URL` environment variable.
+This is one docker image that serves both the python api, and the next/react frontend, this is done by building the webapp as a static site, and serving it as static files through flask.
 
-To start the backend, first build the docker image with:
-```
-docker build -f Dockerfile.kaaf -t kaaf .
-```
-And then run the container with:
-```
-docker run --rm -p 4000:8080 kaaf
-```
-The container needs the environment variables `MAIL_ADDRESS` and `MAIL_PASSWORD` to be able to send the pdf after it has been generated. You can set them with the `--env` flag when running `docker run`.
+To run just the frontend:
+* Install all packages with `yarn`
+* Start the server with `yarn dev`
+* Export the static files with `yarn build && yarn export`
 
-To enable logging to sentry, set the `SENTRY_KEY`, `SENTRY_SECRET`, and `SENTRY_PROJECT` environment variables.
-
-### Testing
-
-```
-docker build -t test-kaaf -f test/Dockerfile . && docker run --rm test-kaaf
-```
+To run the backend/everything:
+* Make a virtual env with `python -m venv venv`
+* Enter the env with `source venv/bin/activate`
+* Install packages with `pip install -r kaaf/req.txt`
+* Start the server with `python kaaf/server.py`
+* If the frontend is exported, the webapp will be available at localhost:5000
+* To actually send the generated PDF's, you need to set the `MAIL_ADDRESS` and `MAIL_PASSWORD` env variables
 
 ### Deployment
 
