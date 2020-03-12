@@ -52,7 +52,7 @@ const Form = () => {
 
       {submitted && (
         <div className={styles.feedback}>
-          {responseMessage || "Genererer kvitteringsskildring..."}
+          {responseMessage || "Genererer kvitteringsskjema..."}
         </div>
       )}
 
