@@ -6,6 +6,7 @@ import re
 import tempfile
 
 from fpdf import FPDF
+from PIL import Image
 
 import mail
 
@@ -91,8 +92,20 @@ def create_pdf(data):
     pdf.image(signature["file"].name, h=30, type=signature["type"])
     signature["file"].close()
     pdf.cell(0, 5, txt="Vedlegg:", ln=1)
+    max_img_width = 190
+    max_img_height = 220
     for image in images:
-        pdf.image(image["file"].name, h=100, type=image["type"])
+        img = Image.open(image["file"].name)
+        w, h = img.size
+        img.close()
+
+        size = (
+            {"w": max_img_width}
+            if w / h >= max_img_width / max_img_height
+            else {"h": max_img_height}
+        )
+
+        pdf.image(image["file"].name, **size, type=image["type"])
         image["file"].close()
     return pdf.output(dest="S")
 
