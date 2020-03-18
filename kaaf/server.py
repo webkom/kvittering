@@ -11,6 +11,17 @@ static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")
 app = Flask(__name__, static_folder=static_file_directory, static_url_path="")
 
 
+@app.before_request
+def fix_transfer_encoding():
+    """
+    From of-watchdog python-flask template
+    """
+
+    transfer_encoding = request.headers.get("Transfer-Encoding", None)
+    if transfer_encoding == u"chunked":
+        request.environ["wsgi.input_terminated"] = True
+
+
 @app.route("/")
 def index_route():
     return app.send_static_file("index.html")
