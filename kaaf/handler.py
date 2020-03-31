@@ -10,6 +10,11 @@ from PIL import Image
 
 import mail
 
+
+class UnsupportedFileException(Exception):
+    pass
+
+
 field_title_map = {
     "name": "Navn:",
     "committee": "Komite:",
@@ -49,6 +54,8 @@ class PDF(FPDF):
 
 
 def create_image_file(image):
+    if not "image/" in image:
+        raise UnsupportedFileException(image[:30])
     parts = image.split(";base64,")
     decoded = base64.b64decode(parts[1])
     suffix = parts[0].split("image/")[1]
@@ -115,7 +122,15 @@ def handle(data):
     if len(req_fields) > 0:
         return f'Requires fields {", ".join(req_fields)}', 400
 
-    data = modify_data(data)
+    try:
+        data = modify_data(data)
+    except UnsupportedFileException as e:
+        logging.error(f"Unsupported file type: {e}")
+        return (
+            "En av filene som ble lastet opp er ikke i støttet format, bruk PNG for å være sikker",
+            400,
+        )
+
     try:
         file = create_pdf(data)
         mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
@@ -127,7 +142,7 @@ def handle(data):
         return f"Klarte ikke å sende mail: {e}", 500
     except Exception as e:
         logging.error(f"Failed with exception: {e}")
-        return f"Noe uventet skjedde: {e}", 500
+        return f"Noe uventet skjedde: {e}", 400
 
     logging.info("Successfully generated pdf and sent mail")
     return "Kvitteringsskildring generert og sendt på mail!", 200
