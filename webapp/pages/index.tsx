@@ -13,7 +13,7 @@ const App = () => (
   <div>
     <div className={styles.header}>
       <Abakus />
-      <div>Kvitteringsskildring</div>
+      <div>Kvitterinsskjema</div>
     </div>
     <div className={styles.container}>
       <Form />

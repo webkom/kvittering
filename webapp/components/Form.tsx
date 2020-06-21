@@ -52,7 +52,7 @@ const Form = () => {
 
       {submitted && (
         <div className={styles.feedback}>
-          {responseMessage || "Genererer kvitteringsskildring..."}
+          {responseMessage || "Genererer kvitteringsskjema..."}
         </div>
       )}
 
@@ -88,7 +88,7 @@ const Form = () => {
             .catch(e => setResponseMessage(e.text()));
         }}
       >
-        Generer kvitteringsskildring
+        Generer kvitteringsskjema
       </button>
     </div>
   );
