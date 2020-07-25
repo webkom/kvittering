@@ -3,3 +3,4 @@ gevent
 fpdf
 black
 Pillow
+sentry-sdk[flask]==0.16.2
