@@ -1,19 +1,20 @@
-import Form from "components/Form";
+import React from 'react';
+import Form from 'components/Form';
 
-import styles from "./index.module.css";
+import styles from './index.module.css';
 
-const Abakus = () => (
+const Abakus = (): JSX.Element => (
   <div className={styles.logo}>
     <div className={styles.circle} />
     <div>Abakus</div>
   </div>
 );
 
-const App = () => (
+const App = (): JSX.Element => (
   <div>
     <div className={styles.header}>
       <Abakus />
-      <div>Kvitterinsskjema</div>
+      <div>Kvitteringsskjema</div>
     </div>
     <div className={styles.container}>
       <Form />
