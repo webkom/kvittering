@@ -1,25 +1,35 @@
 # Kvittering (as a function)
 
-A docker image that runs in [OpenFaaS](https://www.openfaas.com/)
+A docker image that runs in [OpenFaaS](https://www.openfaas.com/). Can also run as a normal docker container.
 
-Running on https://kvittering.abakus.no (Note: only available from NTNU/eduroam)
+Running on https://kvittering.abakus.no
 
 ### Getting started
 
 This is one docker image that serves both the python api, and the next/react frontend, this is done by building the webapp as a static site, and serving it as static files through flask.
 
 To run just the frontend:
-* Install all packages with `yarn`
-* Start the server with `yarn dev`
-* Export the static files with `yarn build && yarn export`
+
+- Install all packages with `yarn`
+- Start the server with `yarn dev`
+- Export the static files with `yarn build && yarn export`
 
 To run the backend/everything:
-* Make a virtual env with `python -m venv venv`
-* Enter the env with `source venv/bin/activate`
-* Install packages with `pip install -r kaaf/req.txt`
-* Start the server with `python kaaf/server.py`
-* If the frontend is exported, the webapp will be available at localhost:5000
-* To actually send the generated PDF's, you need to set the `MAIL_ADDRESS` and `MAIL_PASSWORD` env variables
+
+- Make a virtual env with `python -m venv venv`
+- Enter the env with `source venv/bin/activate`
+- Install packages with `pip install -r kaaf/req.txt`
+- Start the server with `python kaaf/server.py`
+- If the frontend is exported (`yarn export`), the webapp will be available at `localhost:5000` when running `server.py`
+
+### Environment variables
+
+| Variable        | Function                                     |
+| --------------- | -------------------------------------------- |
+| `MAIL_ADDRESS`  | Set the mail address for geenerated receipts |
+| `MAIL_PASSWORD` | Password for the mail account                |
+| `ENVIRONMENT`   | Set to "production" for sentry errors        |
+| `SENTRY_DSN`    | Ingest errors to sentry                      |
 
 ### Generating PDFs
 
