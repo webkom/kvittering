@@ -1,19 +1,82 @@
 ---
-pipeline:
-  docker-kvittering:
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: setup
+    image: node:14
+    when:
+      event:
+        - push
+    commands:
+      - yarn
+
+  - name: prettier
+    image: node:14
+    when:
+      event:
+        - push
+    depends_on:
+      - setup
+    commands:
+      - yarn prettier:check
+
+  - name: eslint
+    image: node:14
+    when:
+      event:
+        - push
+    depends_on:
+      - setup
+    commands:
+      - yarn eslint
+
+  - name: build
+    image: node:14
+    when:
+      event:
+        - push
+    depends_on:
+      - setup
+    commands:
+      - yarn build
+
+  - name: export
+    image: node:14
+    when:
+      event:
+        - push
+    depends_on:
+      - setup
+      - build
+    commands:
+      - yarn export
+
+  - name: docker
     image: plugins/docker
     when:
       branch:
         - prod
-      event: push
-      status: success
-    registry: https://registry.webkom.dev
-    repo: registry.webkom.dev/webkom/kvittering
-    dockerfile: Dockerfile
-    secrets: [docker_username, docker_password]
-    tags:
-      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
-      - latest
-    build_args:
-      - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
-    group: building
+      event:
+        - push
+      status:
+        - success
+    depends_on:
+      - setup
+      - prettier
+      - eslint
+      - build
+      - export
+    settings:
+      registry: https://registry.webkom.dev
+      repo: registry.webkom.dev/webkom/kvittering
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags:
+        - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      build_args:
+        - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
