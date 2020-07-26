@@ -1,4 +1,5 @@
-import globals from "./globals.module.css";
+import React from 'react';
+import globals from './globals.module.css';
 
 type Props = {
   name: string;
@@ -7,13 +8,13 @@ type Props = {
   required?: boolean;
 };
 
-const Input = ({ name, value, updateForm, required }: Props) => (
+const Input = ({ name, value, updateForm, required }: Props): JSX.Element => (
   <div className={globals.inputField}>
     <div className={globals.inputLabel}>
       {name}
-      {required && <span style={{ color: "#e90000" }}>*</span>}
+      {required && <span style={{ color: '#e90000' }}>*</span>}
     </div>
-    <input onChange={e => updateForm(e.target.value)} value={value} />
+    <input onChange={(e) => updateForm(e.target.value)} value={value} />
   </div>
 );
 

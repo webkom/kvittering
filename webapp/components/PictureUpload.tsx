@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import styles from "./FileUpload.module.css";
-import globals from "./globals.module.css";
+import React, { useState, useEffect } from 'react';
+import styles from './FileUpload.module.css';
+import globals from './globals.module.css';
 
 type Props = {
   updateForm: (value: Array<string>) => void;
 };
 
-const PictureUpload = ({ updateForm }: Props) => {
+const PictureUpload = ({ updateForm }: Props): JSX.Element => {
   const [images, setImages] = useState<Array<string>>([]);
   const [total, setTotal] = useState(0);
   useEffect(() => {
@@ -16,25 +16,25 @@ const PictureUpload = ({ updateForm }: Props) => {
     <div className={globals.inputField}>
       <div className={globals.inputLabel}>
         Vedlegg
-        <span style={{ color: "#e90000" }}>*</span>
+        <span style={{ color: '#e90000' }}>*</span>
       </div>
       <label>
         <input
           type="file"
           className={styles.fileInput}
           multiple
-          onChange={e => {
+          onChange={(e) => {
             const files = e.target.files || [];
             setTotal(files.length);
             for (let i = 0; i < files.length; i++) {
               const reader = new FileReader();
               reader.readAsDataURL(files[i]);
               reader.addEventListener(
-                "load",
+                'load',
                 () => {
-                  setImages(prevImages => [
+                  setImages((prevImages) => [
                     ...prevImages,
-                    reader.result as string
+                    reader.result as string,
                   ]);
                 },
                 false

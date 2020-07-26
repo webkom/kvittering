@@ -1,23 +1,23 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 
-import Input from "./Input";
-import PictureUpload from "./PictureUpload";
-import SignatureUpload from "./SignatureUpload";
+import Input from './Input';
+import PictureUpload from './PictureUpload';
+import SignatureUpload from './SignatureUpload';
 
-import styles from "./Form.module.css";
+import styles from './Form.module.css';
 
-const Form = () => {
+const Form = (): JSX.Element => {
   const [images, setImages] = useState<Array<string>>([]);
-  const [date, setDate] = useState("");
-  const [occasion, setOccasion] = useState("");
-  const [amount, setAmount] = useState("");
-  const [comment, setComment] = useState("");
-  const [mailto, setMailto] = useState("");
-  const [signature, setSignature] = useState("");
-  const [name, setName] = useState("");
-  const [committee, setCommittee] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [mailfrom, setMailfrom] = useState("");
+  const [date, setDate] = useState('');
+  const [occasion, setOccasion] = useState('');
+  const [amount, setAmount] = useState('');
+  const [comment, setComment] = useState('');
+  const [mailto, setMailto] = useState('');
+  const [signature, setSignature] = useState('');
+  const [name, setName] = useState('');
+  const [committee, setCommittee] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [mailfrom, setMailfrom] = useState('');
 
   const [submitted, setSumbitted] = useState(false);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
@@ -52,7 +52,7 @@ const Form = () => {
 
       {submitted && (
         <div className={styles.feedback}>
-          {responseMessage || "Genererer kvitteringsskjema..."}
+          {responseMessage || 'Genererer kvitteringsskjema...'}
         </div>
       )}
 
@@ -60,10 +60,10 @@ const Form = () => {
         className={styles.submit}
         onClick={() => {
           setSumbitted(true);
-          fetch(`${process.env.API_URL || ""}/kaaf`, {
-            method: "POST",
+          fetch(`${process.env.API_URL || ''}/kaaf`, {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json"
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               images,
@@ -76,16 +76,16 @@ const Form = () => {
               name,
               committee,
               accountNumber,
-              mailfrom
-            })
+              mailfrom,
+            }),
           })
-            .then(r => {
+            .then((r) => {
               return r.text();
             })
-            .then(text => {
+            .then((text) => {
               setResponseMessage(text);
             })
-            .catch(e => setResponseMessage(e.text()));
+            .catch((e) => setResponseMessage(e.text()));
         }}
       >
         Generer kvitteringsskjema
