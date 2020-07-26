@@ -1,23 +1,31 @@
 {
   "name": "kvittering",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "license": "MIT",
   "description": "Kvittering Webapp",
-	"scripts": {
+  "author": "webkom",
+  "repository": {
+    "type": "git",
+    "url": "github.com/webkom/kvittering"
+  },
+  "scripts": {
     "dev": "next dev webapp",
     "build": "next build webapp",
     "export": "next export webapp",
     "start": "next start webapp"
   },
   "dependencies": {
-    "next": "^9.3.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "next": "^9.4.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "@types/node": "^13.1.8",
-    "@types/react": "^16.9.17",
-    "prettier": "^1.19.1",
-    "typescript": "^3.7.5"
+    "@types/node": "^14.0.26",
+    "@types/react": "^16.9.43",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.7"
+  },
+  "prettier": {
+    "singleQuote": true
   }
-
 }
