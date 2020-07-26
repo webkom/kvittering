@@ -1,12 +1,21 @@
 import os
 import sys
+import sentry_sdk
 
 from flask import Flask, request
 from gevent.pywsgi import WSGIServer
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 from handler import handle
 
 static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")
+
+if os.environ.get("ENVIRONMENT") == "production":
+    sentry_sdk.init(
+        dsn=os.environ.get("SENTRY_DSN"),
+        environment=os.environ.get("ENVIRONMENT"),
+        integrations=[FlaskIntegration()],
+    )
 
 app = Flask(__name__, static_folder=static_file_directory, static_url_path="")
 
