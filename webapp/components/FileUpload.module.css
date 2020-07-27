@@ -3,24 +3,30 @@
 }
 
 .fileLabel {
-  border: 1px dotted black;
+  display: border-box;
+  border: 1px solid #ccc;
   padding: 20px;
-  margin: 10px;
+  margin: 10px 0;
   cursor: pointer;
   font-weight: bold;
-  width: 200px;
   border-radius: 5px;
+  text-align: center;
 }
 
-.texLabel {
-  border: 1px dotted black;
-  padding: 20px;
-  margin: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  border-radius: 5px;
+.fileLabel:hover {
+  border: 1px solid black;
 }
 
 .uploaded {
   color: rgb(161, 195, 74);
+}
+
+.upload {
+  width: 250px;
+}
+
+@media only screen and (max-width: 600px) {
+  .upload {
+    width: 100%;
+  }
 }

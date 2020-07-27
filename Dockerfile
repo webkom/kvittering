@@ -21,6 +21,8 @@ RUN yarn
 COPY ./webapp ./webapp
 COPY ./next.config.js .
 
+# Set to production to export material ui css correctly
+ENV NODE_ENV=production
 RUN yarn build && yarn export
 
 FROM build-backend

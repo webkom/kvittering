@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styles from './FileUpload.module.css';
-import globals from './globals.module.css';
 
 type Props = {
   updateForm: (value: Array<string>) => void;
@@ -12,12 +11,9 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
   useEffect(() => {
     if (images.length === total) updateForm(images);
   }, [images, total]);
+
   return (
-    <div className={globals.inputField}>
-      <div className={globals.inputLabel}>
-        Vedlegg
-        <span style={{ color: '#e90000' }}>*</span>
-      </div>
+    <div className={styles.upload}>
       <label>
         <input
           type="file"
@@ -45,10 +41,10 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
         <div className={styles.fileLabel}>
           {images.length > 0 ? (
             <div className={styles.uploaded}>
-              {`${images.length} bilder lastet opp`}
+              {`${images.length} bilde(r) lastet opp`}
             </div>
           ) : (
-            <div>Last opp kvitteringer, fakturaer og vedlegg</div>
+            <div>Last opp vedlegg</div>
           )}
         </div>
       </label>

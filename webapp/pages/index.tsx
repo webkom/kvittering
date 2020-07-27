@@ -1,25 +1,20 @@
 import React from 'react';
+import { CssBaseline, Container } from '@material-ui/core';
+
 import Form from 'components/Form';
 
-import styles from './index.module.css';
-
-const Abakus = (): JSX.Element => (
-  <div className={styles.logo}>
-    <div className={styles.circle} />
-    <div>Abakus</div>
-  </div>
-);
-
 const App = (): JSX.Element => (
-  <div>
-    <div className={styles.header}>
-      <Abakus />
-      <div>Kvitteringsskjema</div>
-    </div>
-    <div className={styles.container}>
+  <React.Fragment>
+    <CssBaseline />
+    <Container maxWidth="sm" fixed>
+      <div
+        style={{ display: 'flex', justifyContent: 'center', padding: '30px' }}
+      >
+        <img src="/abakus.png" alt="abakus logo" width="250px" />
+      </div>
       <Form />
-    </div>
-  </div>
+    </Container>
+  </React.Fragment>
 );
 
 export default App;

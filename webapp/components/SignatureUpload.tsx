@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './FileUpload.module.css';
-import globals from './globals.module.css';
+import { Box } from '@material-ui/core';
 
 type Props = {
   updateForm: (value: string) => void;
@@ -9,11 +9,7 @@ type Props = {
 const SignatureUpload = ({ updateForm }: Props): JSX.Element => {
   const [hasUploaded, setHasUploaded] = useState(false);
   return (
-    <div className={globals.inputField}>
-      <div className={globals.inputLabel}>
-        Signatur
-        <span style={{ color: '#e90000' }}>*</span>
-      </div>
+    <div className={styles.upload}>
       <label>
         <input
           type="file"
