@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styles from './FileUpload.module.css';
-import { Box } from '@material-ui/core';
 
 type Props = {
   updateForm: (value: string) => void;
@@ -31,7 +30,7 @@ const SignatureUpload = ({ updateForm }: Props): JSX.Element => {
         />
         <div className={styles.fileLabel}>
           {hasUploaded ? (
-            <div className={styles.uploaded}>Signatur er lastet opp</div>
+            <div className={styles.uploaded}>Signatur lastet opp</div>
           ) : (
             <div>Last opp signatur</div>
           )}

@@ -41,7 +41,7 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
         <div className={styles.fileLabel}>
           {images.length > 0 ? (
             <div className={styles.uploaded}>
-              {`${images.length} bilde(r) lastet opp`}
+              {`${images.length} vedlegg lastet opp`}
             </div>
           ) : (
             <div>Last opp vedlegg</div>
