@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styles from './FileUpload.module.css';
-import globals from './globals.module.css';
 
 type Props = {
   updateForm: (value: string) => void;
@@ -9,11 +8,7 @@ type Props = {
 const SignatureUpload = ({ updateForm }: Props): JSX.Element => {
   const [hasUploaded, setHasUploaded] = useState(false);
   return (
-    <div className={globals.inputField}>
-      <div className={globals.inputLabel}>
-        Signatur
-        <span style={{ color: '#e90000' }}>*</span>
-      </div>
+    <div className={styles.upload}>
       <label>
         <input
           type="file"
@@ -35,7 +30,7 @@ const SignatureUpload = ({ updateForm }: Props): JSX.Element => {
         />
         <div className={styles.fileLabel}>
           {hasUploaded ? (
-            <div className={styles.uploaded}>Signatur er lastet opp</div>
+            <div className={styles.uploaded}>Signatur lastet opp</div>
           ) : (
             <div>Last opp signatur</div>
           )}
