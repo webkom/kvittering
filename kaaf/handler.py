@@ -7,6 +7,7 @@ import tempfile
 
 from fpdf import FPDF
 from PIL import Image
+from sentry_sdk import configure_scope
 
 import mail
 
@@ -118,6 +119,13 @@ def create_pdf(data):
 
 
 def handle(data):
+    # Add some info about the user to the scope
+    with configure_scope() as scope:
+        scope.user = {
+            "name": data["name"],
+            "mailfrom": data["mailfrom"],
+            "mailto": data["mailto"],
+        }
     req_fields = data_is_valid(data)
     if len(req_fields) > 0:
         return f'Requires fields {", ".join(req_fields)}', 400
