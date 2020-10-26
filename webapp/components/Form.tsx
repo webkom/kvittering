@@ -125,7 +125,12 @@ const Form = (): JSX.Element => {
         style={{ width: '100%', marginTop: '1em' }}
         className={styles.fullWidth}
         onClick={() => {
+          // Reset server response
+          setResponse(null);
+          setSuccess(null);
           setSumbitting(true);
+
+          // POST full body to the backend
           fetch(`${process.env.API_URL || ''}/kaaf`, {
             method: 'POST',
             headers: {
@@ -147,6 +152,7 @@ const Form = (): JSX.Element => {
             })
             .catch((err) => {
               setResponse(`Error: ${err.text()}`);
+              setSumbitting(false);
             });
         }}
       >

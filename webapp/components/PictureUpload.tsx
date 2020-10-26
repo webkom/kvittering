@@ -64,7 +64,11 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
       {images.length > 0 && (
         <List
           component="nav"
-          subheader={<ListSubheader>Opplastede vedlegg</ListSubheader>}
+          subheader={
+            <ListSubheader>
+              Opplastede vedlegg ({images.length} stk)
+            </ListSubheader>
+          }
         >
           {images.map((image, i) => (
             <div className={styles.uploaded} key={image}>

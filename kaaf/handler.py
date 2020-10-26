@@ -191,7 +191,7 @@ def handle(data):
     except UnsupportedFileException as e:
         logging.error(f"Unsupported file type: {e}")
         return (
-            "En av filene som ble lastet opp er ikke i støttet format, bruk PNG for å være sikker",
+            "En av filene som ble lastet opp er ikke i støttet format. Bruk PNG, JPEG, GIF, HEIC eller PDF",
             400,
         )
 
@@ -203,7 +203,7 @@ def handle(data):
         return f"Klarte ikke å generere pdf: {e}", 500
     except mail.MailConfigurationException as e:
         logging.warning(f"Failed to send mail: {e}")
-        return f"Klarte ikke å sende mail: {e}", 500
+        return f"Klarte ikke å sende email: {e}", 500
     except Exception as e:
         logging.error(f"Failed with exception: {e}")
         return f"Noe uventet skjedde: {e}", 400

@@ -9,7 +9,6 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  white-space: nowrap;
+  max-height: 200px;
   overflow: hidden;
-  text-overflow: ellipsis;
 }

@@ -22,6 +22,9 @@ To run the backend/everything:
 - Start the server with `python kaaf/server.py`
 - If the frontend is exported (`yarn export`), the webapp will be available at `localhost:5000` when running `server.py`
 
+> One of the packages (pdf2image) will require poppler to work correctly with tmp files. Most linux distros come with this.
+> For MacOS `brew install poppler`
+
 ### Environment variables
 
 | Variable        | Function                                     |
