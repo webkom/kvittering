@@ -20,3 +20,9 @@ body {
   margin: 0;
   height: 100%;
 }
+
+p,
+a,
+div {
+  font-family: Raleway, Arial, sans-serif;
+}
