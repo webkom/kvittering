@@ -21,6 +21,7 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
+    background: '#f6f6f6',
   },
 };
 
@@ -45,14 +46,19 @@ const Sign = ({
       style={customStyles}
     >
       <div className={styles.nav}>
-        <Typography variant="h6">Signer for hånd under</Typography>
+        <Typography variant="h6">Signer i feltet under</Typography>
         <IconButton size="medium" onClick={() => setIsOpen(false)}>
           <CloseIcon />
         </IconButton>
       </div>
       <SignatureCanvas
         penColor="black"
-        canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }}
+        backgroundColor="white"
+        canvasProps={{
+          width: 500,
+          height: 200,
+          style: { border: '1px dashed black', margin: '10px 0' },
+        }}
         ref={(ref: any) => setSigCanvas(ref)}
       />
       <div className={styles.nav}>
