@@ -80,11 +80,17 @@ const Form = (): JSX.Element => {
         helperText="Din kopi av skjema går hit"
       />
       <Input
+        name="Komité"
+        value={committee}
+        updateForm={setCommittee}
+        helperText={'Den komitén som skylder deg penger'}
+      />
+      <Input
         name="Økans epost"
         value={mailto}
         required
         updateForm={setMailto}
-        helperText="Økans er den som ansvarlig for å føre kvitteringen, og overføre pengene"
+        helperText="Økans til komitén/gruppen"
       />
       <Input
         name="Kontonummer"
@@ -101,6 +107,7 @@ const Form = (): JSX.Element => {
         type="number"
         updateForm={setAmount}
         adornment={'kr'}
+        helperText="Beløpet du ønsker refundert"
       />
       <Input
         name="Kjøpsdato"
@@ -108,6 +115,7 @@ const Form = (): JSX.Element => {
         required
         type="date"
         updateForm={setDate}
+        helperText="Helst samme som på kvittering"
       />
       <Input
         name="Anledning"
@@ -115,12 +123,6 @@ const Form = (): JSX.Element => {
         value={occasion}
         updateForm={setOccasion}
         helperText="I hvilken anledning har du lagt ut"
-      />
-      <Input
-        name="Komité"
-        value={committee}
-        updateForm={setCommittee}
-        helperText={'Den komitén som skylder deg penger'}
       />
       <Input
         name="Kommentar"
