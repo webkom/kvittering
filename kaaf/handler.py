@@ -73,14 +73,15 @@ def create_image_file(image):
     """
     Take an image in BASE64 format and return a NamedTemporaryFile containing the image.
     Will handle PNG, JPEG and GIF without any changes, as FPDF will handle those files
-    without problem. For PDFs 
+    without problem. For PDFs
     """
 
-    if not "image/" in image:
+    if not "image/" in image and not "application/pdf" in image:
         raise UnsupportedFileException(image[:30])
     parts = image.split(";base64,")
     decoded = base64.b64decode(parts[1])
-    suffix = parts[0].split("image/")[1]
+    suffix = "pdf" if "application/pdf" in image else parts[0].split("image/")[1]
+    suffix = suffix.lower()
     f = tempfile.NamedTemporaryFile(suffix=f".{suffix}")
     f.write(decoded)
     f.flush()
@@ -101,7 +102,7 @@ def create_image_file(image):
     """
     FPDF does not support heic files as input, therefore we covert a image:heic image:jpg
     """
-    if suffix == "HEIC":
+    if suffix == "heic":
         fmt = "JPEG"
         heif_file = pyheif.read(f.name)
         img = Image.frombytes(
