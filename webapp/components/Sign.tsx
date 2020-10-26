@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from 'react-modal';
@@ -32,6 +32,12 @@ const Sign = ({
   setHasUploaded,
 }: Props): JSX.Element => {
   const [sigCanvas, setSigCanvas] = useState<any>({});
+  const [width, setWidth] = useState(500);
+
+  useEffect(() => {
+    // Make sure that the canvas is never to large for screen
+    setWidth(Math.min(window.innerWidth - 50, width));
+  });
 
   const base64Encode = () => {
     setSignature(sigCanvas.getTrimmedCanvas().toDataURL('image/png'));
@@ -55,7 +61,7 @@ const Sign = ({
         penColor="black"
         backgroundColor="white"
         canvasProps={{
-          width: 500,
+          width,
           height: 200,
           style: { border: '1px dashed black', margin: '10px 0' },
         }}
