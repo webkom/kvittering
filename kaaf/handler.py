@@ -73,7 +73,8 @@ def create_image_file(image):
     """
     Take an image in BASE64 format and return a NamedTemporaryFile containing the image.
     Will handle PNG, JPEG and GIF without any changes, as FPDF will handle those files
-    without problem. For PDFs
+    without problem. For PDFs we use pdf2image to convert each page to an image. For HEIC
+    pictures we use pyheif to convert it to a jpeg.
     """
 
     if not "image/" in image and not "application/pdf" in image:
