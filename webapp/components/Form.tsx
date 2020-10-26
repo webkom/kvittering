@@ -65,18 +65,26 @@ const Form = (): JSX.Element => {
       >
         Kvitteringsskjema
       </Typography>
-      <Input name="Navn" value={name} required updateForm={setName} />
+      <Input
+        name="Navn"
+        value={name}
+        required
+        updateForm={setName}
+        helperText="Ditt fulle navn, slik kvitteringen viser"
+      />
       <Input
         name="Din epost"
         value={mailfrom}
         required
         updateForm={setMailfrom}
+        helperText="Din kopi av skjema går hit"
       />
       <Input
         name="Økans epost"
         value={mailto}
         required
         updateForm={setMailto}
+        helperText="Økans er den som ansvarlig for å føre kvitteringen, og overføre pengene"
       />
       <Input
         name="Kontonummer"
@@ -84,6 +92,7 @@ const Form = (): JSX.Element => {
         required
         type="number"
         updateForm={setAccountNumber}
+        helperText="Pengene overføres til dette nummeret"
       />
       <Input
         name="Beløp"
@@ -105,14 +114,21 @@ const Form = (): JSX.Element => {
         multiline
         value={occasion}
         updateForm={setOccasion}
+        helperText="I hvilken anledning har du lagt ut"
       />
-      <Input name="Komité" value={committee} updateForm={setCommittee} />
+      <Input
+        name="Komité"
+        value={committee}
+        updateForm={setCommittee}
+        helperText={'Den komitén som skylder deg penger'}
+      />
       <Input
         name="Kommentar"
         multiline
         fullWidth
         value={comment}
         updateForm={setComment}
+        helperText="Fyll inn ekstra informasjon hvis nødvendig"
       />
       <SignatureUpload updateForm={setSignature} />
       <PictureUpload updateForm={setImages} />
@@ -122,7 +138,7 @@ const Form = (): JSX.Element => {
         variant="contained"
         color="primary"
         disabled={submitting || success == true}
-        style={{ width: '100%', marginTop: '1em' }}
+        style={{ width: '100%', marginTop: '3em' }}
         className={styles.fullWidth}
         onClick={() => {
           setSumbitting(true);

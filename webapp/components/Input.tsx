@@ -11,6 +11,7 @@ type Props = {
   multiline?: boolean;
   adornment?: string;
   fullWidth?: boolean;
+  helperText?: string;
 };
 
 const Input = ({
@@ -22,6 +23,7 @@ const Input = ({
   multiline,
   adornment,
   fullWidth,
+  helperText,
 }: Props): JSX.Element => (
   <TextField
     id={name}
@@ -35,6 +37,7 @@ const Input = ({
     type={type}
     multiline={multiline}
     fullWidth={fullWidth}
+    helperText={helperText}
     InputProps={{
       startAdornment: (
         <InputAdornment position="start">{adornment}</InputAdornment>
