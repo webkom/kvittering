@@ -4,3 +4,5 @@ fpdf
 black
 Pillow
 sentry-sdk[flask]==0.16.2
+pdf2image
+pyheif
