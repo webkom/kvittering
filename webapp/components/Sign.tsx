@@ -36,6 +36,7 @@ const Sign = ({
 
   const resize = () => setWidth(Math.min(window.innerWidth - 50, 700));
   useEffect(() => {
+    setWidth(Math.min(window.innerWidth - 50, 700));
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
   });
