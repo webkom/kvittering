@@ -40,7 +40,7 @@ const Input = ({
     helperText={helperText}
     InputProps={{
       startAdornment: (
-        <InputAdornment position="start">{adornment}</InputAdornment>
+        <InputAdornment position="start">{adornment || ''}</InputAdornment>
       ),
     }}
   />
