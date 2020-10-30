@@ -21,7 +21,7 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    background: '#f6f6f6',
+    padding: '10px',
   },
 };
 
@@ -32,11 +32,12 @@ const Sign = ({
   setHasUploaded,
 }: Props): JSX.Element => {
   const [sigCanvas, setSigCanvas] = useState<any>({});
-  const [width, setWidth] = useState(500);
+  const [width, setWidth] = useState(700);
 
+  const resize = () => setWidth(Math.min(window.innerWidth - 50, 700));
   useEffect(() => {
-    // Make sure that the canvas is never to large for screen
-    setWidth(Math.min(window.innerWidth - 50, width));
+    window.addEventListener('resize', resize);
+    return () => window.removeEventListener('resize', resize);
   });
 
   const base64Encode = () => {
@@ -50,6 +51,7 @@ const Sign = ({
       isOpen={modalIsOpen}
       onRequestClose={() => setIsOpen(false)}
       style={customStyles}
+      ariaHideApp={false}
     >
       <div className={styles.nav}>
         <Typography variant="h6">Signer i feltet under</Typography>
@@ -57,13 +59,23 @@ const Sign = ({
           <CloseIcon />
         </IconButton>
       </div>
+      <p
+        style={{
+          margin: 0,
+          fontStyle: 'italic',
+          fontSize: '10px',
+          marginBottom: '-5px',
+        }}
+      >
+        Tips: Vend telefonen
+      </p>
       <SignatureCanvas
         penColor="black"
         backgroundColor="white"
         canvasProps={{
           width,
           height: 200,
-          style: { border: '1px dashed black', margin: '10px 0' },
+          style: { border: '1px dashed black', margin: '5px 0' },
         }}
         ref={(ref: any) => setSigCanvas(ref)}
       />
