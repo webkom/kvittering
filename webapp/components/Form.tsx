@@ -132,10 +132,9 @@ const Form = (): JSX.Element => {
         updateForm={setComment}
         helperText="Fyll inn ekstra informasjon hvis nødvendig"
       />
-      <SignatureUpload updateForm={setSignature} />
+      <SignatureUpload updateForm={setSignature} setSignature={setSignature} />
       <PictureUpload updateForm={setImages} />
       <Response />
-
       <Button
         variant="contained"
         color="primary"

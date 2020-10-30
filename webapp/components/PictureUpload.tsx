@@ -6,7 +6,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListItemText';
 
 type Props = {
   updateForm: (value: Array<string>) => void;
@@ -31,52 +30,48 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
   };
 
   return (
-    <div className={styles.upload}>
-      <label>
-        <input
-          type="file"
-          className={styles.fileInput}
-          multiple
-          onChange={(e) => {
-            const files = e.target.files || [];
-            setTotal(files.length);
-            for (let i = 0; i < files.length; i++) {
-              setNames((prevNames) => [...prevNames, files[i].name]);
-              const reader = new FileReader();
-              reader.readAsDataURL(files[i]);
-              reader.addEventListener(
-                'load',
-                () => {
-                  setImages((prevImages) => [
-                    ...prevImages,
-                    reader.result as string,
-                  ]);
-                },
-                false
-              );
-            }
-          }}
-        />
-        <div className={styles.fileLabel}>
-          <div>Last opp vedlegg</div>
-        </div>
-      </label>
+    <>
+      <div className={styles.upload}>
+        <label>
+          <input
+            type="file"
+            className={styles.fileInput}
+            multiple
+            onChange={(e) => {
+              const files = e.target.files || [];
+              setTotal(files.length);
+              for (let i = 0; i < files.length; i++) {
+                setNames((prevNames) => [...prevNames, files[i].name]);
+                const reader = new FileReader();
+                reader.readAsDataURL(files[i]);
+                reader.addEventListener(
+                  'load',
+                  () => {
+                    setImages((prevImages) => [
+                      ...prevImages,
+                      reader.result as string,
+                    ]);
+                  },
+                  false
+                );
+              }
+            }}
+          />
+          <div className={styles.fileLabel}>
+            <div>Last opp vedlegg</div>
+          </div>
+        </label>
+      </div>
+
       {images.length > 0 && (
-        <List
-          component="nav"
-          subheader={
-            <ListSubheader>
-              Opplastede vedlegg ({images.length} stk)
-            </ListSubheader>
-          }
-        >
+        <List component="nav" className={styles.uploaded}>
           {images.map((image, i) => (
-            <div className={styles.uploaded} key={image}>
+            <div className={styles.uploadedElement} key={image}>
               <ListItem>
-                <ListItemText primary={names[i]} />
+                <ListItemText primary={names[i]} style={{ fontSize: '10px' }} />
                 <IconButton
                   aria-label="delete"
-                  size="medium"
+                  size="small"
                   onClick={() => removeImage(i)}
                 >
                   <DeleteIcon />
@@ -86,7 +81,7 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
           ))}
         </List>
       )}
-    </div>
+    </>
   );
 };
 

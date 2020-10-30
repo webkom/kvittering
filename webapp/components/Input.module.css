@@ -2,6 +2,10 @@
   width: 250px;
 }
 
+.textField > label {
+  z-index: 0;
+}
+
 @media only screen and (max-width: 600px) {
   .textField {
     width: 100%;
