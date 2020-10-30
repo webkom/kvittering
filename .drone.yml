@@ -57,7 +57,7 @@ steps:
     image: plugins/docker
     when:
       branch:
-        - prod
+        - master
       event:
         - push
       status:
