@@ -33,12 +33,19 @@ const Sign = ({
 }: Props): JSX.Element => {
   const [sigCanvas, setSigCanvas] = useState<any>({});
   const [width, setWidth] = useState(700);
+  const [rotated, setRotated] = useState(false);
 
   const resize = () => setWidth(Math.min(window.innerWidth - 50, 700));
+  const rotate = () => setRotated(!rotated);
+
   useEffect(() => {
     setWidth(Math.min(window.innerWidth - 50, 700));
     window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
+    window.addEventListener('orientationchange', rotate);
+    return () => {
+      window.removeEventListener('resize', resize);
+      window.addEventListener('orientationchange', rotate);
+    };
   });
 
   const base64Encode = () => {
