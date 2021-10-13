@@ -14,19 +14,18 @@ type Props = {
 const PictureUpload = ({ updateForm }: Props): JSX.Element => {
   const [images, setImages] = useState<Array<string>>([]);
   const [names, setNames] = useState<string[]>([]);
-  const [total, setTotal] = useState(0);
+
   useEffect(() => {
-    if (images.length === total) updateForm(images);
-  }, [images, total]);
+    updateForm(images);
+  }, [images]);
 
   const removeImage = (i: number) => {
     const newImages = images;
     const newNames = names;
     newImages.splice(i, 1);
     newNames.splice(i, 1);
-    setImages(newImages);
+    setImages([...newImages]);
     setNames(newNames);
-    setTotal(total - 1);
   };
 
   return (
@@ -39,7 +38,6 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
             multiple
             onChange={(e) => {
               const files = e.target.files || [];
-              setTotal(files.length);
               for (let i = 0; i < files.length; i++) {
                 setNames((prevNames) => [...prevNames, files[i].name]);
                 const reader = new FileReader();
