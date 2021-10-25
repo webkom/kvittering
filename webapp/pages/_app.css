@@ -15,6 +15,10 @@ body > div {
   height: 100%;
 }
 
+.ReactModalPortal {
+  height: 0 !important;
+}
+
 html,
 body {
   margin: 0;
