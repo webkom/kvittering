@@ -22,7 +22,7 @@ const Form = (): JSX.Element => {
   const [mailto, setMailto] = useState('');
   const [signature, setSignature] = useState('');
   const [name, setName] = useState('');
-  const [committee, setCommittee] = useState('');
+  const [group, setGroup] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [mailfrom, setMailfrom] = useState('');
 
@@ -41,7 +41,7 @@ const Form = (): JSX.Element => {
     mailto,
     signature,
     name,
-    committee,
+    group,
     accountNumber,
     mailfrom,
   };
@@ -80,10 +80,10 @@ const Form = (): JSX.Element => {
         helperText="Din kopi av skjema går hit"
       />
       <Input
-        name="Komité"
-        value={committee}
-        updateForm={setCommittee}
-        helperText={'Den komitén som skylder deg penger'}
+        name="Gruppe"
+        value={group}
+        updateForm={setGroup}
+        helperText={'Hvilken gruppe du tilhører'}
       />
       <Input
         name="Økans epost"
@@ -98,7 +98,7 @@ const Form = (): JSX.Element => {
         required
         type="number"
         updateForm={setAccountNumber}
-        helperText="Pengene overføres til dette nummeret"
+        helperText="Pengene overføres til denne kontoen"
       />
       <Input
         name="Beløp"
@@ -122,7 +122,7 @@ const Form = (): JSX.Element => {
         multiline
         value={occasion}
         updateForm={setOccasion}
-        helperText="I hvilken anledning har du lagt ut"
+        helperText="I hvilken anledning du har lagt ut"
       />
       <Input
         name="Kommentar"

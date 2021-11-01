@@ -9,11 +9,12 @@ const Footer = (): JSX.Element => (
       marginTop: '50px',
     }}
   >
-    Med ☕ av Webkom | for <strong>Abakus</strong> |{' '}
+    Originalt av og for <strong>Abakus</strong> | Adoptert av{' '}
+    <strong>itDAGENE</strong> |{' '}
     <a
       style={{
         textDecoration: 'none',
-        color: '#BC1818',
+        color: '#0778BC',
       }}
       href="https://github.com/webkom/kvittering"
       target="blank"

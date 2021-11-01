@@ -3,6 +3,7 @@ import styles from './FileUpload.module.css';
 import IconButton from '@material-ui/core/IconButton';
 import GestureIcon from '@material-ui/icons/Gesture';
 import CreateIcon from '@material-ui/icons/Create';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Sign from './Sign';
 
 type Props = {
@@ -39,7 +40,10 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
           {hasUploaded ? (
             <div className={styles.uploadedElement}>Signatur lastet opp</div>
           ) : (
-            <span>Last opp signatur</span>
+            <>
+              <AttachFileIcon />
+              <span>Last opp signatur</span>
+            </>
           )}
         </div>
       </label>

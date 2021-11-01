@@ -16,8 +16,8 @@ const App = (): JSX.Element => (
     <CssBaseline />
     <Container maxWidth="sm" fixed>
       <img
-        src="/abakus.png"
-        alt="abakus logo"
+        src="/itdagene.png"
+        alt="itDAGENE logo"
         width="100%"
         style={{ padding: '50px' }}
       />
