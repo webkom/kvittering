@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "license": "MIT",
   "description": "Kvittering Webapp",
-  "author": "webkom",
+  "author": "web",
   "repository": {
     "type": "git",
-    "url": "github.com/webkom/kvittering"
+    "url": "github.com/itdagene-ntnu/kvittering"
   },
   "scripts": {
     "dev": "next dev webapp",

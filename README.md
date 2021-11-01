@@ -2,7 +2,7 @@
 
 A docker image that runs in [OpenFaaS](https://www.openfaas.com/). Can also run as a normal docker container.
 
-Running on https://kvittering.abakus.no
+Running on https://kvittering.itdagene.no
 
 ### Getting started
 
@@ -11,7 +11,7 @@ This is one docker image that serves both the python api, and the next/react fro
 To run just the frontend:
 
 - Install all packages with `yarn`
-- Start the server with `yarn dev`
+- Start the server with `yarn dev`, the webapp will be available at `localhost:3000`
 - Export the static files with `yarn build && yarn export`
 
 To run the backend/everything:
