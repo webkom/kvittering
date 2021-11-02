@@ -86,11 +86,11 @@ const Form = (): JSX.Element => {
         helperText={'Hvilken gruppe du tilhører'}
       />
       <Input
-        name="Økans epost"
-        value={mailto}
-        required
+        name="Økonomiansvarlig"
+        value="joakim.ness@itdagene.no"
+        disabled={true}
         updateForm={setMailto}
-        helperText="Økans til komitén/gruppen"
+        helperText="Økans sin e-post"
       />
       <Input
         name="Kontonummer"

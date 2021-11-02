@@ -7,6 +7,7 @@ type Props = {
   value: string;
   updateForm: (value: string) => void;
   required?: boolean;
+  disabled?: boolean;
   type?: string;
   multiline?: boolean;
   adornment?: string;
@@ -19,6 +20,7 @@ const Input = ({
   value,
   updateForm,
   required,
+  disabled,
   type,
   multiline,
   adornment,
@@ -32,6 +34,7 @@ const Input = ({
     className={styles.textField}
     variant="outlined"
     required={required}
+    disabled={disabled}
     onChange={(e) => updateForm(e.target.value)}
     value={value}
     type={type}
