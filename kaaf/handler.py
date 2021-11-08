@@ -40,7 +40,6 @@ def data_is_valid(data):
         "images",
         "date",
         "amount",
-        "mailto",
         "signature",
         "name",
         "accountNumber",
@@ -180,7 +179,6 @@ def handle(data):
         scope.user = {
             "name": data["name"],
             "mailfrom": data["mailfrom"],
-            "mailto": data["mailto"],
         }
     req_fields = data_is_valid(data)
     if len(req_fields) > 0:
@@ -197,7 +195,7 @@ def handle(data):
 
     try:
         file = create_pdf(data)
-        mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
+        mail.send_mail(["okonoimi@itdagene.no", data["mailfrom"]], data, file)
     except RuntimeError as e:
         logging.warning(f"Failed to generate pdf with exception: {e}")
         return f"Klarte ikke å generere pdf: {e}", 500

@@ -87,10 +87,9 @@ const Form = (): JSX.Element => {
       />
       <Input
         name="Økonomiansvarlig"
-        value="joakim.ness@itdagene.no"
-        disabled={true}
+        value="okonomi@itdagene.no"
+        disabled
         updateForm={setMailto}
-        helperText="Økans sin e-post"
       />
       <Input
         name="Kontonummer"

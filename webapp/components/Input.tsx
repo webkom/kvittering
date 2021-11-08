@@ -35,7 +35,7 @@ const Input = ({
     variant="outlined"
     required={required}
     disabled={disabled}
-    onChange={(e) => updateForm(e.target.value)}
+    onChange={(e) => updateForm(e?.target?.value)}
     value={value}
     type={type}
     multiline={multiline}
