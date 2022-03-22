@@ -1,9 +1,6 @@
 import base64
-import json
 import logging
-import os
 import io
-import re
 import tempfile
 import mail
 import functools
