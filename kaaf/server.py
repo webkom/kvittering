@@ -1,5 +1,4 @@
 import os
-import sys
 import sentry_sdk
 
 from flask import Flask, request
