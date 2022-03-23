@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Typography, Button, Paper, CircularProgress } from '@material-ui/core';
-import ReceiptIcon from '@material-ui/icons/Receipt';
-import Alert from '@material-ui/lab/Alert';
+import { Typography, Button, Paper, CircularProgress } from '@mui/material';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import Alert from '@mui/lab/Alert';
 
 import Input from './Input';
 import PictureUpload from './PictureUpload';
@@ -119,7 +119,6 @@ const Form = (): JSX.Element => {
       />
       <Input
         name="Anledning"
-        multiline
         value={occasion}
         updateForm={setOccasion}
         helperText="I hvilken anledning har du lagt ut"

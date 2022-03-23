@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, InputAdornment } from '@material-ui/core';
+import { TextField, InputAdornment } from '@mui/material';
 import styles from './Input.module.css';
 
 type Props = {
@@ -29,7 +29,7 @@ const Input = ({
     id={name}
     label={name}
     margin="normal"
-    className={styles.textField}
+    className={!fullWidth ? styles.textField : styles.default} // Hack to limit our css on fullWidth
     variant="outlined"
     required={required}
     onChange={(e) => updateForm(e.target.value)}
