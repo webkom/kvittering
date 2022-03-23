@@ -1,6 +1,4 @@
 const path = require('path');
-const withPlugins = require('next-compose-plugins');
-const optimizedImages = require('next-optimized-images');
 
 module.exports = {
   env: {
@@ -15,5 +13,3 @@ module.exports = {
     return config;
   },
 };
-
-module.exports = withPlugins([[optimizedImages, {}]]);

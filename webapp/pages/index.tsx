@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { CssBaseline, Container } from '@mui/material';
 
 import Form from 'components/Form';
@@ -16,21 +15,12 @@ const App = (): JSX.Element => (
   >
     <CssBaseline />
     <Container maxWidth="sm" fixed>
-      <div
-        style={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'center',
-          padding: '20px',
-        }}
-      >
-        <Image
-          src="/abakus.png"
-          alt="abakus logo"
-          width="380px"
-          height="80px"
-        />
-      </div>
+      <img
+        src="/abakus.png"
+        alt="abakus logo"
+        width="100%"
+        style={{ padding: '50px' }}
+      />
       <Form />
     </Container>
     <Footer />
