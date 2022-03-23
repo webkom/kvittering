@@ -7,6 +7,7 @@ export default function MyApp({ Component, pageProps }: any): JSX.Element {
   return (
     <>
       <Head>
+        <title>Kvittering</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
