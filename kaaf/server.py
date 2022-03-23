@@ -14,6 +14,7 @@ if os.environ.get("ENVIRONMENT") == "production":
         dsn=os.environ.get("SENTRY_DSN"),
         environment=os.environ.get("ENVIRONMENT"),
         integrations=[FlaskIntegration()],
+        traces_sample_rate=1.0
     )
 
 app = Flask(__name__, static_folder=static_file_directory, static_url_path="")
