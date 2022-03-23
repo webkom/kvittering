@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: setup
-    image: node:14
+    image: node:16-slim
     when:
       event:
         - push
@@ -13,7 +13,7 @@ steps:
       - yarn
 
   - name: prettier
-    image: node:14
+    image: node:16-slim
     when:
       event:
         - push
@@ -23,7 +23,7 @@ steps:
       - yarn prettier:check
 
   - name: eslint
-    image: node:14
+    image: node:16-slim
     when:
       event:
         - push
@@ -33,7 +33,7 @@ steps:
       - yarn eslint
 
   - name: build
-    image: node:14
+    image: node:16-slim
     when:
       event:
         - push
@@ -43,7 +43,7 @@ steps:
       - yarn build
 
   - name: export
-    image: node:14
+    image: node:16-slim
     when:
       event:
         - push
