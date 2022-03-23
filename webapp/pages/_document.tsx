@@ -20,10 +20,6 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width"
-          />
           <link rel="icon" type="image/png" href="/favicon.png" />
         </Head>
         <body>
