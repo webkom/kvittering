@@ -1,5 +1,6 @@
 import React from 'react';
-import { CssBaseline, Container } from '@material-ui/core';
+import Image from 'next/image';
+import { CssBaseline, Container } from '@mui/material';
 
 import Form from 'components/Form';
 import Footer from 'components/Footer';
@@ -15,12 +16,21 @@ const App = (): JSX.Element => (
   >
     <CssBaseline />
     <Container maxWidth="sm" fixed>
-      <img
-        src="/abakus.png"
-        alt="abakus logo"
-        width="100%"
-        style={{ padding: '50px' }}
-      />
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'center',
+          padding: '20px',
+        }}
+      >
+        <Image
+          src="/abakus.png"
+          alt="abakus logo"
+          width="380px"
+          height="80px"
+        />
+      </div>
       <Form />
     </Container>
     <Footer />

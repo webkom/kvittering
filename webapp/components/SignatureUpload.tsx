@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styles from './FileUpload.module.css';
-import IconButton from '@material-ui/core/IconButton';
-import GestureIcon from '@material-ui/icons/Gesture';
-import CreateIcon from '@material-ui/icons/Create';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
+import IconButton from '@mui/material/IconButton';
+import GestureIcon from '@mui/icons-material/Gesture';
+import CreateIcon from '@mui/icons-material/Create';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Sign from './Sign';
 
 type Props = {

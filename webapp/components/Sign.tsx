@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import Modal from 'react-modal';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@mui/material';
 import styles from './Sign.module.css';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 type Props = {
   modalIsOpen: boolean;
@@ -22,6 +22,7 @@ const customStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     padding: '10px',
+    zIndex: '2',
   },
 };
 

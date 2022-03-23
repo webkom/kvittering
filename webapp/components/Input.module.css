@@ -1,9 +1,10 @@
-.textField {
-  width: 250px;
-}
-
+.default > label,
 .textField > label {
   z-index: 0;
+}
+
+.textField {
+  width: 250px;
 }
 
 @media only screen and (max-width: 600px) {
