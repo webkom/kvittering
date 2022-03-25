@@ -67,6 +67,18 @@ $ python kaaf/generate-example.py signature.png output.pdf image0.png image1.png
 
 Where `signature.png` and `imageN.png` are paths to image files (the latter images are optional)
 
+### Testing
+
+Run cypress tests
+
+```sh
+# In one shell
+$ yarn dev
+
+# In another shell
+$ yarn cypress
+```
+
 ### Deployment
 
 New versions are automatically built and deployed when pushing to the `master` branch.
