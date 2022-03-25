@@ -18,7 +18,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
-    "incremental": true
+    "incremental": true,
+    "types": ["cypress", "cypress-file-upload"]
   },
   "exclude": [
     "node_modules"
