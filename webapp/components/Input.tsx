@@ -3,6 +3,7 @@ import { TextField, InputAdornment } from '@mui/material';
 import styles from './Input.module.css';
 
 type Props = {
+  id: string;
   name: string;
   value: string;
   updateForm: (value: string) => void;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const Input = ({
+  id,
   name,
   value,
   updateForm,
@@ -26,7 +28,7 @@ const Input = ({
   helperText,
 }: Props): JSX.Element => (
   <TextField
-    id={name}
+    id={id}
     label={name}
     margin="normal"
     className={!fullWidth ? styles.textField : styles.default} // Hack to limit our css on fullWidth

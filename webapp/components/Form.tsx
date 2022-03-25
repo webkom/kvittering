@@ -66,6 +66,7 @@ const Form = (): JSX.Element => {
         Kvitteringsskjema
       </Typography>
       <Input
+        id="name"
         name="Navn"
         value={name}
         required
@@ -73,6 +74,7 @@ const Form = (): JSX.Element => {
         helperText="Ditt fulle navn, slik kvitteringen viser"
       />
       <Input
+        id="mailFrom"
         name="Din epost"
         value={mailfrom}
         required
@@ -80,12 +82,14 @@ const Form = (): JSX.Element => {
         helperText="Din kopi av skjema går hit"
       />
       <Input
+        id="committee"
         name="Komité"
         value={committee}
         updateForm={setCommittee}
         helperText={'Den komitén som skylder deg penger'}
       />
       <Input
+        id="mailTo"
         name="Økans epost"
         value={mailto}
         required
@@ -93,6 +97,7 @@ const Form = (): JSX.Element => {
         helperText="Økans til komitén/gruppen"
       />
       <Input
+        id="accountNumber"
         name="Kontonummer"
         value={accountNumber}
         required
@@ -101,6 +106,7 @@ const Form = (): JSX.Element => {
         helperText="Pengene overføres til dette nummeret"
       />
       <Input
+        id="amount"
         name="Beløp"
         value={amount}
         required
@@ -110,6 +116,7 @@ const Form = (): JSX.Element => {
         helperText="Beløpet du ønsker refundert"
       />
       <Input
+        id="date"
         name="Kjøpsdato"
         value={date}
         required
@@ -118,12 +125,14 @@ const Form = (): JSX.Element => {
         helperText="Helst samme som på kvittering"
       />
       <Input
+        id="occasion"
         name="Anledning"
         value={occasion}
         updateForm={setOccasion}
         helperText="I hvilken anledning har du lagt ut"
       />
       <Input
+        id="comment"
         name="Kommentar"
         multiline
         fullWidth

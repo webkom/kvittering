@@ -34,6 +34,7 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
       <div className={styles.upload}>
         <label>
           <input
+            id="attachments"
             type="file"
             className={styles.fileInput}
             multiple
@@ -64,7 +65,11 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
       </div>
 
       {images.length > 0 && (
-        <List component="nav" className={styles.uploaded}>
+        <List
+          component="nav"
+          className={styles.uploaded}
+          id="uploadedAttachments"
+        >
           {images.map((image, i) => (
             <div className={styles.uploadedElement} key={image}>
               <ListItem>
