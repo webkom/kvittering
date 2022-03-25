@@ -16,7 +16,9 @@
     "lint": "yarn run prettier:check && yarn run eslint",
     "prettier:check": "prettier --check 'webapp/**/*.{ts,tsx,css,html}' --ignore-path .dockerignore",
     "prettier:write": "prettier --write 'webapp/**/*.{ts,tsx,css,html}' --ignore-path .dockerignore",
-    "eslint": "eslint 'webapp/**/*.{ts,tsx}' --ignore-path .dockerignore"
+    "eslint": "eslint 'webapp/**/*.{ts,tsx}' --ignore-path .dockerignore",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run"
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",
