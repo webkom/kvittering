@@ -5,6 +5,6 @@
     "downloadsFolder": "webapp/cypress/downloads",
     "screenshotsFolder": "webapp/cypress/screenshots",
     "videosFolder": "webapp/cypress/videos",
-    "pluginsFolder": "webapp/cypress/plugins",
+    "pluginsFile": "webapp/cypress/plugins/index.js",
     "supportFile": "webapp/cypress/support/index.js"
 }
