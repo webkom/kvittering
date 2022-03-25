@@ -53,6 +53,17 @@ steps:
     commands:
       - yarn export
 
+  - name: cypress
+    image: node:16-slim
+    when:
+      event:
+        - push
+    depends_on:
+      - setup
+      - build
+    commands:
+      - yarn cypress:headless
+
   - name: docker
     image: plugins/docker
     when:
