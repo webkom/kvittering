@@ -9,6 +9,7 @@ import operator
 from fpdf import FPDF
 from PIL import Image
 from sentry_sdk import configure_scope
+from email.utils import formatdate
 
 # Handle PDF files
 from pdf2image import convert_from_path
@@ -140,7 +141,7 @@ def create_pdf(data):
     signature = data.pop("signature")
     images = data.pop("images")
 
-    pdf.cell(0, 14, "Kvitteringsskjema", ln=1)
+    pdf.cell(0, 14, f'Kvitteringsskjema mottatt {formatdate(localtime=True)}', ln=1)
 
     pdf.set_font("Arial", "", 12)
     for key in field_title_map.keys():
