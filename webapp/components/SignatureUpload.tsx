@@ -19,6 +19,7 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
     <div className={styles.upload}>
       <label>
         <input
+          id="signature"
           type="file"
           className={styles.fileInput}
           onChange={(e) => {
@@ -48,6 +49,7 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
         </div>
       </label>
       <IconButton
+        id="signButton"
         aria-label="delete"
         size="medium"
         onClick={() => setIsOpen(true)}

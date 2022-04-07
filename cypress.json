@@ -1,0 +1,11 @@
+{
+    "projectId": "jitps9",
+    "baseUrl": "http://localhost:3000",
+    "integrationFolder": "webapp/cypress/integration",
+    "fixturesFolder": "webapp/cypress/fixtures",
+    "downloadsFolder": "webapp/cypress/downloads",
+    "screenshotsFolder": "webapp/cypress/screenshots",
+    "videosFolder": "webapp/cypress/videos",
+    "pluginsFile": "webapp/cypress/plugins/index.js",
+    "supportFile": "webapp/cypress/support/index.js"
+}

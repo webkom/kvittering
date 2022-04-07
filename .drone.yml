@@ -9,8 +9,11 @@ steps:
     when:
       event:
         - push
+    volumes:
+      - name: yarn_cache
+        path: /tmp/cache
     commands:
-      - yarn
+      - yarn --frozen-lockfile --cache-folder /tmp/cache
 
   - name: prettier
     image: node:16-slim
@@ -52,6 +55,24 @@ steps:
       - build
     commands:
       - yarn export
+
+  - name: cypress
+    image: cypress/included:9.5.3
+    when:
+      event:
+        - push
+        - export
+    depends_on:
+      - setup
+    volumes:
+      - name: yarn_cache
+        path: /tmp/cache
+    environment:
+      CYPRESS_RECORD_KEY:
+        from_secret: cypress_record_key
+    commands:
+      - apt-get -y install procps
+      - yarn cypress:ci
 
   - name: docker
     image: plugins/docker
@@ -101,3 +122,8 @@ steps:
         from_secret: infra_deploy_key
     depends_on:
       - docker
+
+volumes:
+  - name: yarn_cache
+    host:
+      path: /tmp/drone-cache/yarn
