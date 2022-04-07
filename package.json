@@ -18,7 +18,7 @@
     "prettier:write": "prettier --write 'webapp/**/*.{ts,tsx,css,html}' --ignore-path .dockerignore",
     "eslint": "eslint 'webapp/**/*.{ts,tsx}' --ignore-path .dockerignore",
     "cypress": "cypress open",
-    "cypress:headless": "yarn build && concurrently \"yarn start\" \"cypress run\" --kill-others --success first"
+    "cypress:ci": "yarn build && concurrently \"yarn start\" \"cypress run --record\" --kill-others --success first"
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",

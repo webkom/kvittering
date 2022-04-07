@@ -1,4 +1,5 @@
 {
+    "projectId": "jitps9",
     "baseUrl": "http://localhost:3000",
     "integrationFolder": "webapp/cypress/integration",
     "fixturesFolder": "webapp/cypress/fixtures",

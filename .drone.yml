@@ -67,9 +67,12 @@ steps:
     volumes:
       - name: yarn_cache
         path: /tmp/cache
+    environment:
+      CYPRESS_RECORD_KEY:
+        from_secret: cypress_record_key
     commands:
       - apt-get -y install procps
-      - yarn cypress:headless
+      - yarn cypress:ci
 
   - name: docker
     image: plugins/docker
