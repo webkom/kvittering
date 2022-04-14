@@ -9,9 +9,6 @@ steps:
     when:
       event:
         - push
-    volumes:
-      - name: yarn_cache
-        path: /tmp/cache
     commands:
       - yarn --frozen-lockfile --cache-folder /tmp/cache
 
@@ -57,16 +54,12 @@ steps:
       - yarn export
 
   - name: cypress
-    image: cypress/included:9.5.3
+    image: cypress/included:9.5.4
     when:
       event:
         - push
-        - export
     depends_on:
-      - setup
-    volumes:
-      - name: yarn_cache
-        path: /tmp/cache
+      - export
     environment:
       CYPRESS_RECORD_KEY:
         from_secret: cypress_record_key
@@ -122,8 +115,3 @@ steps:
         from_secret: infra_deploy_key
     depends_on:
       - docker
-
-volumes:
-  - name: yarn_cache
-    host:
-      path: /tmp/drone-cache/yarn
