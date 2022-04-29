@@ -1,6 +1,7 @@
 # Kvittering
 
-[![Build Status](https://ci.webkom.dev/api/badges/webkom/kvittering/status.svg)](https://ci.webkom.dev/webkom/kvittering)
+[![Build Status](https://ci.webkom.dev/api/badges/webkom/kvittering/status.svg?ref=refs/heads/master)](https://ci.webkom.dev/webkom/kvittering)
+[![kvittering](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/jitps9/master&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/jitps9/runs)
 
 This docker image runs as a normal docker container, but can also run as a function in [OpenFaaS](https://www.openfaas.com/). This is not recommended at this time, as the PDF creation can take to long, and it might time-out.
 
