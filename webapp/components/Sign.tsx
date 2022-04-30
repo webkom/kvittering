@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { MdOutlineClose } from 'react-icons/md';
 import Modal from 'react-modal';

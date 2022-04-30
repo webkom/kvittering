@@ -14,6 +14,7 @@ const App = (): JSX.Element => (
   >
     <CssBaseline />
     <Container maxWidth="sm" fixed>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/abakus.png"
         alt="abakus logo"
