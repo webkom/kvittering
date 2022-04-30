@@ -1,10 +1,6 @@
 - match:
-    dependency_name: /^@mui/
-    update_type: 'semver:minor' # includes patch updates!
-
-- match:
     dependency_type: production
-    update_type: 'semver:path'
+    update_type: 'semver:patch'
 
 - match:
     dependency_type: development
