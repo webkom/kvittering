@@ -2,7 +2,7 @@ node_modules/
 webapp/.next/
 webapp/out/
 venv/
-kaaf/__pycache__/
+server/__pycache__/
 .next/
 
 webapp/cypress/videos
