@@ -1,5 +1,3 @@
-import { Container } from '@nextui-org/react';
-
 import Form from 'components/Form';
 import Footer from 'components/Footer';
 
