@@ -110,7 +110,7 @@ steps:
     image: plugins/docker
     when:
       branch:
-        - master
+        - dev
       event:
         - push
       status:
@@ -129,7 +129,7 @@ steps:
       password:
         from_secret: docker_password
       tags:
-        - latest
+        - v2
       build_args:
         - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
@@ -137,7 +137,7 @@ steps:
     image: abakus/ansible-deploy
     when:
       branch:
-        - master
+        - dev
       event: push
       status: success
     settings:
@@ -145,7 +145,7 @@ steps:
       repository:
         from_secret: infra_repository
       tags:
-        - kvittering
+        - kvittering-staging
       limit: esas
       inventory: /infrastructure/inventory
       vault_password:
