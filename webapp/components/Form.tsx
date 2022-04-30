@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Typography, Button, Paper, CircularProgress } from '@mui/material';
-import ReceiptIcon from '@mui/icons-material/Receipt';
+import { BiReceipt } from 'react-icons/bi';
 import Alert from '@mui/lab/Alert';
 
 import Input from './Input';
@@ -51,9 +51,9 @@ const Form = (): JSX.Element => {
       {/* We have submitted the request, but gotten no response */}
       {submitting && <CircularProgress />}
       {/* We have submitted the request, and gotten succes back */}
-      {success == true && <Alert severity="success">{response}</Alert>}
+      {success === true && <Alert severity="success">{response}</Alert>}
       {/* We have submitted the request, and gotten failure back */}
-      {success == false && <Alert severity="error">{response}</Alert>}
+      {success === false && <Alert severity="error">{response}</Alert>}
     </div>
   );
 
@@ -146,9 +146,8 @@ const Form = (): JSX.Element => {
       <Button
         variant="contained"
         color="primary"
-        disabled={submitting || success == true}
+        disabled={submitting || !!success}
         style={{ width: '100%', marginTop: '3em' }}
-        className={styles.fullWidth}
         onClick={() => {
           // Reset server response
           setResponse(null);
@@ -181,7 +180,7 @@ const Form = (): JSX.Element => {
             });
         }}
       >
-        <ReceiptIcon style={{ marginRight: '10px' }} />
+        <BiReceipt size={25} style={{ marginRight: '10px' }} />
         <Typography variant="h6">Generer Kvittering</Typography>
       </Button>
     </Paper>

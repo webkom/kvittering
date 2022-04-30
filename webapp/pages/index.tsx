@@ -1,4 +1,3 @@
-import React from 'react';
 import { CssBaseline, Container } from '@mui/material';
 
 import Form from 'components/Form';
@@ -15,6 +14,7 @@ const App = (): JSX.Element => (
   >
     <CssBaseline />
     <Container maxWidth="sm" fixed>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/abakus.png"
         alt="abakus logo"

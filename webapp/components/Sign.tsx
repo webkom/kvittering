@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
-import CloseIcon from '@mui/icons-material/Close';
+import { MdOutlineClose } from 'react-icons/md';
 import Modal from 'react-modal';
 import { Typography, Button } from '@mui/material';
 import styles from './Sign.module.css';
@@ -64,7 +64,7 @@ const Sign = ({
       <div className={styles.nav}>
         <Typography variant="h6">Signer i feltet under</Typography>
         <IconButton size="medium" onClick={() => setIsOpen(false)}>
-          <CloseIcon />
+          <MdOutlineClose />
         </IconButton>
       </div>
       <p
