@@ -1,32 +1,17 @@
-input {
-  border-radius: 5px;
-  padding: 6px;
-  font-size: 1.2em;
-  margin: 10px;
-}
-
+html,
 body {
-  font-family: Raleway, Arial, sans-serif;
+  margin-top: 5rem;
+  font-family: Inter, sans-serif;
   background: #eae9e8;
-  color: #394b59;
-}
-
-body > div {
-  height: 100%;
 }
 
 .ReactModalPortal {
   height: 0 !important;
 }
 
-html,
-body {
-  margin: 0;
-  height: 100%;
-}
-
-p,
-a,
-div {
-  font-family: Raleway, Arial, sans-serif;
+input {
+  border-radius: 5px;
+  padding: 6px;
+  font-size: 1.2em;
+  margin: 10px;
 }

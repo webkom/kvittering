@@ -1,7 +1,7 @@
 describe('Load', () => {
   it('should navigate to index page', () => {
     cy.visit('/');
-    cy.get('h4').contains('Kvitteringsskjema');
+    cy.get('h1').contains('Kvitteringsskjema');
   });
 });
 
@@ -43,7 +43,7 @@ describe('Uploads', () => {
 describe('Signature drawing', () => {
   it('should be possible to draw the signature', () => {
     cy.get('#signButton').click();
-    cy.get('h6').contains('Signer');
+    cy.get('h3').contains('Signer i feltet under');
     cy.get('canvas');
     cy.get('button').contains('Bruk').click();
   });
@@ -61,7 +61,7 @@ describe('Submit', () => {
     ).as('submitResponse');
 
     // Sumbit
-    cy.get('h6').contains('Generer').click();
+    cy.get('button').contains('Generer kvittering').click();
 
     // Wait for the submitResponse
     cy.wait('@submitResponse')

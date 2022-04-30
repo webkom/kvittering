@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { MdOutlineClose } from 'react-icons/md';
 import Modal from 'react-modal';
-import { Typography, Button } from '@mui/material';
+import { Button, Text } from '@nextui-org/react';
 import styles from './Sign.module.css';
 import IconButton from '@mui/material/IconButton';
 
@@ -62,7 +62,7 @@ const Sign = ({
       ariaHideApp={false}
     >
       <div className={styles.nav}>
-        <Typography variant="h6">Signer i feltet under</Typography>
+        <Text h3>Signer i feltet under</Text>
         <IconButton size="medium" onClick={() => setIsOpen(false)}>
           <MdOutlineClose />
         </IconButton>
@@ -88,10 +88,8 @@ const Sign = ({
         ref={(ref: any) => setSigCanvas(ref)}
       />
       <div className={styles.nav}>
-        <Button variant="contained" onClick={() => sigCanvas.clear()}>
-          Begynn på nytt
-        </Button>
-        <Button variant="contained" color="primary" onClick={base64Encode}>
+        <Button onClick={() => sigCanvas.clear()}>Begynn på nytt</Button>
+        <Button color="primary" onClick={base64Encode}>
           Bruk
         </Button>
       </div>
