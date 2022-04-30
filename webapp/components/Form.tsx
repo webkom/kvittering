@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Typography, Button, Paper, CircularProgress } from '@mui/material';
-import ReceiptIcon from '@mui/icons-material/Receipt';
+import { BiReceipt } from 'react-icons/bi';
 import Alert from '@mui/lab/Alert';
 
 import Input from './Input';
@@ -148,7 +148,6 @@ const Form = (): JSX.Element => {
         color="primary"
         disabled={submitting || success == true}
         style={{ width: '100%', marginTop: '3em' }}
-        className={styles.fullWidth}
         onClick={() => {
           // Reset server response
           setResponse(null);
@@ -181,7 +180,7 @@ const Form = (): JSX.Element => {
             });
         }}
       >
-        <ReceiptIcon style={{ marginRight: '10px' }} />
+        <BiReceipt size={25} style={{ marginRight: '10px' }} />
         <Typography variant="h6">Generer Kvittering</Typography>
       </Button>
     </Paper>
