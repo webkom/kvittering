@@ -3,6 +3,25 @@
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 1em;
+  max-width: 560px;
+  margin: 0 auto;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8em;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+
+.header h1 {
+  margin: 0;
 }
 
 .response {
@@ -11,4 +30,19 @@
   width: 100%;
   max-height: 200px;
   overflow: hidden;
+}
+
+.submit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 1em;
+  width: 100%;
+  height: 4em;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.submit svg {
+  margin-right: 0.5em;
 }

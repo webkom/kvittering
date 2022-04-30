@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Typography, Button, Paper, CircularProgress } from '@mui/material';
+import { Button, Loading, Text } from '@nextui-org/react';
 import { BiReceipt } from 'react-icons/bi';
 import Alert from '@mui/lab/Alert';
 
@@ -49,7 +49,7 @@ const Form = (): JSX.Element => {
   const Response = (): JSX.Element => (
     <div className={styles.response}>
       {/* We have submitted the request, but gotten no response */}
-      {submitting && <CircularProgress />}
+      {submitting && <Loading />}
       {/* We have submitted the request, and gotten succes back */}
       {success === true && <Alert severity="success">{response}</Alert>}
       {/* We have submitted the request, and gotten failure back */}
@@ -58,13 +58,13 @@ const Form = (): JSX.Element => {
   );
 
   return (
-    <Paper elevation={3} className={styles.card}>
-      <Typography
-        variant="h4"
-        style={{ width: '100%', textAlign: 'center', marginBottom: '1em' }}
-      >
-        Kvitteringsskjema
-      </Typography>
+    <div className={styles.card}>
+      <div className={styles.header}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/favicon.png" style={{ width: '50px' }} />
+        <Text h1>Kvitteringsskjema</Text>
+      </div>
+
       <Input
         id="name"
         name="Navn"
@@ -73,6 +73,7 @@ const Form = (): JSX.Element => {
         updateForm={setName}
         helperText="Ditt fulle navn, slik kvitteringen viser"
       />
+
       <Input
         id="mailFrom"
         name="Din epost"
@@ -81,6 +82,7 @@ const Form = (): JSX.Element => {
         updateForm={setMailfrom}
         helperText="Din kopi av skjema går hit"
       />
+
       <Input
         id="committee"
         name="Komité"
@@ -88,6 +90,7 @@ const Form = (): JSX.Element => {
         updateForm={setCommittee}
         helperText={'Den komitén som skylder deg penger'}
       />
+
       <Input
         id="mailTo"
         name="Økans epost"
@@ -96,6 +99,7 @@ const Form = (): JSX.Element => {
         updateForm={setMailto}
         helperText="Økans til komitén/gruppen"
       />
+
       <Input
         id="accountNumber"
         name="Kontonummer"
@@ -105,6 +109,7 @@ const Form = (): JSX.Element => {
         updateForm={setAccountNumber}
         helperText="Pengene overføres til dette nummeret"
       />
+
       <Input
         id="amount"
         name="Beløp"
@@ -115,6 +120,7 @@ const Form = (): JSX.Element => {
         adornment={'kr'}
         helperText="Beløpet du ønsker refundert"
       />
+
       <Input
         id="date"
         name="Kjøpsdato"
@@ -124,6 +130,7 @@ const Form = (): JSX.Element => {
         updateForm={setDate}
         helperText="Helst samme som på kvittering"
       />
+
       <Input
         id="occasion"
         name="Anledning"
@@ -131,6 +138,7 @@ const Form = (): JSX.Element => {
         updateForm={setOccasion}
         helperText="I hvilken anledning har du lagt ut"
       />
+
       <Input
         id="comment"
         name="Kommentar"
@@ -140,14 +148,17 @@ const Form = (): JSX.Element => {
         updateForm={setComment}
         helperText="Fyll inn ekstra informasjon hvis nødvendig"
       />
+
       <SignatureUpload updateForm={setSignature} setSignature={setSignature} />
+
       <PictureUpload updateForm={setImages} />
+
       <Response />
+
       <Button
-        variant="contained"
-        color="primary"
-        disabled={submitting || !!success}
-        style={{ width: '100%', marginTop: '3em' }}
+        ghost
+        disabled={submitting || success === true}
+        className={styles.submit}
         onClick={() => {
           // Reset server response
           setResponse(null);
@@ -180,10 +191,10 @@ const Form = (): JSX.Element => {
             });
         }}
       >
-        <BiReceipt size={25} style={{ marginRight: '10px' }} />
-        <Typography variant="h6">Generer Kvittering</Typography>
+        <BiReceipt size={25} />
+        Generer kvittering
       </Button>
-    </Paper>
+    </div>
   );
 };
 
