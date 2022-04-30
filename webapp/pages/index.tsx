@@ -1,4 +1,4 @@
-import { CssBaseline, Container } from '@mui/material';
+import { Container } from '@nextui-org/react';
 
 import Form from 'components/Form';
 import Footer from 'components/Footer';
@@ -8,21 +8,12 @@ const App = (): JSX.Element => (
     style={{
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
-      justifyContent: 'space-between',
+      justifyContent: 'space-evenly',
     }}
   >
-    <CssBaseline />
-    <Container maxWidth="sm" fixed>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/abakus.png"
-        alt="abakus logo"
-        width="100%"
-        style={{ padding: '50px' }}
-      />
-      <Form />
-    </Container>
+    {/* <Container responsive xs style={{ maxWidth: '600px' }}> */}
+    <Form />
+    {/* </Container> */}
     <Footer />
   </div>
 );
