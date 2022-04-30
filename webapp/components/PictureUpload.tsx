@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './FileUpload.module.css';
 import IconButton from '@mui/material/IconButton';
 import { FaTrashAlt } from 'react-icons/fa';

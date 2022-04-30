@@ -1,4 +1,3 @@
-import React from 'react';
 import { TextField, InputAdornment } from '@mui/material';
 import styles from './Input.module.css';
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from './FileUpload.module.css';
 import IconButton from '@mui/material/IconButton';
 import { MdAttachFile } from 'react-icons/md';
@@ -47,12 +47,7 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
           )}
         </div>
       </label>
-      <IconButton
-        id="signButton"
-        aria-label="delete"
-        size="medium"
-        onClick={() => setIsOpen(true)}
-      >
+      <IconButton id="signButton" size="medium" onClick={() => setIsOpen(true)}>
         <div>
           <p style={{ fontSize: '10px', margin: 0 }}>Eller tegn</p>
           <FaSignature size={18} />

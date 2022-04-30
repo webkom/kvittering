@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Typography, Button, Paper, CircularProgress } from '@mui/material';
 import { BiReceipt } from 'react-icons/bi';
 import Alert from '@mui/lab/Alert';
@@ -51,9 +51,9 @@ const Form = (): JSX.Element => {
       {/* We have submitted the request, but gotten no response */}
       {submitting && <CircularProgress />}
       {/* We have submitted the request, and gotten succes back */}
-      {success == true && <Alert severity="success">{response}</Alert>}
+      {success === true && <Alert severity="success">{response}</Alert>}
       {/* We have submitted the request, and gotten failure back */}
-      {success == false && <Alert severity="error">{response}</Alert>}
+      {success === false && <Alert severity="error">{response}</Alert>}
     </div>
   );
 
@@ -146,7 +146,7 @@ const Form = (): JSX.Element => {
       <Button
         variant="contained"
         color="primary"
-        disabled={submitting || success == true}
+        disabled={submitting || !!success}
         style={{ width: '100%', marginTop: '3em' }}
         onClick={() => {
           // Reset server response
