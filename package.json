@@ -14,8 +14,8 @@
     "export": "NODE_ENV=production next export webapp",
     "start": "next start webapp",
     "lint": "yarn run prettier:check && yarn run eslint",
-    "prettier:check": "prettier --check 'webapp/**/*.{ts,tsx,css,html}' --ignore-path .dockerignore",
-    "prettier:write": "prettier --write 'webapp/**/*.{ts,tsx,css,html}' --ignore-path .dockerignore",
+    "prettier:check": "prettier --check 'webapp/**/*.{ts,tsx,css,html,md}' --ignore-path .dockerignore",
+    "prettier:write": "prettier --write 'webapp/**/*.{ts,tsx,css,html,md}' --ignore-path .dockerignore",
     "eslint": "eslint 'webapp/**/*.{ts,tsx}' --ignore-path .dockerignore",
     "cypress": "cypress open",
     "cypress:ci": "yarn build && concurrently \"yarn start\" \"cypress run --record\" --kill-others --success first"
