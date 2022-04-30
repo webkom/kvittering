@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './FileUpload.module.css';
 import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { FaTrashAlt } from 'react-icons/fa';
+import { MdAttachFile } from 'react-icons/md';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -58,7 +58,7 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
             }}
           />
           <div className={styles.fileLabel}>
-            <AttachFileIcon />
+            <MdAttachFile size={24} />
             Last opp vedlegg
           </div>
         </label>
@@ -78,8 +78,9 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
                   aria-label="delete"
                   size="small"
                   onClick={() => removeImage(i)}
+                  style={{ marginLeft: '5px' }}
                 >
-                  <DeleteIcon />
+                  <FaTrashAlt size={17} color="f74d58" />
                 </IconButton>
               </ListItem>
             </div>

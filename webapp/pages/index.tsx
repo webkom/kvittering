@@ -1,4 +1,3 @@
-import React from 'react';
 import { CssBaseline, Container } from '@mui/material';
 
 import Form from 'components/Form';
