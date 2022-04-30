@@ -1,11 +1,8 @@
 import os
 
-import sentry_sdk
-
 from flask import Flask
 from flask import request
 from gevent.pywsgi import WSGIServer
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 from handler import handle
 
@@ -13,6 +10,8 @@ from handler import handle
 static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")
 
 if os.environ.get("ENVIRONMENT") == "production":
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
     sentry_sdk.init(
         dsn=os.environ.get("SENTRY_DSN"),
         environment=os.environ.get("ENVIRONMENT"),
@@ -39,7 +38,7 @@ def index_route():
     return app.send_static_file("index.html")
 
 
-@app.route("/kaaf", methods=["POST"])
+@app.route("/generate", methods=["POST"])
 def main_route():
     response, status = handle(request.json)
     return response, status

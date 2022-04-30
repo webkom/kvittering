@@ -55,7 +55,7 @@ describe('Submit', () => {
     cy.intercept(
       {
         method: 'POST',
-        url: '/kaaf',
+        url: '/generate',
       },
       'Kvitteringsskjema generert og sendt på mail!'
     ).as('submitResponse');

@@ -1,4 +1,8 @@
 import base64
+import logging
+import io
+import os
+import tempfile
 import functools
 import io
 import logging
@@ -81,7 +85,8 @@ def create_image_file(image):
         raise UnsupportedFileException(image[:30])
     parts = image.split(";base64,")
     decoded = base64.b64decode(parts[1])
-    suffix = "pdf" if "application/pdf" in image else parts[0].split("image/")[1]
+    suffix = "pdf" if "application/pdf" in image else parts[0].split("image/")[
+        1]
     suffix = suffix.lower()
     f = tempfile.NamedTemporaryFile(suffix=f".{suffix}")
     f.write(decoded)
@@ -144,7 +149,8 @@ def create_pdf(data):
     signature = data.pop("signature")
     images = data.pop("images")
 
-    pdf.cell(0, 14, f"Kvitteringsskjema mottatt {formatdate(localtime=True)}", ln=1)
+    pdf.cell(
+        0, 14, f'Kvitteringsskjema mottatt {formatdate(localtime=True)}', ln=1)
 
     pdf.set_font("Arial", "", 12)
     for key in field_title_map.keys():
@@ -202,13 +208,27 @@ def handle(data):
 
     try:
         file = create_pdf(data)
-        mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
+        if os.environ.get("ENVIRONMENT") == "production":
+            try:
+                import mail
+                mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
+            except mail.MailConfigurationException as e:
+                logging.warning(f"Failed to send mail: {e}")
+                return f"Klarte ikke å sende email: {e}", 500
+        else:
+            from mailinglogger.summarisinglogger import SummarisingLogger
+            handler = SummarisingLogger(
+                data["mailfrom"], data["mailto"]
+            )
+            logging.basicConfig(format='%(asctime)s %(message)s',
+                                datefmt='%m/%d/%Y %I:%M:%S %p',
+                                level=logging.INFO)
+            logger = logging.getLogger()
+            logger.addHandler(handler)
+            logging.info('Sent by consolemail')
     except RuntimeError as e:
         logging.warning(f"Failed to generate pdf with exception: {e}")
         return f"Klarte ikke å generere pdf: {e}", 500
-    except mail.MailConfigurationException as e:
-        logging.warning(f"Failed to send mail: {e}")
-        return f"Klarte ikke å sende email: {e}", 500
     except Exception as e:
         logging.error(f"Failed with exception: {e}")
         return f"Noe uventet skjedde: {e}", 400

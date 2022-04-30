@@ -155,7 +155,7 @@ const Form = (): JSX.Element => {
           setSumbitting(true);
 
           // POST full body to the backend
-          fetch(`${process.env.API_URL || ''}/kaaf`, {
+          fetch(`${process.env.API_URL || ''}/generate`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
