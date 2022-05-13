@@ -1,19 +1,22 @@
+import { Container, Card, Row, Text } from '@nextui-org/react';
+
 import Form from 'components/Form';
 import Footer from 'components/Footer';
 
 const App = (): JSX.Element => (
-  <div
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-evenly',
-    }}
-  >
-    {/* <Container responsive xs style={{ maxWidth: '600px' }}> */}
-    <Form />
-    {/* </Container> */}
+  <>
+    <Container fluid xs>
+      <Card>
+        <Row justify="center" align="center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/favicon.png" style={{ width: '50px' }} />
+          <Text h1>Kvitteringsskjema</Text>
+        </Row>
+        <Form />
+      </Card>
+    </Container>
     <Footer />
-  </div>
+  </>
 );
 
 export default App;

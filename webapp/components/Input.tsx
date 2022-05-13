@@ -1,50 +1,65 @@
-import { TextField, InputAdornment } from '@mui/material';
-import styles from './Input.module.css';
+import { Field } from 'react-final-form';
+import { Input, Textarea, Grid } from '@nextui-org/react';
 
 type Props = {
   id: string;
   name: string;
-  value: string;
-  updateForm: (value: string) => void;
   required?: boolean;
   type?: string;
-  multiline?: boolean;
-  adornment?: string;
-  fullWidth?: boolean;
   helperText?: string;
+  clearable?: boolean;
+  multiLine?: boolean;
 };
 
-const Input = ({
+const ReciptInput = ({
   id,
   name,
-  value,
-  updateForm,
   required,
   type,
-  multiline,
-  adornment,
-  fullWidth,
   helperText,
+  clearable,
+  multiLine,
 }: Props): JSX.Element => (
-  <TextField
-    id={id}
-    label={name}
-    margin="normal"
-    className={!fullWidth ? styles.textField : styles.default} // Hack to limit our css on fullWidth
-    variant="outlined"
-    required={required}
-    onChange={(e) => updateForm(e.target.value)}
-    value={value}
-    type={type}
-    multiline={multiline}
-    fullWidth={fullWidth}
-    helperText={helperText}
-    InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">{adornment || ''}</InputAdornment>
-      ),
-    }}
-  />
+  <Grid>
+    <Field name={name}>
+      {(props) => {
+        return (
+          <div>
+            {!multiLine ? (
+              <Input
+                id={id}
+                label={name}
+                name={props.input.name}
+                value={props.input.value}
+                onChange={props.input.onChange}
+                bordered
+                color="primary"
+                required={required}
+                type={type}
+                helperText={helperText}
+                clearable={clearable}
+                size="md"
+              />
+            ) : (
+              <Textarea
+                id={id}
+                label={name}
+                name={props.input.name}
+                value={props.input.value}
+                onChange={props.input.onChange}
+                bordered
+                color="primary"
+                required={required}
+                helperText={helperText}
+                minRows={2}
+                fullWidth
+              />
+            )}
+          </div>
+        );
+      }}
+    </Field>
+  </Grid>
 );
 
-export default Input;
+export default ReciptInput;
