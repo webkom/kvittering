@@ -10,20 +10,6 @@
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.8em;
-  margin: 0 auto;
-  margin-bottom: 1em;
-}
-
-.header h1 {
-  margin: 0;
-}
-
 .response {
   display: flex;
   justify-content: center;

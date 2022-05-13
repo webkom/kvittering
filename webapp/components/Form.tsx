@@ -1,201 +1,163 @@
 import { useState } from 'react';
-import { Button, Loading, Text } from '@nextui-org/react';
+import { Button, Loading, Text, Row, Container, Grid } from '@nextui-org/react';
 import { BiReceipt } from 'react-icons/bi';
 import Alert from '@mui/lab/Alert';
+import { Form } from 'react-final-form';
 
-import Input from './Input';
+import ReceiptInput from './Input';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
 
 import styles from './Form.module.css';
 
-const Form = (): JSX.Element => {
-  // Get today
-  const today = new Date().toISOString().split('T')[0].toString();
+const today = new Date().toISOString().split('T')[0].toString();
 
-  // Hooks for each field in the form
-  const [images, setImages] = useState<Array<string>>([]);
-  const [date, setDate] = useState(today);
-  const [occasion, setOccasion] = useState('');
-  const [amount, setAmount] = useState('');
-  const [comment, setComment] = useState('');
-  const [mailto, setMailto] = useState('');
-  const [signature, setSignature] = useState('');
-  const [name, setName] = useState('');
-  const [committee, setCommittee] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [mailfrom, setMailfrom] = useState('');
+const Response = ({
+  response,
+  success,
+  submitting,
+}: {
+  response: string | null;
+  success: boolean | null;
+  submitting: boolean;
+}): JSX.Element => (
+  <div className={styles.response}>
+    {/* We have submitted the request, but gotten no response */}
+    {submitting && <Loading />}
+    {/* We have submitted the request, and gotten succes back */}
+    {success === true && <Alert severity="success">{response}</Alert>}
+    {/* We have submitted the request, and gotten failure back */}
+    {success === false && <Alert severity="error">{response}</Alert>}
+  </div>
+);
 
+const ReceiptForm = (): JSX.Element => {
   // Hooks for submittion
-  const [submitting, setSumbitting] = useState(false);
   const [success, setSuccess] = useState<boolean | null>(null);
   const [response, setResponse] = useState<string | null>(null);
 
-  // The body object sendt to the backend
-  const formBody = {
-    images,
-    date,
-    occasion,
-    amount,
-    comment,
-    mailto,
-    signature,
-    name,
-    committee,
-    accountNumber,
-    mailfrom,
+  const [images, setImages] = useState<Array<string>>([]);
+  const [signature, setSignature] = useState('');
+
+  const onSubmit = async (values: any) => {
+    console.log('SUBMIT', values);
+
+    // Reset server response
+    setResponse(null);
+    setSuccess(null);
+
+    // POST full body to the backend
+    fetch(`${process.env.API_URL || ''}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          setSuccess(false);
+        } else {
+          setSuccess(true);
+        }
+        return res.text();
+      })
+      .then((text) => {
+        setResponse(text);
+      })
+      .catch((err) => {
+        setResponse(`Error: ${err.text()}`);
+      });
   };
 
-  const Response = (): JSX.Element => (
-    <div className={styles.response}>
-      {/* We have submitted the request, but gotten no response */}
-      {submitting && <Loading />}
-      {/* We have submitted the request, and gotten succes back */}
-      {success === true && <Alert severity="success">{response}</Alert>}
-      {/* We have submitted the request, and gotten failure back */}
-      {success === false && <Alert severity="error">{response}</Alert>}
-    </div>
-  );
-
   return (
-    <div className={styles.card}>
-      <div className={styles.header}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/favicon.png" style={{ width: '50px' }} />
-        <Text h1>Kvitteringsskjema</Text>
-      </div>
-
-      <Input
-        id="name"
-        name="Navn"
-        value={name}
-        required
-        updateForm={setName}
-        helperText="Ditt fulle navn, slik kvitteringen viser"
+    <>
+      <Form
+        onSubmit={onSubmit}
+        // TODO: Implement SessionStorage
+        // initialValues={{ stooge: 'larry', employed: false }}
+        render={({ handleSubmit, form, submitting, pristine, values }) => (
+          <form onSubmit={handleSubmit}>
+            <Grid.Container gap={2.5} justify="center" css={{ mt: '4px' }}>
+              <ReceiptInput
+                id="name"
+                name="Navn"
+                required
+                helperText="Ditt fulle navn, slik kvitteringen viser"
+              />
+              <ReceiptInput
+                id="mailFrom"
+                name="Din epost"
+                required
+                helperText="Din kopi av skjema går hit"
+              />
+              <ReceiptInput
+                id="committee"
+                name="Komité"
+                helperText={'Den komitén som skylder deg penger'}
+              />
+              <ReceiptInput
+                id="mailTo"
+                name="Økans epost"
+                required
+                helperText="Økans til komitén/gruppen"
+              />
+              <ReceiptInput
+                id="accountNumber"
+                name="Kontonummer"
+                required
+                type="number"
+                helperText="Pengene overføres til dette nummeret"
+              />
+              <ReceiptInput
+                id="amount"
+                name="Beløp"
+                required
+                type="number"
+                helperText="Beløpet du ønsker refundert"
+              />
+              <ReceiptInput
+                id="date"
+                name="Kjøpsdato"
+                required
+                type="date"
+                helperText="Helst samme som på kvittering"
+              />
+              <ReceiptInput
+                id="occasion"
+                name="Anledning"
+                helperText="I hvilken anledning har du lagt ut"
+              />
+              <ReceiptInput
+                id="comment"
+                name="Kommentar"
+                multiLine
+                helperText="Fyll inn ekstra informasjon hvis nødvendig"
+              />
+              <SignatureUpload
+                updateForm={setSignature}
+                setSignature={setSignature}
+              />
+              <PictureUpload updateForm={setImages} />
+              <Button
+                ghost
+                disabled={submitting || success === true}
+                className={styles.submit}
+              >
+                <BiReceipt size={25} />
+                Generer kvittering
+              </Button>
+            </Grid.Container>
+            <Response
+              response={response}
+              success={success}
+              submitting={submitting}
+            />
+          </form>
+        )}
       />
-
-      <Input
-        id="mailFrom"
-        name="Din epost"
-        value={mailfrom}
-        required
-        updateForm={setMailfrom}
-        helperText="Din kopi av skjema går hit"
-      />
-
-      <Input
-        id="committee"
-        name="Komité"
-        value={committee}
-        updateForm={setCommittee}
-        helperText={'Den komitén som skylder deg penger'}
-      />
-
-      <Input
-        id="mailTo"
-        name="Økans epost"
-        value={mailto}
-        required
-        updateForm={setMailto}
-        helperText="Økans til komitén/gruppen"
-      />
-
-      <Input
-        id="accountNumber"
-        name="Kontonummer"
-        value={accountNumber}
-        required
-        type="number"
-        updateForm={setAccountNumber}
-        helperText="Pengene overføres til dette nummeret"
-      />
-
-      <Input
-        id="amount"
-        name="Beløp"
-        value={amount}
-        required
-        type="number"
-        updateForm={setAmount}
-        adornment={'kr'}
-        helperText="Beløpet du ønsker refundert"
-      />
-
-      <Input
-        id="date"
-        name="Kjøpsdato"
-        value={date}
-        required
-        type="date"
-        updateForm={setDate}
-        helperText="Helst samme som på kvittering"
-      />
-
-      <Input
-        id="occasion"
-        name="Anledning"
-        value={occasion}
-        updateForm={setOccasion}
-        helperText="I hvilken anledning har du lagt ut"
-      />
-
-      <Input
-        id="comment"
-        name="Kommentar"
-        multiline
-        fullWidth
-        value={comment}
-        updateForm={setComment}
-        helperText="Fyll inn ekstra informasjon hvis nødvendig"
-      />
-
-      <SignatureUpload updateForm={setSignature} setSignature={setSignature} />
-
-      <PictureUpload updateForm={setImages} />
-
-      <Response />
-
-      <Button
-        ghost
-        disabled={submitting || success === true}
-        className={styles.submit}
-        onClick={() => {
-          // Reset server response
-          setResponse(null);
-          setSuccess(null);
-          setSumbitting(true);
-
-          // POST full body to the backend
-          fetch(`${process.env.API_URL || ''}/generate`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formBody),
-          })
-            .then((res) => {
-              if (!res.ok) {
-                setSuccess(false);
-              } else {
-                setSuccess(true);
-              }
-              setSumbitting(false);
-              return res.text();
-            })
-            .then((text) => {
-              setResponse(text);
-            })
-            .catch((err) => {
-              setResponse(`Error: ${err.text()}`);
-              setSumbitting(false);
-            });
-        }}
-      >
-        <BiReceipt size={25} />
-        Generer kvittering
-      </Button>
-    </div>
+    </>
   );
 };
 
-export default Form;
+export default ReceiptForm;
