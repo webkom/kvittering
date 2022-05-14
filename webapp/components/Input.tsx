@@ -1,5 +1,6 @@
 import { Field } from 'react-final-form';
 import { Input, Textarea, Grid } from '@nextui-org/react';
+import styles from './Input.module.css';
 
 type Props = {
   id: string;
@@ -7,38 +8,43 @@ type Props = {
   required?: boolean;
   type?: string;
   helperText?: string;
+  fullWidth?: boolean;
   clearable?: boolean;
+  contentRight?: JSX.Element;
   multiLine?: boolean;
 };
 
-const ReciptInput = ({
+const ReceiptInput = ({
   id,
   name,
   required,
   type,
   helperText,
   clearable,
+  contentRight,
   multiLine,
+  fullWidth,
 }: Props): JSX.Element => (
   <Grid>
     <Field name={name}>
       {(props) => {
         return (
-          <div>
+          <>
             {!multiLine ? (
               <Input
                 id={id}
-                label={name}
-                name={props.input.name}
+                labelPlaceholder={props.input.name}
                 value={props.input.value}
                 onChange={props.input.onChange}
-                bordered
-                color="primary"
                 required={required}
                 type={type}
                 helperText={helperText}
+                contentRight={contentRight}
                 clearable={clearable}
-                size="md"
+                fullWidth={fullWidth}
+                underlined
+                color="primary"
+                className={styles.input}
               />
             ) : (
               <Textarea
@@ -47,19 +53,19 @@ const ReciptInput = ({
                 name={props.input.name}
                 value={props.input.value}
                 onChange={props.input.onChange}
-                bordered
+                underlined
                 color="primary"
                 required={required}
                 helperText={helperText}
                 minRows={2}
-                fullWidth
+                fullWidth={fullWidth}
               />
             )}
-          </div>
+          </>
         );
       }}
     </Field>
   </Grid>
 );
 
-export default ReciptInput;
+export default ReceiptInput;
