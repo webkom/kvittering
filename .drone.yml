@@ -54,7 +54,7 @@ steps:
       - yarn export
 
   - name: cypress
-    image: cypress/included:9.6.0
+    image: cypress/included:10.0.3
     when:
       event:
         - push
