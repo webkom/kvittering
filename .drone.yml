@@ -10,7 +10,7 @@ steps:
       event:
         - push
     commands:
-      - yarn --frozen-lockfile --cache-folder /tmp/cache
+      - yarn --frozen-lockfile
 
   - name: prettier
     image: node:16-slim
@@ -54,7 +54,7 @@ steps:
       - yarn export
 
   - name: cypress
-    image: cypress/included:10.0.3
+    image: cypress/included:10.2.0
     when:
       event:
         - push
