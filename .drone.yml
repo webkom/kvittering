@@ -10,7 +10,7 @@ steps:
       event:
         - push
     commands:
-      - yarn --frozen-lockfile --cache-folder /tmp/cache
+      - yarn --frozen-lockfile
 
   - name: prettier
     image: node:16-slim
