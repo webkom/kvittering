@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: setup
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -21,7 +21,7 @@ steps:
       - poetry install --with dev
 
   - name: prettier
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -51,7 +51,7 @@ steps:
       - poetry
 
   - name: eslint
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -61,7 +61,7 @@ steps:
       - yarn eslint
 
   - name: build
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -71,7 +71,7 @@ steps:
       - yarn build
 
   - name: export
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -129,7 +129,7 @@ steps:
       password:
         from_secret: docker_password
       tags:
-        - v2
+        - dev
       build_args:
         - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
@@ -145,7 +145,7 @@ steps:
       repository:
         from_secret: infra_repository
       tags:
-        - kvittering-staging
+        - kvittering-dev
       limit: esas
       inventory: /infrastructure/inventory
       vault_password:
