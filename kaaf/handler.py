@@ -1,21 +1,20 @@
 import base64
-import logging
-import io
-import tempfile
-import mail
 import functools
+import io
+import logging
 import operator
-
-from fpdf import FPDF
-from PIL import Image
-from sentry_sdk import configure_scope
+import tempfile
 from email.utils import formatdate
-
-# Handle PDF files
-from pdf2image import convert_from_path
 
 # Handle HEIC photoes
 import pyheif
+from fpdf import FPDF
+# Handle PDF files
+from pdf2image import convert_from_path
+from PIL import Image
+from sentry_sdk import configure_scope
+
+import mail
 
 
 class UnsupportedFileException(Exception):
@@ -128,6 +127,7 @@ def modify_data(data):
     data["images"] = functools.reduce(
         operator.iconcat, [create_image_file(img) for img in images], []
     )
+    data["amount"] = '{:.2f} kr'.format(float(data.get("amount", "0")))
 
     return data
 

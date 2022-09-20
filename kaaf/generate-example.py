@@ -5,7 +5,7 @@ from handler import create_pdf, modify_data
 
 default_data = {
     "date": "11-03-2020",
-    "amount": "153 kr",
+    "amount": "153",
     "name": "Lar",
     "accountNumber": "010101010101",
     "committee": "Komkom",
