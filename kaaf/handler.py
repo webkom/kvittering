@@ -4,11 +4,14 @@ import io
 import logging
 import operator
 import tempfile
+
 from email.utils import formatdate
 
 # Handle HEIC photoes
 import pyheif
+
 from fpdf import FPDF
+
 # Handle PDF files
 from pdf2image import convert_from_path
 from PIL import Image
@@ -127,7 +130,7 @@ def modify_data(data):
     data["images"] = functools.reduce(
         operator.iconcat, [create_image_file(img) for img in images], []
     )
-    data["amount"] = '{:.2f} kr'.format(float(data.get("amount", "0")))
+    data["amount"] = "{:.2f} kr".format(float(data.get("amount", "0")))
 
     return data
 
@@ -141,7 +144,7 @@ def create_pdf(data):
     signature = data.pop("signature")
     images = data.pop("images")
 
-    pdf.cell(0, 14, f'Kvitteringsskjema mottatt {formatdate(localtime=True)}', ln=1)
+    pdf.cell(0, 14, f"Kvitteringsskjema mottatt {formatdate(localtime=True)}", ln=1)
 
     pdf.set_font("Arial", "", 12)
     for key in field_title_map.keys():
@@ -190,7 +193,10 @@ def handle(data):
     except UnsupportedFileException as e:
         logging.error(f"Unsupported file type: {e}")
         return (
-            "En av filene som ble lastet opp er ikke i støttet format. Bruk PNG, JPEG, GIF, HEIC eller PDF",
+            (
+                "En av filene som ble lastet opp er ikke i støttet format. Bruk PNG,"
+                " JPEG, GIF, HEIC eller PDF"
+            ),
             400,
         )
 

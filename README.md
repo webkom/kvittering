@@ -23,14 +23,16 @@ $ yarn dev
 
 #### Option 2) Run the backend (with built frontend):
 
+Requires [Poetry](https://python-poetry.org/docs/#installation)
+
 ```sh
 
-# Make a virtual env
+# Make a virtual environment
 $ python -m venv venv
 $ source venv/bin/activate
 
 # Install packages
-$ pip install -r kaaf/req.txt
+$ poetry install
 
 # Export the frontend and run the backend
 $ yarn build && yarn export

@@ -12,6 +12,14 @@ steps:
     commands:
       - yarn --frozen-lockfile
 
+  - name: poetry
+    image: abakus/lego-testbase:poetry
+    when:
+      event:
+        - push
+    commands:
+      - poetry install --with dev
+
   - name: prettier
     image: node:16-slim
     when:
@@ -21,6 +29,26 @@ steps:
       - setup
     commands:
       - yarn prettier:check
+
+  - name: black
+    image: abakus/lego-testbase:poetry
+    when:
+      event:
+        - push
+    commands:
+      - poetry run black --check kaaf
+    depends_on:
+      - poetry
+
+  - name: isort
+    image: abakus/lego-testbase:poetry
+    when:
+      event:
+        - push
+    commands:
+      - poetry run isort --check kaaf
+    depends_on:
+      - poetry
 
   - name: eslint
     image: node:16-slim

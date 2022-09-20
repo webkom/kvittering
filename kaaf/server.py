@@ -1,11 +1,14 @@
 import os
+
 import sentry_sdk
 
-from flask import Flask, request
+from flask import Flask
+from flask import request
 from gevent.pywsgi import WSGIServer
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from handler import handle
+
 
 static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")
 
@@ -14,7 +17,7 @@ if os.environ.get("ENVIRONMENT") == "production":
         dsn=os.environ.get("SENTRY_DSN"),
         environment=os.environ.get("ENVIRONMENT"),
         integrations=[FlaskIntegration()],
-        traces_sample_rate=1.0
+        traces_sample_rate=1.0,
     )
 
 app = Flask(__name__, static_folder=static_file_directory, static_url_path="")
@@ -27,7 +30,7 @@ def fix_transfer_encoding():
     """
 
     transfer_encoding = request.headers.get("Transfer-Encoding", None)
-    if transfer_encoding == u"chunked":
+    if transfer_encoding == "chunked":
         request.environ["wsgi.input_terminated"] = True
 
 
