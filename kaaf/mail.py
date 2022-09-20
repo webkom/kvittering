@@ -1,7 +1,6 @@
 import base64
 import datetime
 import json
-import locale
 import logging
 import os
 from email.mime.application import MIMEApplication
@@ -11,8 +10,6 @@ from email.utils import COMMASPACE, formatdate
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-
-locale.setlocale(locale.LC_MONETARY, "nb_NO.UTF-8")
 
 
 class MailConfigurationException(Exception):
