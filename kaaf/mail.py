@@ -1,15 +1,18 @@
+import base64
+import datetime
+import json
+import locale
 import logging
 import os
-import json
-import base64
-
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
-
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
+
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+
+locale.setlocale(locale.LC_MONETARY, "nb_NO.UTF-8")
 
 
 class MailConfigurationException(Exception):
@@ -17,10 +20,12 @@ class MailConfigurationException(Exception):
 
 
 def service_account_login(mail_from, service_account_str):
-    SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-    credentials = service_account.Credentials.from_service_account_info(json.loads(base64.b64decode(service_account_str)), scopes=SCOPES)
-    delegated_credentials = credentials.with_subject(mail_from) 
-    return build('gmail', 'v1', credentials=delegated_credentials)
+    SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+    credentials = service_account.Credentials.from_service_account_info(
+        json.loads(base64.b64decode(service_account_str)), scopes=SCOPES
+    )
+    delegated_credentials = credentials.with_subject(mail_from)
+    return build("gmail", "v1", credentials=delegated_credentials)
 
 
 def create_mail(msg, body):
@@ -31,7 +36,7 @@ def create_mail(msg, body):
     text = ""
     text += f'Laget av: {body.get("name", "")}\n'
     text += f'Anledning: {body.get("occasion", "")}\n'
-    text += f'Beløp: {body.get("amount", "")}\n'
+    text += f'Beløp: {body.get("amount", "0")}\n'
     text += f'Kommentar: {body.get("comment", "")}\n'
     text += f"Kvitteringsskjema er lagt ved i pdf"
 
@@ -51,7 +56,11 @@ def send_mail(mail_to, body, file):
 
     create_mail(msg, body)
 
-    filename = "kvitteringsskjema.pdf"
+    occasion = f"-{body['occasion']}" if "occasion" in body else ""
+
+    filename = (
+        f"Kvitteringsskjema-{body['name']}{occasion}-{datetime.date.today()}.pdf"
+    )
     part = MIMEApplication(file, Name=filename)
     part["Content-Disposition"] = f'attachment; filename="{filename}"'
     msg.attach(part)
@@ -60,6 +69,6 @@ def send_mail(mail_to, body, file):
 
     service = service_account_login(mail_from, service_account_str)
     raw = base64.urlsafe_b64encode(msg.as_bytes())
-    body = { 'raw': raw.decode() }
+    body = {"raw": raw.decode()}
     messages = service.users().messages()
     messages.send(userId="me", body=body).execute()
