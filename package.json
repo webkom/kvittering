@@ -35,11 +35,11 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.3.1",
     "@types/node": "^18.7.21",
-    "@types/react": "^18.0.18",
+    "@types/react": "^18.0.21",
     "@types/react-modal": "^3.13.1",
     "@types/react-signature-canvas": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
-    "@typescript-eslint/parser": "^5.36.2",
+    "@typescript-eslint/parser": "^5.38.0",
     "concurrently": "^7.4.0",
     "cypress": "^10.7.0",
     "cypress-file-upload": "^5.0.8",
