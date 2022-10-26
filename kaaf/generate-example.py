@@ -1,7 +1,9 @@
 import argparse
 import base64
 
-from handler import create_pdf, modify_data
+from handler import create_pdf
+from handler import modify_data
+
 
 default_data = {
     "date": "11-03-2020",

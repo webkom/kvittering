@@ -3,10 +3,12 @@ import datetime
 import json
 import logging
 import os
+
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formatdate
+from email.utils import COMMASPACE
+from email.utils import formatdate
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -55,9 +57,7 @@ def send_mail(mail_to, body, file):
 
     occasion = f"-{body['occasion']}" if "occasion" in body else ""
 
-    filename = (
-        f"Kvitteringsskjema-{body['name']}{occasion}-{datetime.date.today()}.pdf"
-    )
+    filename = f"Kvitteringsskjema-{body['name']}{occasion}-{datetime.date.today()}.pdf"
     part = MIMEApplication(file, Name=filename)
     part["Content-Disposition"] = f'attachment; filename="{filename}"'
     msg.attach(part)

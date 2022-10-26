@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "kvittering"
+version = "1.0.0"
+description = ""
+authors = ["Webkom Abakus <webkom@abakus.no>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+flask = "2.0.3"
+gevent = "21.12.0"
+fpdf = "1.7.2"
+sentry-sdk = {extras = ["flask"], version = "^1.5.8"}
+Pillow = "9.0.1"
+pdf2image = "1.0.0"
+pyheif = "0.7.0"
+google = "3.0.0"
+google-api-python-client = "2.42.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.3.0"
+isort = "^5.10.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+target-version = ['py37']
+preview = true
+
+[tool.isort]
+py_version = 37
+profile = "black"
+force_single_line = true
+combine_as_imports = true
+lines_between_types = 1
+lines_after_imports = 2
+src_paths = ["kaaf"]
