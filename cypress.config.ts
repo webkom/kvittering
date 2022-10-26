@@ -15,7 +15,7 @@ export default defineConfig({
     supportFile: 'webapp/cypress/commands.js',
   },
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     specPattern: 'webapp/cypress/e2e/**/*.{js,jsx,ts,tsx}',
     fixturesFolder: "webapp/cypress/fixtures",
     downloadsFolder: "webapp/cypress/downloads",

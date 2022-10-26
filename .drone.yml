@@ -76,10 +76,20 @@ steps:
       event:
         - push
     depends_on:
-      - setup
       - build
     commands:
       - yarn export
+
+  - name: server
+    image: node:16-slim
+    detach: true
+    when:
+      event:
+        - push
+    depends_on:
+      - build
+    commands:
+      - yarn start
 
   - name: cypress
     image: cypress/included:10.7.0
@@ -87,13 +97,14 @@ steps:
       event:
         - push
     depends_on:
-      - export
+      - build
     environment:
       CYPRESS_RECORD_KEY:
         from_secret: cypress_record_key
+      BASE_URL: "http://server:3000"
     commands:
       - apt-get -y install procps
-      - yarn cypress:ci
+      - cypress run --record
 
   - name: docker
     image: plugins/docker
