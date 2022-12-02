@@ -33,7 +33,7 @@
     "react-signature-canvas": "^1.0.6"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^13.0.4",
+    "@next/eslint-plugin-next": "^13.0.6",
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "@types/react-modal": "^3.13.1",
