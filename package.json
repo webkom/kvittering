@@ -43,7 +43,7 @@
     "concurrently": "^7.6.0",
     "cypress": "^10.10.0",
     "cypress-file-upload": "^5.0.8",
-    "eslint": "^8.38.0",
+    "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
