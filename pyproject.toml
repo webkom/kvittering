@@ -12,7 +12,7 @@ flask = "2.0.3"
 gevent = "21.12.0"
 fpdf = "1.7.2"
 sentry-sdk = {extras = ["flask"], version = "^1.5.8"}
-Pillow = "9.0.1"
+Pillow = "9.3.0"
 pdf2image = "1.0.0"
 pyheif = "0.7.0"
 google = "3.0.0"
