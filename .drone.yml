@@ -36,7 +36,7 @@ steps:
       event:
         - push
     commands:
-      - poetry run black --check kaaf
+      - poetry run black --check server
     depends_on:
       - poetry
 
@@ -46,7 +46,7 @@ steps:
       event:
         - push
     commands:
-      - poetry run isort --check kaaf
+      - poetry run isort --check server
     depends_on:
       - poetry
 
@@ -110,6 +110,7 @@ steps:
     image: plugins/docker
     when:
       branch:
+        - master
         - dev
       event:
         - push
@@ -129,11 +130,11 @@ steps:
       password:
         from_secret: docker_password
       tags:
-        - dev
+        - latest
       build_args:
         - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
-  - name: Deploy
+  - name: Deploy dev
     image: abakus/ansible-deploy
     when:
       branch:
@@ -146,6 +147,28 @@ steps:
         from_secret: infra_repository
       tags:
         - kvittering-dev
+      limit: esas
+      inventory: /infrastructure/inventory
+      vault_password:
+        from_secret: ansible_vault_password
+      private_key:
+        from_secret: infra_deploy_key
+    depends_on:
+      - docker
+
+  - name: Deploy prod
+    image: abakus/ansible-deploy
+    when:
+      branch:
+        - master
+      event: push
+      status: success
+    settings:
+      playbook: /infrastructure/esas/playbooks/deploy.yml
+      repository:
+        from_secret: infra_repository
+      tags:
+        - kvittering
       limit: esas
       inventory: /infrastructure/inventory
       vault_password:

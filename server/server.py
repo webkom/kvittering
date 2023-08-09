@@ -11,7 +11,9 @@ static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")
 
 if os.environ.get("ENVIRONMENT") == "production":
     import sentry_sdk
+
     from sentry_sdk.integrations.flask import FlaskIntegration
+
     sentry_sdk.init(
         dsn=os.environ.get("SENTRY_DSN"),
         environment=os.environ.get("ENVIRONMENT"),

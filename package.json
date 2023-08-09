@@ -27,7 +27,7 @@
     "@mui/lab": "^5.0.0-alpha.91",
     "@mui/material": "^5.9.3",
     "@nextui-org/react": "^1.0.0-beta.9",
-    "next": "^12.2.5",
+    "next": "^13.4.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.3.1",
