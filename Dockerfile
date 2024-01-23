@@ -4,9 +4,13 @@ RUN apt-get update && apt-get install -y poppler-utils
 
 WORKDIR /app
 
-COPY ./server/requirements/ ./server/requirements/
+COPY ./pyproject.toml ./pyproject.toml
 
-RUN pip install --no-cache-dir -r server/requirements/prod.txt
+RUN pip install poetry
+
+RUN set -e \
+  && poetry config virtualenvs.create false \
+  && poetry install --without dev
 
 FROM node:18-slim AS build-frontend
 
