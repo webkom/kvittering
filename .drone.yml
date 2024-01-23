@@ -131,6 +131,7 @@ steps:
         from_secret: docker_password
       tags:
         - latest
+        - dev
       build_args:
         - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 

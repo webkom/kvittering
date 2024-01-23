@@ -1,6 +1,6 @@
 html,
 body {
-  margin-top: 5rem;
+  margin: 1rem;
   font-family: Inter, sans-serif;
   background: #eae9e8;
 }
@@ -9,9 +9,9 @@ body {
   height: 0 !important;
 }
 
-input {
-  border-radius: 5px;
-  padding: 6px;
-  font-size: 1.2em;
-  margin: 10px;
+@media screen and (max-width: 500px) {
+  html,
+  body {
+    margin: 1rem 0;
+  }
 }

@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import styles from './FileUpload.module.css';
 import IconButton from '@mui/material/IconButton';
-import { MdAttachFile } from 'react-icons/md';
+import { MdAttachFile, MdCheck } from 'react-icons/md';
 import { FaSignature, FaPencilAlt } from 'react-icons/fa';
 import Sign from './Sign';
+import { Text } from '@nextui-org/react';
 
 type Props = {
+  signature: string;
   updateForm: (value: string) => void;
   setSignature: (value: string) => void;
 };
 
-const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
-  const [hasUploaded, setHasUploaded] = useState(false);
+const SignatureUpload = ({
+  signature,
+  updateForm,
+  setSignature,
+}: Props): JSX.Element => {
   const [modalIsOpen, setIsOpen] = useState(false);
 
   return (
@@ -29,7 +34,6 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
                 'load',
                 () => {
                   updateForm(reader.result as string);
-                  setHasUploaded(true);
                 },
                 false
               );
@@ -37,17 +41,27 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
           }}
         />
         <div className={styles.fileLabel}>
-          {hasUploaded ? (
-            <div className={styles.uploadedElement}>Signatur lastet opp</div>
+          {signature !== '' ? (
+            <>
+              <Text color="success" css={{ lineHeight: 0, marginRight: '5px' }}>
+                <MdCheck size={20} />
+              </Text>
+              <Text color="success">Signatur lastet opp</Text>
+            </>
           ) : (
             <>
               <MdAttachFile size={24} />
-              <span>Last opp signatur</span>
+              <Text>Last opp signatur</Text>
             </>
           )}
         </div>
       </label>
-      <IconButton id="signButton" size="medium" onClick={() => setIsOpen(true)}>
+      <IconButton
+        id="signButton"
+        className={styles.signButton}
+        size="medium"
+        onClick={() => setIsOpen(true)}
+      >
         <div>
           <p style={{ fontSize: '10px', margin: 0 }}>Eller tegn</p>
           <FaSignature size={18} />
@@ -59,9 +73,9 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}
         setSignature={setSignature}
-        setHasUploaded={setHasUploaded}
       />
     </div>
   );
 };
+
 export default SignatureUpload;

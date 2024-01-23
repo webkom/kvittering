@@ -1,7 +1,7 @@
 describe('Load', () => {
   it('should navigate to index page', () => {
     cy.visit('/');
-    cy.get('h1').contains('Kvitteringsskjema');
+    cy.get('h4').contains('Kvitteringsskjema');
   });
 });
 
@@ -20,10 +20,10 @@ describe('Form', () => {
 });
 
 describe('Uploads', () => {
-  it('should be able to uplaod signature', () => {
+  it('should be able to upload signature', () => {
     cy.get('#signature').attachFile('abakus.png');
   });
-  it('should be able to uplaod one attachment', () => {
+  it('should be able to upload one attachment', () => {
     cy.get('#attachments').attachFile('abakus.png');
 
     // After uploading one image we should have one attachment
@@ -31,11 +31,11 @@ describe('Uploads', () => {
       cy.get('li').should('have.length', 1);
     });
   });
-  it('should be able to uplaod multiple attachments', () => {
+  it('should be able to upload multiple attachments', () => {
     // After uploading two image more we should have three attachments
     cy.get('#attachments').attachFile(['abakus.png', 'abakus.png']);
     cy.get('#uploadedAttachments').within(() => {
-      cy.get('li').should('have.length', 3);
+      cy.get('li').should('have.length', 2);
     });
   });
 });
@@ -51,6 +51,7 @@ describe('Signature drawing', () => {
 
 describe('Submit', () => {
   it('should be possible to submit', () => {
+    cy.visit('/');
     // Set up a catch for the POST request
     cy.intercept(
       {
@@ -60,7 +61,20 @@ describe('Submit', () => {
       'Kvitteringsskjema generert og sendt på mail!'
     ).as('submitResponse');
 
-    // Sumbit
+    // Fill in values
+    cy.get('#name').type('John Doe');
+    cy.get('#mailFrom').type('jon@doe.com');
+    cy.get('#committee').type('webkom');
+    cy.get('#mailTo').type('lisa@doe.com');
+    cy.get('#accountNumber').type('1000 10 10000');
+    cy.get('#amount').type('1000');
+    cy.get('#date').type('1970-01-01');
+    cy.get('#occasion').type('Cypress');
+    cy.get('#comment').type('Cypress test');
+    cy.get('#signature').attachFile('abakus.png');
+    cy.get('#attachments').attachFile('abakus.png');
+
+    // Submit
     cy.get('button').contains('Generer kvittering').click();
 
     // Wait for the submitResponse

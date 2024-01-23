@@ -14,7 +14,7 @@ export default function MyApp({ Component, pageProps }: any): JSX.Element {
         />
       </Head>
       <NextUIProvider>
-        <Component {...pageProps} />;
+        <Component {...pageProps} />
       </NextUIProvider>
     </>
   );

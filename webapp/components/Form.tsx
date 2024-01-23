@@ -1,201 +1,264 @@
-import { useState } from 'react';
-import { Button, Loading, Text } from '@nextui-org/react';
+import { useMemo, useState } from 'react';
+import { Button, Loading, Row, Text } from '@nextui-org/react';
+import type { FormRenderProps } from 'react-final-form';
 import { BiReceipt } from 'react-icons/bi';
 import Alert from '@mui/lab/Alert';
+import { Form } from 'react-final-form';
 
-import Input from './Input';
+import ReceiptInput from './Input';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
 
 import styles from './Form.module.css';
+import { accountValidator, emailValidator } from 'utils/validators';
 
-const Form = (): JSX.Element => {
-  // Get today
-  const today = new Date().toISOString().split('T')[0].toString();
+type FormValues = {
+  name: string;
+  mailFrom: string;
+  committee: string;
+  mailTo: string;
+  accountNumber: string;
+  amount?: number;
+  date: string;
+  occasion: string;
+  comment: string;
+  signature: string;
+  images: string[];
+};
 
-  // Hooks for each field in the form
-  const [images, setImages] = useState<Array<string>>([]);
-  const [date, setDate] = useState(today);
-  const [occasion, setOccasion] = useState('');
-  const [amount, setAmount] = useState('');
-  const [comment, setComment] = useState('');
-  const [mailto, setMailto] = useState('');
-  const [signature, setSignature] = useState('');
-  const [name, setName] = useState('');
-  const [committee, setCommittee] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [mailfrom, setMailfrom] = useState('');
+const today = new Date().toISOString().split('T')[0].toString();
 
-  // Hooks for submittion
-  const [submitting, setSumbitting] = useState(false);
+const Response = ({
+  response,
+  success,
+  submitting,
+}: {
+  response: string | null;
+  success: boolean | null;
+  submitting: boolean;
+}): JSX.Element => (
+  <div className={styles.response}>
+    {/* We have submitted the request, but gotten no response */}
+    {submitting && <Loading />}
+
+    {/* We have submitted the request, and gotten success back */}
+    {success === true && <Alert severity="success">{response}</Alert>}
+
+    {/* We have submitted the request, and gotten failure back */}
+    {success === false && <Alert severity="error">{response}</Alert>}
+  </div>
+);
+
+const ReceiptForm = (): JSX.Element => {
+  // Hooks for submission
   const [success, setSuccess] = useState<boolean | null>(null);
   const [response, setResponse] = useState<string | null>(null);
 
-  // The body object sendt to the backend
-  const formBody = {
-    images,
-    date,
-    occasion,
-    amount,
-    comment,
-    mailto,
-    signature,
-    name,
-    committee,
-    accountNumber,
-    mailfrom,
+  const onSubmit = async (
+    values: FormValues,
+    form: FormRenderProps<FormValues, Partial<FormValues>>['form']
+  ) => {
+    // Reset server response
+    setResponse(null);
+    setSuccess(null);
+
+    // POST full body to the backend
+    await fetch(`${process.env.API_URL || ''}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          setSuccess(false);
+        } else {
+          setSuccess(true);
+        }
+        return res.text();
+      })
+      .then((text) => {
+        form.restart();
+        setResponse(text);
+      })
+      .catch((err) => {
+        setResponse(`Error: ${err.text()}`);
+      });
   };
 
-  const Response = (): JSX.Element => (
-    <div className={styles.response}>
-      {/* We have submitted the request, but gotten no response */}
-      {submitting && <Loading />}
-      {/* We have submitted the request, and gotten succes back */}
-      {success === true && <Alert severity="success">{response}</Alert>}
-      {/* We have submitted the request, and gotten failure back */}
-      {success === false && <Alert severity="error">{response}</Alert>}
-    </div>
-  );
-
   return (
-    <div className={styles.card}>
-      <div className={styles.header}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/favicon.png" style={{ width: '50px' }} />
-        <Text h1>Kvitteringsskjema</Text>
-      </div>
+    <Form<FormValues>
+      onSubmit={onSubmit}
+      // TODO: Implement SessionStorage
+      initialValues={{
+        name: '',
+        mailFrom: '',
+        committee: '',
+        mailTo: '',
+        accountNumber: undefined,
+        amount: undefined,
+        date: today,
+        occasion: '',
+        comment: '',
+        signature: '',
+        images: [],
+      }}
+      validate={(values) => {
+        const errors: { [key: string]: string } = {};
+        if (values.signature === '') {
+          errors.signature = 'Du må laste opp eller tegne en signatur';
+        }
+        if (values.images.length === 0) {
+          errors.images = 'Du må laste opp minst ett vedlegg';
+        }
+        return errors;
+      }}
+      render={({
+        form,
+        values,
+        touched,
+        errors,
+        hasValidationErrors,
+        handleSubmit,
+        submitting,
+      }) => {
+        const hasBeenTouched = useMemo(
+          () => Object.values(touched ?? {}).some((touch) => !!touch),
+          [touched]
+        );
 
-      <Input
-        id="name"
-        name="Navn"
-        value={name}
-        required
-        updateForm={setName}
-        helperText="Ditt fulle navn, slik kvitteringen viser"
-      />
+        return (
+          <form onSubmit={handleSubmit}>
+            <>
+              <Row className={styles.row}>
+                <ReceiptInput
+                  name="name"
+                  label="Navn"
+                  required
+                  helperText="Ditt fulle navn, slik kvitteringen viser"
+                  autoFocus
+                />
 
-      <Input
-        id="mailFrom"
-        name="Din epost"
-        value={mailfrom}
-        required
-        updateForm={setMailfrom}
-        helperText="Din kopi av skjema går hit"
-      />
+                <ReceiptInput
+                  name="mailFrom"
+                  label="Din epost"
+                  required
+                  helperText="Et kopi av skjemaet vil bli sendt hit"
+                  validators={[emailValidator]}
+                />
+              </Row>
 
-      <Input
-        id="committee"
-        name="Komité"
-        value={committee}
-        updateForm={setCommittee}
-        helperText={'Den komitén som skylder deg penger'}
-      />
+              <Row className={styles.row}>
+                <ReceiptInput
+                  name="committee"
+                  label="Komité/gruppe"
+                  required
+                  helperText={'Den komiteen/gruppa som skylder deg penger'}
+                />
 
-      <Input
-        id="mailTo"
-        name="Økans epost"
-        value={mailto}
-        required
-        updateForm={setMailto}
-        helperText="Økans til komitén/gruppen"
-      />
+                <ReceiptInput
+                  name="mailTo"
+                  label="Økans epost"
+                  required
+                  helperText="Økans til komiteen/gruppen"
+                  validators={[emailValidator]}
+                />
+              </Row>
 
-      <Input
-        id="accountNumber"
-        name="Kontonummer"
-        value={accountNumber}
-        required
-        type="number"
-        updateForm={setAccountNumber}
-        helperText="Pengene overføres til dette nummeret"
-      />
+              <Row className={styles.row}>
+                <ReceiptInput
+                  name="accountNumber"
+                  label="Kontonummer"
+                  required
+                  type="text"
+                  helperText="Pengene overføres til dette nummeret"
+                  validators={[accountValidator]}
+                />
 
-      <Input
-        id="amount"
-        name="Beløp"
-        value={amount}
-        required
-        type="number"
-        updateForm={setAmount}
-        adornment={'kr'}
-        helperText="Beløpet du ønsker refundert"
-      />
+                <ReceiptInput
+                  name="amount"
+                  label="Beløp"
+                  required
+                  type="number"
+                  helperText="Beløpet du ønsker refundert"
+                />
+              </Row>
 
-      <Input
-        id="date"
-        name="Kjøpsdato"
-        value={date}
-        required
-        type="date"
-        updateForm={setDate}
-        helperText="Helst samme som på kvittering"
-      />
+              <Row className={styles.row}>
+                <ReceiptInput
+                  name="date"
+                  label="Kjøpsdato"
+                  required
+                  type="date"
+                  helperText="Helst samme som på kvittering"
+                />
 
-      <Input
-        id="occasion"
-        name="Anledning"
-        value={occasion}
-        updateForm={setOccasion}
-        helperText="I hvilken anledning har du lagt ut"
-      />
+                <ReceiptInput
+                  name="occasion"
+                  label="Anledning"
+                  helperText="I hvilken anledning du har lagt ut"
+                />
+              </Row>
 
-      <Input
-        id="comment"
-        name="Kommentar"
-        multiline
-        fullWidth
-        value={comment}
-        updateForm={setComment}
-        helperText="Fyll inn ekstra informasjon hvis nødvendig"
-      />
+              <Row css={{ marginBottom: '2.5rem' }}>
+                <ReceiptInput
+                  name="comment"
+                  label="Kommentar"
+                  multiLine
+                  helperText="Fyll inn ekstra informasjon hvis nødvendig"
+                  fullWidth
+                />
+              </Row>
 
-      <SignatureUpload updateForm={setSignature} setSignature={setSignature} />
+              <SignatureUpload
+                signature={values.signature}
+                updateForm={(value) => form.change('signature', value)}
+                setSignature={(value) => form.change('signature', value)}
+              />
+              {hasBeenTouched && errors?.signature && (
+                <Text color="error" css={{ marginBottom: '1rem' }}>
+                  {errors?.signature}
+                </Text>
+              )}
 
-      <PictureUpload updateForm={setImages} />
+              <PictureUpload
+                images={values.images}
+                setImages={(images) => form.change('images', images)}
+              />
+              {hasBeenTouched && errors?.images && (
+                <Text color="error" css={{ marginBottom: '1.5rem' }}>
+                  {errors?.images}
+                </Text>
+              )}
 
-      <Response />
+              <Button
+                type="submit"
+                ghost
+                disabled={submitting || success === true || hasValidationErrors}
+                className={styles.submit}
+              >
+                <BiReceipt size={25} />
+                <Text>Generer kvittering</Text>
+              </Button>
 
-      <Button
-        ghost
-        disabled={submitting || success === true}
-        className={styles.submit}
-        onClick={() => {
-          // Reset server response
-          setResponse(null);
-          setSuccess(null);
-          setSumbitting(true);
+              {hasBeenTouched && hasValidationErrors && (
+                <Text color="error" css={{ marginTop: '0.3rem' }}>
+                  Gå gjennom skjemaet og pass på at du har fylt ut alt du må
+                </Text>
+              )}
 
-          // POST full body to the backend
-          fetch(`${process.env.API_URL || ''}/generate`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formBody),
-          })
-            .then((res) => {
-              if (!res.ok) {
-                setSuccess(false);
-              } else {
-                setSuccess(true);
-              }
-              setSumbitting(false);
-              return res.text();
-            })
-            .then((text) => {
-              setResponse(text);
-            })
-            .catch((err) => {
-              setResponse(`Error: ${err.text()}`);
-              setSumbitting(false);
-            });
-        }}
-      >
-        <BiReceipt size={25} />
-        Generer kvittering
-      </Button>
-    </div>
+              <Response
+                response={response}
+                success={success}
+                submitting={submitting}
+              />
+            </>
+          </form>
+        );
+      }}
+    />
   );
 };
 
-export default Form;
+export default ReceiptForm;

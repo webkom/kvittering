@@ -7,17 +7,18 @@ import { MdAttachFile } from 'react-icons/md';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import { Text } from '@nextui-org/react';
 
 type Props = {
-  updateForm: (value: Array<string>) => void;
+  images: string[];
+  setImages: (value: Array<string>) => void;
 };
 
-const PictureUpload = ({ updateForm }: Props): JSX.Element => {
-  const [images, setImages] = useState<Array<string>>([]);
+const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
   const [names, setNames] = useState<string[]>([]);
 
   useEffect(() => {
-    updateForm(images);
+    if (images.length === 0) setNames([]);
   }, [images]);
 
   const removeImage = (i: number) => {
@@ -47,10 +48,7 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
                 reader.addEventListener(
                   'load',
                   () => {
-                    setImages((prevImages) => [
-                      ...prevImages,
-                      reader.result as string,
-                    ]);
+                    setImages([...images, reader.result as string]);
                   },
                   false
                 );
@@ -58,8 +56,8 @@ const PictureUpload = ({ updateForm }: Props): JSX.Element => {
             }}
           />
           <div className={styles.fileLabel}>
-            <MdAttachFile size={24} />
-            Last opp vedlegg
+            <MdAttachFile size={20} />
+            <Text css={{ marginLeft: '5px' }}>Last opp vedlegg</Text>
           </div>
         </label>
       </div>

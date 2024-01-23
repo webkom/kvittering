@@ -1,27 +1,15 @@
-.card {
-  display: flex;
+.row {
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 1em;
-  max-width: 560px;
-  margin: 0 auto;
-  border-radius: 5px;
-  background-color: white;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  gap: 2%;
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.8em;
-  margin: 0 auto;
-  margin-bottom: 1em;
+.row > div {
+  margin: 1.5rem 0 2.5rem 0;
 }
 
-.header h1 {
-  margin: 0;
+.row div {
+  width: 100%;
 }
 
 .response {
@@ -29,20 +17,33 @@
   justify-content: center;
   width: 100%;
   max-height: 200px;
-  overflow: hidden;
 }
 
 .submit {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 1em;
+  margin-top: 0.5em;
   width: 100%;
-  height: 4em;
+  height: 3em;
   font-size: 1.1em;
-  font-weight: bold;
+}
+
+.submit:hover p {
+  color: inherit;
+}
+
+.submit:disabled,
+.submit[disabled] {
+  opacity: 0.5;
 }
 
 .submit svg {
   margin-right: 0.5em;
+}
+
+@media screen and (min-width: 800px) {
+  .row > div {
+    flex-basis: 48%;
+  }
 }

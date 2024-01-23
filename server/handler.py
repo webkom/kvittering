@@ -41,11 +41,11 @@ def data_is_valid(data):
         "images",
         "date",
         "amount",
-        "mailto",
+        "mailTo",
         "signature",
         "name",
         "accountNumber",
-        "mailfrom",
+        "mailFrom",
     ]
     return [f for f in fields if f not in data or len(data[f]) == 0]
 
@@ -182,8 +182,8 @@ def handle(data):
     with configure_scope() as scope:
         scope.user = {
             "name": data["name"],
-            "mailfrom": data["mailfrom"],
-            "mailto": data["mailto"],
+            "mailfrom": data["mailFrom"],
+            "mailto": data["mailTo"],
         }
     req_fields = data_is_valid(data)
     if len(req_fields) > 0:
@@ -207,14 +207,14 @@ def handle(data):
             try:
                 import mail
 
-                mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
+                mail.send_mail([data["mailTo"], data["mailFrom"]], data, file)
             except mail.MailConfigurationException as e:
                 logging.warning(f"Failed to send mail: {e}")
                 return f"Klarte ikke å sende email: {e}", 500
         else:
             from mailinglogger.summarisinglogger import SummarisingLogger
 
-            handler = SummarisingLogger(data["mailfrom"], data["mailto"])
+            handler = SummarisingLogger(data["mailFrom"], data["mailTo"])
             logging.basicConfig(
                 format="%(asctime)s %(message)s",
                 datefmt="%m/%d/%Y %I:%M:%S %p",

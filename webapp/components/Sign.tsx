@@ -10,7 +10,6 @@ type Props = {
   modalIsOpen: boolean;
   setIsOpen: (state: boolean) => void;
   setSignature: (data: string) => void;
-  setHasUploaded: (state: boolean) => void;
 };
 
 const customStyles = {
@@ -25,12 +24,7 @@ const customStyles = {
   },
 };
 
-const Sign = ({
-  modalIsOpen,
-  setIsOpen,
-  setSignature,
-  setHasUploaded,
-}: Props): JSX.Element => {
+const Sign = ({ modalIsOpen, setIsOpen, setSignature }: Props): JSX.Element => {
   const [sigCanvas, setSigCanvas] = useState<any>({});
   const [width, setWidth] = useState(700);
   const [rotated, setRotated] = useState(false);
@@ -50,7 +44,6 @@ const Sign = ({
 
   const base64Encode = () => {
     setSignature(sigCanvas.getTrimmedCanvas().toDataURL('image/png'));
-    setHasUploaded(true);
     setIsOpen(false);
   };
 
