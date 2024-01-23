@@ -1,10 +1,8 @@
 flask==2.0.3
 gevent==21.12.0
 fpdf==1.7.2
-black==22.1.0
 Pillow==9.0.1
-sentry-sdk[flask]==1.5.8
 pdf2image==1.0.0
 pyheif==0.7.0
-google==3.0.0
-google-api-python-client==2.42.0
+black==22.1.0
+mailinglogger==5.1.0

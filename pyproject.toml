@@ -38,4 +38,4 @@ force_single_line = true
 combine_as_imports = true
 lines_between_types = 1
 lines_after_imports = 2
-src_paths = ["kaaf"]
+src_paths = ["server"]

@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from './FileUpload.module.css';
 import IconButton from '@mui/material/IconButton';
-import GestureIcon from '@mui/icons-material/Gesture';
-import CreateIcon from '@mui/icons-material/Create';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { MdAttachFile } from 'react-icons/md';
+import { FaSignature, FaPencilAlt } from 'react-icons/fa';
 import Sign from './Sign';
 
 type Props = {
@@ -42,22 +41,17 @@ const SignatureUpload = ({ updateForm, setSignature }: Props): JSX.Element => {
             <div className={styles.uploadedElement}>Signatur lastet opp</div>
           ) : (
             <>
-              <AttachFileIcon />
+              <MdAttachFile size={24} />
               <span>Last opp signatur</span>
             </>
           )}
         </div>
       </label>
-      <IconButton
-        id="signButton"
-        aria-label="delete"
-        size="medium"
-        onClick={() => setIsOpen(true)}
-      >
+      <IconButton id="signButton" size="medium" onClick={() => setIsOpen(true)}>
         <div>
           <p style={{ fontSize: '10px', margin: 0 }}>Eller tegn</p>
-          <GestureIcon />
-          <CreateIcon />
+          <FaSignature size={18} />
+          <FaPencilAlt size={18} />
         </div>
       </IconButton>
 

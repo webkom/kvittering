@@ -3,6 +3,7 @@ import functools
 import io
 import logging
 import operator
+import os
 import tempfile
 
 from email.utils import formatdate
@@ -202,13 +203,29 @@ def handle(data):
 
     try:
         file = create_pdf(data)
-        mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
+        if os.environ.get("ENVIRONMENT") == "production":
+            try:
+                import mail
+
+                mail.send_mail([data["mailto"], data["mailfrom"]], data, file)
+            except mail.MailConfigurationException as e:
+                logging.warning(f"Failed to send mail: {e}")
+                return f"Klarte ikke å sende email: {e}", 500
+        else:
+            from mailinglogger.summarisinglogger import SummarisingLogger
+
+            handler = SummarisingLogger(data["mailfrom"], data["mailto"])
+            logging.basicConfig(
+                format="%(asctime)s %(message)s",
+                datefmt="%m/%d/%Y %I:%M:%S %p",
+                level=logging.INFO,
+            )
+            logger = logging.getLogger()
+            logger.addHandler(handler)
+            logging.info("Sent by consolemail")
     except RuntimeError as e:
         logging.warning(f"Failed to generate pdf with exception: {e}")
         return f"Klarte ikke å generere pdf: {e}", 500
-    except mail.MailConfigurationException as e:
-        logging.warning(f"Failed to send mail: {e}")
-        return f"Klarte ikke å sende email: {e}", 500
     except Exception as e:
         logging.error(f"Failed with exception: {e}")
         return f"Noe uventet skjedde: {e}", 400

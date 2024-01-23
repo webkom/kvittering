@@ -14,8 +14,8 @@
     "export": "NODE_ENV=production next export webapp",
     "start": "next start webapp",
     "lint": "yarn run prettier:check && yarn run eslint",
-    "prettier:check": "prettier --check 'webapp/**/*.{ts,tsx,css,html}' --ignore-path .dockerignore",
-    "prettier:write": "prettier --write 'webapp/**/*.{ts,tsx,css,html}' --ignore-path .dockerignore",
+    "prettier:check": "prettier --check 'webapp/**/*.{ts,tsx,css,html,md}' --ignore-path .dockerignore",
+    "prettier:write": "prettier --write 'webapp/**/*.{ts,tsx,css,html,md}' --ignore-path .dockerignore",
     "eslint": "eslint 'webapp/**/*.{ts,tsx}' --ignore-path .dockerignore",
     "cypress": "cypress open",
     "cypress:ci": "yarn build && concurrently \"yarn start\" \"cypress run --record\" --kill-others --success first"
@@ -26,9 +26,11 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.91",
     "@mui/material": "^5.9.3",
-    "next": "^12.2.5",
+    "@nextui-org/react": "^1.0.0-beta.9",
+    "next": "^13.4.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.3.1",
     "react-modal": "^3.15.1",
     "react-signature-canvas": "^1.0.6"
   },

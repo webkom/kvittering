@@ -7,7 +7,6 @@
   "extends": [
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
     "plugin:@next/next/recommended"
   ],
   "globals": {
@@ -28,6 +27,7 @@
   },
   "plugins": ["react"],
   "rules": {
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "react/react-in-jsx-scope": "off"
   }
 }

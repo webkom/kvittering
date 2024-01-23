@@ -38,7 +38,7 @@ $ poetry install
 $ yarn build && yarn export
 
 # Start the server
-$ python kaaf/server.py
+$ python server/server.py
 
 ```
 
@@ -64,7 +64,7 @@ $ python kaaf/server.py
 It's nice to quickly generate `PDFs` when developing, without having to start up everything. To do this you can run:
 
 ```sh
-$ python kaaf/generate-example.py signature.png output.pdf image0.png image1.png ...
+$ python server/generate-example.py signature.png output.pdf image0.png image1.png ...
 
 ```
 

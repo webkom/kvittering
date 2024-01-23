@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: setup
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -21,7 +21,7 @@ steps:
       - poetry install --with dev
 
   - name: prettier
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -36,7 +36,7 @@ steps:
       event:
         - push
     commands:
-      - poetry run black --check kaaf
+      - poetry run black --check server
     depends_on:
       - poetry
 
@@ -46,12 +46,12 @@ steps:
       event:
         - push
     commands:
-      - poetry run isort --check kaaf
+      - poetry run isort --check server
     depends_on:
       - poetry
 
   - name: eslint
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -61,7 +61,7 @@ steps:
       - yarn eslint
 
   - name: build
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -71,7 +71,7 @@ steps:
       - yarn build
 
   - name: export
-    image: node:16-slim
+    image: node:18-slim
     when:
       event:
         - push
@@ -111,6 +111,7 @@ steps:
     when:
       branch:
         - master
+        - dev
       event:
         - push
       status:
@@ -133,7 +134,29 @@ steps:
       build_args:
         - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
-  - name: Deploy
+  - name: Deploy dev
+    image: abakus/ansible-deploy
+    when:
+      branch:
+        - dev
+      event: push
+      status: success
+    settings:
+      playbook: /infrastructure/esas/playbooks/deploy.yml
+      repository:
+        from_secret: infra_repository
+      tags:
+        - kvittering-dev
+      limit: esas
+      inventory: /infrastructure/inventory
+      vault_password:
+        from_secret: ansible_vault_password
+      private_key:
+        from_secret: infra_deploy_key
+    depends_on:
+      - docker
+
+  - name: Deploy prod
     image: abakus/ansible-deploy
     when:
       branch:
