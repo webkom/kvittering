@@ -1,4 +1,4 @@
-flask==2.0.3
+flask==2.2.5
 gevent==21.12.0
 fpdf==1.7.2
 Pillow==9.0.1
