@@ -7,7 +7,6 @@
   align-items: center;
   justify-content: center;
   border: 1px solid #ccc;
-  padding: 20px;
   margin: 10px 0;
   cursor: pointer;
   font-weight: bold;
@@ -25,10 +24,6 @@
   justify-content: space-evenly;
 }
 
-.uploadedElement {
-  color: rgb(161, 195, 74);
-}
-
 .upload {
   width: 100%;
   display: flex;
@@ -36,6 +31,12 @@
 
 .upload label {
   flex-grow: 2;
+}
+
+.signButton {
+  margin-left: 1rem;
+  flex-basis: 69.5px;
+  flex-shrink: 0;
 }
 
 .sign {

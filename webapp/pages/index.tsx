@@ -11,7 +11,7 @@ const App = (): JSX.Element => (
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/favicon.png" style={{ width: '50px' }} />
           <Spacer x={0.4} />
-          <Text h1>Kvitteringsskjema</Text>
+          <Text h4>Kvitteringsskjema</Text>
         </Row>
       </Card.Header>
       <Divider />

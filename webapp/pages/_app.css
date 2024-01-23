@@ -8,3 +8,10 @@ body {
 .ReactModalPortal {
   height: 0 !important;
 }
+
+@media screen and (max-width: 500px) {
+  html,
+  body {
+    margin: 1rem 0;
+  }
+}

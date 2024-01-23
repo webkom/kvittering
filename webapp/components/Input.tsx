@@ -1,10 +1,16 @@
 import { Field } from 'react-final-form';
-import { Input, Textarea, Grid } from '@nextui-org/react';
+import type { FieldRenderProps } from 'react-final-form';
+import { Input, Textarea } from '@nextui-org/react';
 import styles from './Input.module.css';
+import {
+  FieldValidator,
+  requiredValidator,
+  validateField,
+} from 'utils/validators';
 
 type Props = {
-  id: string;
   name: string;
+  label: string;
   required?: boolean;
   type?: string;
   helperText?: string;
@@ -12,11 +18,13 @@ type Props = {
   clearable?: boolean;
   contentRight?: JSX.Element;
   multiLine?: boolean;
+  autoFocus?: boolean;
+  validators?: FieldValidator[];
 };
 
 const ReceiptInput = ({
-  id,
   name,
+  label,
   required,
   type,
   helperText,
@@ -24,48 +32,69 @@ const ReceiptInput = ({
   contentRight,
   multiLine,
   fullWidth,
+  autoFocus,
+  validators = [],
 }: Props): JSX.Element => (
-  <Grid>
-    <Field name={name}>
-      {(props) => {
-        return (
-          <>
-            {!multiLine ? (
-              <Input
-                id={id}
-                labelPlaceholder={props.input.name}
-                value={props.input.value}
-                onChange={props.input.onChange}
-                required={required}
-                type={type}
-                helperText={helperText}
-                contentRight={contentRight}
-                clearable={clearable}
-                fullWidth={fullWidth}
-                underlined
-                color="primary"
-                className={styles.input}
-              />
-            ) : (
-              <Textarea
-                id={id}
-                label={name}
-                name={props.input.name}
-                value={props.input.value}
-                onChange={props.input.onChange}
-                underlined
-                color="primary"
-                required={required}
-                helperText={helperText}
-                minRows={2}
-                fullWidth={fullWidth}
-              />
-            )}
-          </>
-        );
-      }}
+  <>
+    <Field
+      name={name}
+      validate={validateField([
+        required ? requiredValidator : undefined,
+        ...validators,
+      ])}
+    >
+      {(
+        props: FieldRenderProps<
+          string | undefined,
+          HTMLElement,
+          string | undefined
+        >
+      ) =>
+        multiLine ? (
+          <Textarea
+            id={name}
+            label={label}
+            name={name}
+            value={props.input.value}
+            onChange={props.input.onChange}
+            onBlur={props.input.onBlur}
+            status={props.meta.error}
+            required={required}
+            helperText={helperText}
+            minRows={2}
+            fullWidth={fullWidth}
+            autoFocus={autoFocus}
+          />
+        ) : (
+          <Input
+            id={name}
+            label={label}
+            labelPlaceholder={label}
+            labelRight={required && '*'}
+            name={name}
+            value={props.input.value}
+            onChange={props.input.onChange}
+            onBlur={props.input.onBlur}
+            status={
+              props.meta.touched && props.meta.error ? 'error' : 'default'
+            }
+            required={required}
+            type={type}
+            helperText={
+              props.meta.touched && props.meta.error
+                ? props.meta.error
+                : helperText
+            }
+            contentRight={contentRight}
+            clearable={clearable}
+            fullWidth={fullWidth}
+            className={styles.input}
+            autoFocus={autoFocus}
+          />
+        )
+      }
     </Field>
-  </Grid>
+  </>
 );
 
 export default ReceiptInput;
