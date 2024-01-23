@@ -1,5 +1,5 @@
 flask==2.0.3
-gevent==21.12.0
+gevent==23.9.0
 fpdf==1.7.2
 Pillow==9.0.1
 pdf2image==1.0.0
