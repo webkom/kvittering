@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import styles from './FileUpload.module.css';
-import IconButton from '@mui/material/IconButton';
 import { FaTrashAlt } from 'react-icons/fa';
 import { MdAttachFile } from 'react-icons/md';
 
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import { Text } from '@nextui-org/react';
+import { Button, Card, Grid, Text } from '@nextui-org/react';
+import { processFiles } from 'utils/fileHelper';
+
+type FileNames = { [key: string]: string };
 
 type Props = {
   images: string[];
@@ -15,76 +14,73 @@ type Props = {
 };
 
 const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
-  const [names, setNames] = useState<string[]>([]);
+  const [fileNames, setFileNames] = useState<FileNames>({});
+  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    if (images.length === 0) setNames([]);
-  }, [images]);
+    const timer = setTimeout(() => setErrors([]), 5000);
+    return () => clearTimeout(timer);
+  }, [errors]);
 
-  const removeImage = (i: number) => {
-    const newImages = images;
-    const newNames = names;
-    newImages.splice(i, 1);
-    newNames.splice(i, 1);
-    setImages([...newImages]);
-    setNames(newNames);
+  const removeImage = (base64?: string) => {
+    setImages(images.filter((image) => image !== base64));
   };
 
   return (
     <>
-      <div className={styles.upload}>
+      <div className={styles.uploadButtonWrapper}>
         <label>
           <input
             id="attachments"
             type="file"
             className={styles.fileInput}
             multiple
-            onChange={(e) => {
-              const files = e.target.files || [];
-              for (let i = 0; i < files.length; i++) {
-                setNames((prevNames) => [...prevNames, files[i].name]);
-                const reader = new FileReader();
-                reader.readAsDataURL(files[i]);
-                reader.addEventListener(
-                  'load',
-                  () => {
-                    setImages([...images, reader.result as string]);
-                  },
-                  false
+            onChange={async (e) => {
+              const { files, errors } = await processFiles(e.target.files);
+              const base64Files = files.map((file) => file.base64);
+              setImages(Array.from(new Set([...images, ...base64Files])));
+              setErrors((prevErrors) => [...prevErrors, ...errors]);
+              setFileNames((prevFileNames) => {
+                const newFileNames = { ...prevFileNames };
+                files.forEach(
+                  (file) => (newFileNames[file.base64] = file.name)
                 );
-              }
+                return newFileNames;
+              });
             }}
           />
-          <div className={styles.fileLabel}>
+          <div className={styles.uploadButton}>
             <MdAttachFile size={20} />
             <Text css={{ marginLeft: '5px' }}>Last opp vedlegg</Text>
           </div>
         </label>
       </div>
 
-      {images.length > 0 && (
-        <List
-          component="nav"
-          className={styles.uploaded}
-          id="uploadedAttachments"
-        >
-          {images.map((image, i) => (
-            <div className={styles.uploadedElement} key={image}>
-              <ListItem>
-                <ListItemText primary={names[i]} style={{ fontSize: '10px' }} />
-                <IconButton
-                  aria-label="delete"
-                  size="small"
-                  onClick={() => removeImage(i)}
-                  style={{ marginLeft: '5px' }}
-                >
-                  <FaTrashAlt size={17} color="f74d58" />
-                </IconButton>
-              </ListItem>
-            </div>
-          ))}
-        </List>
-      )}
+      <Grid.Container
+        className={styles.uploadedWrapper}
+        id="uploadedAttachments"
+      >
+        {errors.map((invalidUpload) => (
+          <Text color={'error'} key={invalidUpload}>
+            {invalidUpload}
+          </Text>
+        ))}
+        {images.map((image) => (
+          <Card className={styles.uploadedElement} key={image} variant="flat">
+            <Card.Body>
+              <Card.Image src={image} />
+            </Card.Body>
+            <Card.Footer css={{ justifyContent: 'space-between' }}>
+              {fileNames[image] ?? ''}
+              <Button
+                color={'error'}
+                onPress={() => removeImage(image)}
+                icon={<FaTrashAlt size={17} />}
+              ></Button>
+            </Card.Footer>
+          </Card>
+        ))}
+      </Grid.Container>
     </>
   );
 };

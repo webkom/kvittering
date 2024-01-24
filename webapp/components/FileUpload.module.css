@@ -1,35 +1,10 @@
-.fileInput {
-  display: none;
-}
-
-.fileLabel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #ccc;
-  margin: 10px 0;
-  cursor: pointer;
-  font-weight: bold;
-  border-radius: 5px;
-}
-
-.fileLabel:hover {
-  border: 1px solid black;
-}
-
-.uploaded {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-}
-
-.upload {
+/* Upload button */
+.uploadButtonWrapper {
   width: 100%;
   display: flex;
 }
 
-.upload label {
+.uploadButtonWrapper label {
   flex-grow: 2;
 }
 
@@ -43,4 +18,41 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.uploadButton:hover {
+  border: 1px solid black;
+}
+
+/* Uploaded elements */
+
+.uploadedWrapper {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem 3%;
+}
+
+.uploadedElement {
+  flex-basis: 48%;
+}
+
+.uploadedElement button {
+  min-width: 0;
 }

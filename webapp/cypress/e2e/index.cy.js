@@ -28,14 +28,14 @@ describe('Uploads', () => {
 
     // After uploading one image we should have one attachment
     cy.get('#uploadedAttachments').within(() => {
-      cy.get('li').should('have.length', 1);
+      cy.get('img').should('have.length', 1);
     });
   });
   it('should be able to upload multiple attachments', () => {
     // After uploading two image more we should have three attachments
-    cy.get('#attachments').attachFile(['abakus.png', 'abakus.png']);
+    cy.get('#attachments').attachFile(['abakus.png', 'favicon.png']);
     cy.get('#uploadedAttachments').within(() => {
-      cy.get('li').should('have.length', 2);
+      cy.get('img').should('have.length', 2);
     });
   });
 });

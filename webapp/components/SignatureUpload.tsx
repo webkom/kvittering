@@ -20,7 +20,7 @@ const SignatureUpload = ({
   const [modalIsOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={styles.upload}>
+    <div className={styles.uploadButtonWrapper}>
       <label>
         <input
           id="signature"
@@ -40,7 +40,7 @@ const SignatureUpload = ({
             }
           }}
         />
-        <div className={styles.fileLabel}>
+        <div className={styles.uploadButton}>
           {signature !== '' ? (
             <>
               <Text color="success" css={{ lineHeight: 0, marginRight: '5px' }}>
