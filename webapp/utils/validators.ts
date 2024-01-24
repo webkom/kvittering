@@ -32,4 +32,16 @@ export const accountValidator: FieldValidator = (value?: string) => {
   if (String(value ?? '').replaceAll(' ', '').length !== 11) {
     return 'Kontonummeret må bestå av 11 siffer';
   }
+
+  // Modulo-based validation as per https://no.wikipedia.org/wiki/MOD11
+  // The last 1 is added to add the control-digit, and the sum should be divisible by 11
+  const weights = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2, 1];
+  let sum = 0;
+  value
+    ?.replaceAll(' ', '')
+    .split('')
+    .forEach((digit, index) => (sum += Number(digit) * weights[index]));
+  if (sum % 11 !== 0) {
+    return 'Kontonummeret er ugyldig';
+  }
 };
