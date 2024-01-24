@@ -11,6 +11,7 @@ import SignatureUpload from './SignatureUpload';
 
 import styles from './Form.module.css';
 import { accountValidator, emailValidator } from 'utils/validators';
+import { mailToDataList } from 'utils/datalists';
 
 type FormValues = {
   name: string;
@@ -163,6 +164,7 @@ const ReceiptForm = (): JSX.Element => {
                   required
                   helperText="Økans til komiteen/gruppen"
                   validators={[emailValidator]}
+                  suggestions={mailToDataList}
                 />
               </Row>
 
