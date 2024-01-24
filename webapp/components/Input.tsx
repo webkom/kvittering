@@ -7,6 +7,7 @@ import {
   requiredValidator,
   validateField,
 } from 'utils/validators';
+import { DataListItem } from 'utils/datalists';
 
 type Props = {
   name: string;
@@ -20,6 +21,7 @@ type Props = {
   multiLine?: boolean;
   autoFocus?: boolean;
   validators?: FieldValidator[];
+  suggestions?: DataListItem[];
 };
 
 const ReceiptInput = ({
@@ -34,38 +36,39 @@ const ReceiptInput = ({
   fullWidth,
   autoFocus,
   validators = [],
+  suggestions = [],
 }: Props): JSX.Element => (
-  <>
-    <Field
-      name={name}
-      validate={validateField([
-        required ? requiredValidator : undefined,
-        ...validators,
-      ])}
-    >
-      {(
-        props: FieldRenderProps<
-          string | undefined,
-          HTMLElement,
-          string | undefined
-        >
-      ) =>
-        multiLine ? (
-          <Textarea
-            id={name}
-            label={label}
-            name={name}
-            value={props.input.value}
-            onChange={props.input.onChange}
-            onBlur={props.input.onBlur}
-            status={props.meta.error}
-            required={required}
-            helperText={helperText}
-            minRows={2}
-            fullWidth={fullWidth}
-            autoFocus={autoFocus}
-          />
-        ) : (
+  <Field
+    name={name}
+    validate={validateField([
+      required ? requiredValidator : undefined,
+      ...validators,
+    ])}
+  >
+    {(
+      props: FieldRenderProps<
+        string | undefined,
+        HTMLElement,
+        string | undefined
+      >
+    ) =>
+      multiLine ? (
+        <Textarea
+          id={name}
+          label={label}
+          name={name}
+          value={props.input.value}
+          onChange={props.input.onChange}
+          onBlur={props.input.onBlur}
+          status={props.meta.error}
+          required={required}
+          helperText={helperText}
+          minRows={2}
+          fullWidth={fullWidth}
+          autoFocus={autoFocus}
+        />
+      ) : (
+        <>
           <Input
             id={name}
             label={label}
@@ -90,11 +93,21 @@ const ReceiptInput = ({
             fullWidth={fullWidth}
             className={styles.input}
             autoFocus={autoFocus}
+            list={name + 'list'}
           />
-        )
-      }
-    </Field>
-  </>
+          {suggestions && (
+            <datalist id={name + 'list'}>
+              {suggestions.map(({ value, text }) => (
+                <option value={value} key={value}>
+                  {text}
+                </option>
+              ))}
+            </datalist>
+          )}
+        </>
+      )
+    }
+  </Field>
 );
 
 export default ReceiptInput;

@@ -7,3 +7,6 @@ server/__pycache__/
 
 webapp/cypress/videos
 webapp/cypress/screenshots
+
+.python-version
+.vscode
