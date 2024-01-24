@@ -11,7 +11,7 @@ describe('Form', () => {
     cy.get('#mailFrom').type('jon@doe.com');
     cy.get('#committee').type('webkom');
     cy.get('#mailTo').type('lisa@doe.com');
-    cy.get('#accountNumber').type('1000 10 10000');
+    cy.get('#accountNumber').type('1234 56 78903');
     cy.get('#amount').type('1000');
     cy.get('#date').type('1970-01-01');
     cy.get('#occasion').type('Cypress');
@@ -66,7 +66,7 @@ describe('Submit', () => {
     cy.get('#mailFrom').type('jon@doe.com');
     cy.get('#committee').type('webkom');
     cy.get('#mailTo').type('lisa@doe.com');
-    cy.get('#accountNumber').type('1000 10 10000');
+    cy.get('#accountNumber').type('1234 56 78903');
     cy.get('#amount').type('1000');
     cy.get('#date').type('1970-01-01');
     cy.get('#occasion').type('Cypress');
