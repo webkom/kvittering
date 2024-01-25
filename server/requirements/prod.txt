@@ -1,5 +1,0 @@
--r base.txt
-
-sentry-sdk[flask]==1.5.8
-google==3.0.0
-google-api-python-client==2.42.0

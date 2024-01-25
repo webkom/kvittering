@@ -37,6 +37,7 @@ const SignatureUpload = ({
                 },
                 false
               );
+              e.target.value = '';
             }
           }}
         />
