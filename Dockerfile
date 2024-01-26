@@ -20,12 +20,14 @@ COPY ./package.json ./yarn.lock ./
 
 RUN yarn
 
+ENV NODE_ENV=production
+
 COPY ./webapp ./webapp
 
 COPY ./next.config.js .
 
-# Set to production to export material ui css correctly
-ENV NODE_ENV=production
+COPY ./tailwind.config.js .
+COPY ./postcss.config.js .
 
 RUN yarn build && yarn export
 

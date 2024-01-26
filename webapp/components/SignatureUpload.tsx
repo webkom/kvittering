@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import styles from './FileUpload.module.css';
-import IconButton from '@mui/material/IconButton';
 import { MdAttachFile, MdCheck } from 'react-icons/md';
-import { FaSignature, FaPencilAlt } from 'react-icons/fa';
+import { FaSignature, FaPencilAlt, FaTrashAlt } from 'react-icons/fa';
 import Sign from './Sign';
-import { Text } from '@nextui-org/react';
+import { FormButton } from './elements';
+import { Button, Card, Spacer, useDisclosure } from '@nextui-org/react';
+import { useRef } from 'react';
+import Image from 'next/image';
 
 type Props = {
   signature: string;
@@ -17,15 +17,17 @@ const SignatureUpload = ({
   updateForm,
   setSignature,
 }: Props): JSX.Element => {
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className={styles.uploadButtonWrapper}>
-      <label>
+    <>
+      <div className={'flex'}>
         <input
+          ref={inputFileRef}
           id="signature"
           type="file"
-          className={styles.fileInput}
+          className={'hidden'}
           onChange={(e) => {
             if (e.target.files) {
               const reader = new FileReader();
@@ -41,41 +43,60 @@ const SignatureUpload = ({
             }
           }}
         />
-        <div className={styles.uploadButton}>
-          {signature !== '' ? (
-            <>
-              <Text color="success" css={{ lineHeight: 0, marginRight: '5px' }}>
-                <MdCheck size={20} />
-              </Text>
-              <Text color="success">Signatur lastet opp</Text>
-            </>
-          ) : (
-            <>
-              <MdAttachFile size={24} />
-              <Text>Last opp signatur</Text>
-            </>
-          )}
-        </div>
-      </label>
-      <IconButton
-        id="signButton"
-        className={styles.signButton}
-        size="medium"
-        onClick={() => setIsOpen(true)}
-      >
-        <div>
-          <p style={{ fontSize: '10px', margin: 0 }}>Eller tegn</p>
-          <FaSignature size={18} />
-          <FaPencilAlt size={18} />
-        </div>
-      </IconButton>
+        <FormButton
+          color={signature === '' ? 'default' : 'success'}
+          onPress={() => inputFileRef.current?.click()}
+          startContent={
+            signature === '' ? (
+              <MdAttachFile size={20} />
+            ) : (
+              <MdCheck size={20} />
+            )
+          }
+        >
+          {signature === '' ? 'Last opp signatur' : 'Signatur lastet opp'}
+        </FormButton>
+
+        <Spacer x={4} />
+
+        <Button
+          className={'py-6 px-8'}
+          id="signButton"
+          isIconOnly
+          onPress={onOpen}
+          variant="ghost"
+          startContent={
+            <div className={'flex flex-col gap-1 items-center'}>
+              <p className={'text-[10px]'}>Eller tegn</p>
+              <div className={'flex gap-1'}>
+                <FaSignature size={18} />
+                <FaPencilAlt size={18} />
+              </div>
+            </div>
+          }
+        ></Button>
+      </div>
+
+      {signature !== '' && (
+        <Card className={'mt-3 mb-6 border-1'} shadow="none">
+          <Button
+            className={'absolute right-2 top-2 shadow-md'}
+            isIconOnly
+            color={'danger'}
+            onPress={() => setSignature('')}
+          >
+            <FaTrashAlt size={17} />
+          </Button>
+          <Image src={signature} alt={'Signatur'} width={700} height={200} />
+        </Card>
+      )}
 
       <Sign
-        modalIsOpen={modalIsOpen}
-        setIsOpen={setIsOpen}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
         setSignature={setSignature}
       />
-    </div>
+    </>
   );
 };
 

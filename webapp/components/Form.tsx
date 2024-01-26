@@ -1,17 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Button, Loading, Row, Text } from '@nextui-org/react';
+import { Card, CardBody, CircularProgress, Spacer } from '@nextui-org/react';
 import type { FormRenderProps } from 'react-final-form';
 import { BiReceipt } from 'react-icons/bi';
-import Alert from '@mui/lab/Alert';
 import { Form } from 'react-final-form';
-
-import ReceiptInput from './Input';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
-
-import styles from './Form.module.css';
 import { accountValidator, emailValidator } from 'utils/validators';
 import { mailToDataList } from 'utils/datalists';
+import { FormButton, FormInput } from './elements';
 
 type FormValues = {
   name: string;
@@ -38,15 +34,23 @@ const Response = ({
   success: boolean | null;
   submitting: boolean;
 }): JSX.Element => (
-  <div className={styles.response}>
+  <div className={'flex justify-center w-full max-h-52'}>
     {/* We have submitted the request, but gotten no response */}
-    {submitting && <Loading />}
+    {submitting && <CircularProgress />}
 
     {/* We have submitted the request, and gotten success back */}
-    {success === true && <Alert severity="success">{response}</Alert>}
+    {success === true && (
+      <Card className={'bg-success mt-3'}>
+        <CardBody className={'p-4'}>{response}</CardBody>
+      </Card>
+    )}
 
     {/* We have submitted the request, and gotten failure back */}
-    {success === false && <Alert severity="error">{response}</Alert>}
+    {success === false && (
+      <Card className={'bg-danger mt-3'}>
+        <CardBody className={'p-4'}>{response}</CardBody>
+      </Card>
+    )}
   </div>
 );
 
@@ -132,8 +136,8 @@ const ReceiptForm = (): JSX.Element => {
         return (
           <form onSubmit={handleSubmit}>
             <>
-              <Row className={styles.row}>
-                <ReceiptInput
+              <div className={'grid grid-cols-1 gap-6 sm:grid-cols-2 my-2'}>
+                <FormInput
                   name="name"
                   label="Navn"
                   required
@@ -141,24 +145,22 @@ const ReceiptForm = (): JSX.Element => {
                   autoFocus
                 />
 
-                <ReceiptInput
+                <FormInput
                   name="mailFrom"
                   label="Din epost"
                   required
                   helperText="Et kopi av skjemaet vil bli sendt hit"
                   validators={[emailValidator]}
                 />
-              </Row>
 
-              <Row className={styles.row}>
-                <ReceiptInput
+                <FormInput
                   name="committee"
                   label="Komité/gruppe"
                   required
                   helperText={'Den komiteen/gruppa som skylder deg penger'}
                 />
 
-                <ReceiptInput
+                <FormInput
                   name="mailTo"
                   label="Økans epost"
                   required
@@ -166,10 +168,8 @@ const ReceiptForm = (): JSX.Element => {
                   validators={[emailValidator]}
                   suggestions={mailToDataList}
                 />
-              </Row>
 
-              <Row className={styles.row}>
-                <ReceiptInput
+                <FormInput
                   name="accountNumber"
                   label="Kontonummer"
                   required
@@ -178,17 +178,15 @@ const ReceiptForm = (): JSX.Element => {
                   validators={[accountValidator]}
                 />
 
-                <ReceiptInput
+                <FormInput
                   name="amount"
                   label="Beløp"
                   required
                   type="number"
                   helperText="Beløpet du ønsker refundert"
                 />
-              </Row>
 
-              <Row className={styles.row}>
-                <ReceiptInput
+                <FormInput
                   name="date"
                   label="Kjøpsdato"
                   required
@@ -196,22 +194,22 @@ const ReceiptForm = (): JSX.Element => {
                   helperText="Helst samme som på kvittering"
                 />
 
-                <ReceiptInput
+                <FormInput
                   name="occasion"
                   label="Anledning"
                   helperText="I hvilken anledning du har lagt ut"
                 />
-              </Row>
 
-              <Row css={{ marginBottom: '2.5rem' }}>
-                <ReceiptInput
+                <FormInput
                   name="comment"
                   label="Kommentar"
                   multiLine
                   helperText="Fyll inn ekstra informasjon hvis nødvendig"
                   fullWidth
                 />
-              </Row>
+              </div>
+
+              <Spacer y={6} />
 
               <SignatureUpload
                 signature={values.signature}
@@ -219,35 +217,37 @@ const ReceiptForm = (): JSX.Element => {
                 setSignature={(value) => form.change('signature', value)}
               />
               {hasBeenTouched && errors?.signature && (
-                <Text color="error" css={{ marginBottom: '1rem' }}>
+                <p className={'text-danger mt-2 mb-4 text-sm'}>
                   {errors?.signature}
-                </Text>
+                </p>
               )}
+
+              <Spacer y={4} />
 
               <PictureUpload
                 images={values.images}
                 setImages={(images) => form.change('images', images)}
               />
               {hasBeenTouched && errors?.images && (
-                <Text color="error" css={{ marginBottom: '1.5rem' }}>
+                <p className={'text-danger mt-2 mb-4 text-sm'}>
                   {errors?.images}
-                </Text>
+                </p>
               )}
 
-              <Button
+              <Spacer y={4} />
+
+              <FormButton
                 type="submit"
-                ghost
                 disabled={submitting || hasValidationErrors}
-                className={styles.submit}
+                startContent={<BiReceipt size={24} />}
               >
-                <BiReceipt size={25} />
-                <Text>Generer kvittering</Text>
-              </Button>
+                Generer kvittering
+              </FormButton>
 
               {hasBeenTouched && hasValidationErrors && (
-                <Text color="error" css={{ marginTop: '0.3rem' }}>
+                <p className={'text-danger mt-3 text-sm'}>
                   Gå gjennom skjemaet og pass på at du har fylt ut alt du må
-                </Text>
+                </p>
               )}
 
               <Response

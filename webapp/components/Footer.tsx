@@ -1,18 +1,8 @@
 const Footer = (): JSX.Element => (
-  <div
-    style={{
-      textAlign: 'center',
-      width: '100%',
-      fontSize: '15px',
-      marginTop: '50px',
-    }}
-  >
+  <div className={'text-center mt-12 text-[15px]'}>
     Med ☕ av Webkom | for <strong>Abakus</strong> |{' '}
     <a
-      style={{
-        textDecoration: 'none',
-        color: '#BC1818',
-      }}
+      className={'text-[#BC1818]'}
       href="https://github.com/webkom/kvittering"
       target="blank"
     >
