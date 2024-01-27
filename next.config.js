@@ -1,6 +1,9 @@
 const path = require('path');
 
 module.exports = {
+  images: {
+    unoptimized: true,
+  },
   env: {
     API_URL: process.env.API_URL,
   },

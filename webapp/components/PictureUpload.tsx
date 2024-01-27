@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import styles from './FileUpload.module.css';
+import { useState, useEffect, useRef } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { MdAttachFile } from 'react-icons/md';
-
-import { Button, Card, Grid, Text } from '@nextui-org/react';
+import { Button, Card, CardBody, CardFooter } from '@nextui-org/react';
 import { processFiles } from 'utils/fileHelper';
+import Image from 'next/image';
+import { FormButton } from './elements';
 
 type FileNames = { [key: string]: string };
 
@@ -14,6 +14,7 @@ type Props = {
 };
 
 const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
   const [fileNames, setFileNames] = useState<FileNames>({});
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -28,60 +29,71 @@ const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
 
   return (
     <>
-      <div className={styles.uploadButtonWrapper}>
-        <label>
-          <input
-            id="attachments"
-            type="file"
-            className={styles.fileInput}
-            multiple
-            onChange={async (e) => {
-              const { files, errors } = await processFiles(e.target.files);
-              const base64Files = files.map((file) => file.base64);
-              setImages(Array.from(new Set([...images, ...base64Files])));
-              setErrors((prevErrors) => [...prevErrors, ...errors]);
-              setFileNames((prevFileNames) => {
-                const newFileNames = { ...prevFileNames };
-                files.forEach(
-                  (file) => (newFileNames[file.base64] = file.name)
-                );
-                return newFileNames;
-              });
-              e.target.value = '';
-            }}
-          />
-          <div className={styles.uploadButton}>
-            <MdAttachFile size={20} />
-            <Text css={{ marginLeft: '5px' }}>Last opp vedlegg</Text>
-          </div>
-        </label>
+      <div>
+        <input
+          ref={inputFileRef}
+          id="attachments"
+          type="file"
+          className={'hidden'}
+          multiple
+          onChange={async (e) => {
+            const { files, errors } = await processFiles(e.target.files);
+            const base64Files = files.map((file) => file.base64);
+            setImages(Array.from(new Set([...images, ...base64Files])));
+            setErrors((prevErrors) => [...prevErrors, ...errors]);
+            setFileNames((prevFileNames) => {
+              const newFileNames = { ...prevFileNames };
+              files.forEach((file) => (newFileNames[file.base64] = file.name));
+              return newFileNames;
+            });
+            e.target.value = '';
+          }}
+        />
+        <FormButton
+          onPress={() => inputFileRef.current?.click()}
+          startContent={<MdAttachFile size={20} />}
+        >
+          Last opp vedlegg
+        </FormButton>
       </div>
 
-      <Grid.Container
-        className={styles.uploadedWrapper}
-        id="uploadedAttachments"
-      >
+      <div className="px-2">
         {errors.map((invalidUpload) => (
-          <Text color={'error'} key={invalidUpload}>
+          <p className={'text-danger my-2'} key={invalidUpload}>
             {invalidUpload}
-          </Text>
+          </p>
         ))}
-        {images.map((image) => (
-          <Card className={styles.uploadedElement} key={image} variant="flat">
-            <Card.Body>
-              <Card.Image src={image} />
-            </Card.Body>
-            <Card.Footer css={{ justifyContent: 'space-between' }}>
-              {fileNames[image] ?? ''}
-              <Button
-                color={'error'}
-                onPress={() => removeImage(image)}
-                icon={<FaTrashAlt size={17} />}
-              ></Button>
-            </Card.Footer>
-          </Card>
-        ))}
-      </Grid.Container>
+      </div>
+
+      {images.length > 0 && (
+        <div
+          className={'grid grid-cols-2 mt-3 mb-6 gap-3'}
+          id="uploadedAttachments"
+        >
+          {images.map((image) => (
+            <Card key={image} className={'border-1'} shadow="none">
+              <CardBody>
+                <Image
+                  src={image}
+                  alt={fileNames[image]}
+                  width={500}
+                  height={500}
+                />
+              </CardBody>
+              <CardFooter className={'justify-between'}>
+                {fileNames[image] ?? ''}
+                <Button
+                  isIconOnly
+                  color={'danger'}
+                  onPress={() => removeImage(image)}
+                >
+                  <FaTrashAlt size={17} />
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
     </>
   );
 };

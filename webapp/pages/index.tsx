@@ -1,26 +1,31 @@
-import { Card, Container, Divider, Row, Spacer, Text } from '@nextui-org/react';
+import { Card, CardBody, CardHeader, Divider, Spacer } from '@nextui-org/react';
 
 import Form from 'components/Form';
 import Footer from 'components/Footer';
+import Image from 'next/image';
 
 const App = (): JSX.Element => (
-  <Container xs>
+  <div className="max-w-xl mx-auto mt-5">
     <Card>
-      <Card.Header>
-        <Row justify="center" align="center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/favicon.png" style={{ width: '50px' }} />
-          <Spacer x={0.4} />
-          <Text h4>Kvitteringsskjema</Text>
-        </Row>
-      </Card.Header>
+      <CardHeader>
+        <div className={'flex justify-center items-center w-full'}>
+          <Image
+            src="/favicon.png"
+            alt={'Abakus-logo'}
+            width={50}
+            height={50}
+          />
+          <Spacer x={2} />
+          <h4>Kvitteringsskjema</h4>
+        </div>
+      </CardHeader>
       <Divider />
-      <Card.Body>
+      <CardBody>
         <Form />
-      </Card.Body>
+      </CardBody>
     </Card>
     <Footer />
-  </Container>
+  </div>
 );
 
 export default App;
