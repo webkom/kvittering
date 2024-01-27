@@ -13,7 +13,7 @@ steps:
       - yarn --frozen-lockfile
 
   - name: poetry
-    image: abakus/lego-testbase:poetry
+    image: abakus/lego-testbase:python3.11
     when:
       event:
         - push
@@ -31,7 +31,7 @@ steps:
       - yarn prettier:check
 
   - name: black
-    image: abakus/lego-testbase:poetry
+    image: abakus/lego-testbase:python3.11
     when:
       event:
         - push
@@ -41,7 +41,7 @@ steps:
       - poetry
 
   - name: isort
-    image: abakus/lego-testbase:poetry
+    image: abakus/lego-testbase:python3.11
     when:
       event:
         - push
