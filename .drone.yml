@@ -122,6 +122,7 @@ steps:
       - eslint
       - build
       - export
+      - cypress
     settings:
       registry: https://registry.webkom.dev
       repo: registry.webkom.dev/webkom/kvittering
@@ -140,8 +141,8 @@ steps:
     when:
       branch:
         - dev
-      event: push
-      status: success
+      event: [push]
+      status: [success]
     settings:
       playbook: /infrastructure/esas/playbooks/deploy.yml
       repository:
@@ -162,8 +163,8 @@ steps:
     when:
       branch:
         - master
-      event: push
-      status: success
+      event: [push]
+      status: [success]
     settings:
       playbook: /infrastructure/esas/playbooks/deploy.yml
       repository:

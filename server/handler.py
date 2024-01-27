@@ -18,8 +18,6 @@ from pdf2image import convert_from_path
 from PIL import Image
 from sentry_sdk import configure_scope
 
-import mail
-
 
 class UnsupportedFileException(Exception):
     pass
@@ -27,8 +25,8 @@ class UnsupportedFileException(Exception):
 
 field_title_map = {
     "name": "Navn:",
-    "committee": "Komite:",
-    "accountNumber": "Kontonummer",
+    "group": "Gruppe/komité:",
+    "accountNumber": "Kontonummer:",
     "date": "Dato:",
     "occasion": "Anledning:",
     "amount": "Beløp:",

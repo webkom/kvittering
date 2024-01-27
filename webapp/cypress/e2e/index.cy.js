@@ -9,8 +9,7 @@ describe('Form', () => {
   it('should be able to fill in basic fields', () => {
     cy.get('#name').type('John Doe');
     cy.get('#mailFrom').type('jon@doe.com');
-    cy.get('#committee').type('webkom');
-    cy.get('#mailTo').type('lisa@doe.com');
+    cy.get('#mailTo').type('Webkom');
     cy.get('#accountNumber').type('1234 56 78903');
     cy.get('#amount').type('1000');
     cy.get('#date').type('1970-01-01');
@@ -64,8 +63,7 @@ describe('Submit', () => {
     // Fill in values
     cy.get('#name').type('John Doe');
     cy.get('#mailFrom').type('jon@doe.com');
-    cy.get('#committee').type('webkom');
-    cy.get('#mailTo').type('lisa@doe.com');
+    cy.get('#mailTo').type('Webkom');
     cy.get('#accountNumber').type('1234 56 78903');
     cy.get('#amount').type('1000');
     cy.get('#date').type('1970-01-01');
