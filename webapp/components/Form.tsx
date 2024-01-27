@@ -237,7 +237,7 @@ const ReceiptForm = (): JSX.Element => {
               <Button
                 type="submit"
                 ghost
-                disabled={submitting || success === true || hasValidationErrors}
+                disabled={submitting || hasValidationErrors}
                 className={styles.submit}
               >
                 <BiReceipt size={25} />

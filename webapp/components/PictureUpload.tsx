@@ -47,6 +47,7 @@ const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
                 );
                 return newFileNames;
               });
+              e.target.value = '';
             }}
           />
           <div className={styles.uploadButton}>
