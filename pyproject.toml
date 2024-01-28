@@ -11,16 +11,15 @@ python = "^3.11"
 flask = "3.0.1"
 gevent = "23.9.1"
 fpdf = "1.7.2"
-sentry-sdk = {extras = ["flask"], version = "^1.5.8"}
-Pillow = "9.3.0"
-pdf2image = "1.0.0"
+sentry-sdk = {extras = ["flask"], version = "^1.39.2"}
+pdf2image = "1.17.0"
 pyheif = "0.7.1"
 google = "3.0.0"
-google-api-python-client = "2.42.0"
+google-api-python-client = "2.115.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.3.0"
-isort = "^5.10.1"
+black = "^24.1.1"
+isort = "^5.13.2"
 mailinglogger = "^6.0.0"
 pytest = "^8.0.0"
 
