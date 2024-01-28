@@ -10,7 +10,7 @@ default_data = {
     "amount": "153",
     "name": "Lar",
     "accountNumber": "010101010101",
-    "committee": "Komkom",
+    "group": "Komkom",
     "occasion": "Teste litt",
     "comment": "pls",
 }
