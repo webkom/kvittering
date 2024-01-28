@@ -8,7 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 
-flask = "2.0.3"
+flask = "3.0.1"
 gevent = "23.9.1"
 fpdf = "1.7.2"
 sentry-sdk = {extras = ["flask"], version = "^1.5.8"}
