@@ -1,4 +1,4 @@
-FROM python:3.9-slim AS build-backend
+FROM python:3.11-slim AS build-backend
 
 RUN apt-get update && apt-get install -y poppler-utils
 
