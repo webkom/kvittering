@@ -79,9 +79,20 @@ steps:
       - build
     commands:
       - yarn export
+  
+  - name: pytest
+    image: abakus/lego-testbase:python3.11
+    when:
+      event:
+        - push
+    commands:
+      - poetry run pytest
+    depends_on:
+      - poetry
+      - export
 
   - name: server
-    image: node:16-slim
+    image: node:18-slim
     detach: true
     when:
       event:
@@ -119,9 +130,10 @@ steps:
     depends_on:
       - setup
       - prettier
+      - pytest
       - eslint
-      - build
-      - export
+      - isort
+      - black
       - cypress
     settings:
       registry: https://registry.webkom.dev

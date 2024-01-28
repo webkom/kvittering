@@ -22,6 +22,7 @@ google-api-python-client = "2.42.0"
 black = "^22.3.0"
 isort = "^5.10.1"
 mailinglogger = "^6.0.0"
+pytest = "^8.0.0"
 
 
 [build-system]

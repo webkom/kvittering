@@ -4,8 +4,6 @@ from flask import Flask
 from flask import request
 from gevent.pywsgi import WSGIServer
 
-from handler import handle
-
 
 static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")
 
@@ -42,6 +40,8 @@ def index_route():
 
 @app.route("/generate", methods=["POST"])
 def main_route():
+    from handler import handle
+
     response, status = handle(request.json)
     return response, status
 
