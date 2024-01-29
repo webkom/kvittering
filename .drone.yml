@@ -69,16 +69,6 @@ steps:
       - setup
     commands:
       - yarn build
-
-  - name: export
-    image: node:20-slim
-    when:
-      event:
-        - push
-    depends_on:
-      - build
-    commands:
-      - yarn export
   
   - name: pytest
     image: abakus/lego-testbase:python3.11
@@ -89,7 +79,7 @@ steps:
       - poetry run pytest
     depends_on:
       - poetry
-      - export
+      - build
 
   - name: server
     image: node:20-slim

@@ -34,8 +34,8 @@ $ source venv/bin/activate
 # Install packages
 $ poetry install
 
-# Export the frontend and run the backend
-$ yarn build && yarn export
+# Export the frontend
+$ yarn build
 
 # Start the server
 $ python server/server.py
