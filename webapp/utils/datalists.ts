@@ -4,7 +4,7 @@ export type DataListItem = {
 };
 
 export const mailToDataList: DataListItem[] = [
-  { value: 'okans@abakus.no', text: 'HS' },
+  { value: 'okonomi@abakus.no', text: 'HS' },
   { value: 'arrkom-okans@abakus.no', text: 'Arrkom' },
   { value: 'backup-okans@abakus.no', text: 'backup' },
   { value: 'bankkom-okans@abakus.no', text: 'Bankkom' },
