@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: setup
-    image: node:18-slim
+    image: node:20-slim
     when:
       event:
         - push
@@ -21,7 +21,7 @@ steps:
       - poetry install --with dev
 
   - name: prettier
-    image: node:18-slim
+    image: node:20-slim
     when:
       event:
         - push
@@ -51,7 +51,7 @@ steps:
       - poetry
 
   - name: eslint
-    image: node:18-slim
+    image: node:20-slim
     when:
       event:
         - push
@@ -61,7 +61,7 @@ steps:
       - yarn eslint
 
   - name: build
-    image: node:18-slim
+    image: node:20-slim
     when:
       event:
         - push
@@ -71,7 +71,7 @@ steps:
       - yarn build
 
   - name: export
-    image: node:18-slim
+    image: node:20-slim
     when:
       event:
         - push
@@ -92,7 +92,7 @@ steps:
       - export
 
   - name: server
-    image: node:18-slim
+    image: node:20-slim
     detach: true
     when:
       event:
