@@ -12,7 +12,7 @@ RUN set -e \
   && poetry config virtualenvs.create false \
   && poetry install --without dev
 
-FROM node:18-slim AS build-frontend
+FROM node:20-slim AS build-frontend
 
 WORKDIR /build
 
