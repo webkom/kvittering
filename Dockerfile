@@ -29,7 +29,7 @@ COPY ./next.config.js .
 COPY ./tailwind.config.js .
 COPY ./postcss.config.js .
 
-RUN yarn build && yarn export
+RUN yarn build
 
 FROM build-backend
 
