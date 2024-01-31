@@ -56,20 +56,20 @@ const Response = ({
   success: boolean | null;
   submitting: boolean;
 }): JSX.Element => (
-  <div className={'flex justify-center w-full max-h-52'}>
+  <div className={'flex justify-center w-full max-h-52 mt-3'}>
     {/* We have submitted the request, but gotten no response */}
     {submitting && <CircularProgress />}
 
     {/* We have submitted the request, and gotten success back */}
     {success === true && (
-      <Card className={'bg-success mt-3'}>
+      <Card className={'bg-success'}>
         <CardBody className={'p-4'}>{response}</CardBody>
       </Card>
     )}
 
     {/* We have submitted the request, and gotten failure back */}
     {success === false && (
-      <Card className={'bg-danger mt-3'}>
+      <Card className={'bg-danger'}>
         <CardBody className={'p-4'}>{response}</CardBody>
       </Card>
     )}
@@ -218,7 +218,7 @@ const ReceiptForm = (): JSX.Element => {
                 label="Ditt kontonummer"
                 required
                 type="text"
-                helperText="Pengene overføres til dette nummeret"
+                helperText="Pengene overføres til dette kontonummeret"
                 validators={[accountValidator]}
               />
 
@@ -284,6 +284,12 @@ const ReceiptForm = (): JSX.Element => {
               type="submit"
               disabled={submitting || hasValidationErrors}
               startContent={<BiReceipt size={24} />}
+              onPress={() =>
+                hasValidationErrors &&
+                Object.keys(errors ?? {}).forEach((fieldName) =>
+                  form.blur(fieldName as keyof FormValues)
+                )
+              }
             >
               Generer kvittering
             </FormButton>
