@@ -28,9 +28,9 @@ def service_account_login(mail_from, service_account_str):
 
 
 def create_mail(msg, body):
-    msg[
-        "Subject"
-    ] = f'Kvitteringsskjema fra {body["name"]}, {formatdate(localtime=True)}'
+    msg["Subject"] = (
+        f'Kvitteringsskjema fra {body["name"]}, {formatdate(localtime=True)}'
+    )
 
     text = ""
     text += f'Laget av: {body.get("name", "")}\n'
