@@ -43,7 +43,7 @@
     "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "^10.4.17",
     "concurrently": "^8.2.2",
-    "cypress": "^13.6.4",
+    "cypress": "^13.6.5",
     "cypress-file-upload": "^5.0.8",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^9.1.0",
