@@ -21,7 +21,7 @@
     "cypress:ci": "yarn build && concurrently \"yarn start\" \"cypress run --record\" --kill-others --success first"
   },
   "dependencies": {
-    "@emotion/react": "^11.9.3",
+    "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.9.3",
     "@nextui-org/react": "^2.2.9",
     "final-form": "^4.20.10",
