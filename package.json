@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.3.0",
-    "@types/node": "^20.11.21",
+    "@types/node": "^20.11.23",
     "@types/react": "^18.2.60",
     "@types/react-modal": "^3.13.1",
     "@types/react-signature-canvas": "^1.0.2",
