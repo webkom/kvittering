@@ -150,7 +150,8 @@ def create_pdf(data):
         pdf.set_font("", "B")
         pdf.cell(90, 5, txt=field_title_map[key])
         pdf.set_font("", "")
-        pdf.multi_cell(0, 5, txt=data[key])
+        field_value = data[key] if key in data else ""
+        pdf.multi_cell(0, 5, txt=field_value)
 
     pdf.set_font("", "B")
     pdf.cell(0, 5, txt="Signatur:", ln=1)
