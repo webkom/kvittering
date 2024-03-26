@@ -18,7 +18,7 @@ google = "3.0.0"
 google-api-python-client = "2.115.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.1.1"
+black = "^24.3.0"
 isort = "^5.13.2"
 mailinglogger = "^6.0.0"
 pytest = "^8.0.0"

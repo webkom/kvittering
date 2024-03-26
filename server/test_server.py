@@ -5,9 +5,11 @@ from .server import app as server_app
 
 @pytest.fixture()
 def app():
-    server_app.config.update({
-        "TESTING": True,
-    })
+    server_app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
 
     return server_app
 
