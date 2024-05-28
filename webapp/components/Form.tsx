@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react';
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -8,7 +10,7 @@ import {
   Tabs,
 } from '@nextui-org/react';
 import type { FormRenderProps } from 'react-final-form';
-import { BiReceipt } from 'react-icons/bi';
+import { BiBlock, BiReceipt } from 'react-icons/bi';
 import { Form } from 'react-final-form';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
@@ -23,7 +25,7 @@ type FormValues = {
   group: string;
   mailTo: string;
   accountNumber: string;
-  amount?: number;
+  amount: number | '';
   date: string;
   occasion: string;
   comment: string;
@@ -31,21 +33,50 @@ type FormValues = {
   images: string[];
 };
 
+const storePermanently: (keyof FormValues)[] = ['name', 'mailFrom'];
+const storeTemporarily: (keyof FormValues)[] = [
+  'group',
+  'mailTo',
+  'accountNumber',
+  'amount',
+  'date',
+  'occasion',
+  'comment',
+  'signature',
+  'images',
+];
+
 const today = new Date().toISOString().split('T')[0].toString();
 
-const initialValues: FormValues = {
-  name: '',
-  mailFrom: '',
-  group: '',
-  mailTo: '',
-  accountNumber: '',
-  amount: undefined,
-  date: today,
-  occasion: '',
-  comment: '',
-  signature: '',
-  images: [],
-};
+const localStorage =
+  typeof window !== 'undefined' ? window.localStorage : undefined;
+const getFromLocalStorage = (key: keyof FormValues) =>
+  JSON.parse(localStorage?.getItem('formValues.' + key) ?? '""');
+const sessionStorage =
+  typeof window !== 'undefined' ? window.sessionStorage : undefined;
+const getFromSessionStorage = (
+  key: keyof FormValues,
+  fallbackJsonString = '""'
+) =>
+  JSON.parse(
+    sessionStorage?.getItem('formValues.' + key) ?? fallbackJsonString
+  );
+
+const getInitialValues: () => FormValues = () => ({
+  name: getFromLocalStorage('name'),
+  mailFrom: getFromLocalStorage('mailFrom'),
+  group: getFromSessionStorage('group'),
+  mailTo: getFromSessionStorage('mailTo'),
+  accountNumber: getFromSessionStorage('accountNumber'),
+  amount: isNaN(parseInt(getFromSessionStorage('amount'), 10))
+    ? ''
+    : parseInt(getFromSessionStorage('amount') ?? '', 10),
+  date: getFromSessionStorage('date') || today,
+  occasion: getFromSessionStorage('occasion'),
+  comment: getFromSessionStorage('comment'),
+  signature: getFromSessionStorage('signature'),
+  images: getFromSessionStorage('images', '[]'),
+});
 
 const Response = ({
   response,
@@ -117,8 +148,7 @@ const ReceiptForm = (): JSX.Element => {
   return (
     <Form<FormValues>
       onSubmit={onSubmit}
-      // TODO: Implement SessionStorage
-      initialValues={initialValues}
+      initialValues={getInitialValues()}
       validate={(values) => {
         const errors: { [key: string]: string } = {};
         if (values.signature === '') {
@@ -147,6 +177,24 @@ const ReceiptForm = (): JSX.Element => {
           () => Object.values(touched ?? {}).some((touch) => !!touch),
           [touched]
         );
+
+        useEffect(() => {
+          const timer = setTimeout(() => {
+            storePermanently.forEach((valueKey) =>
+              localStorage?.setItem(
+                'formValues.' + valueKey,
+                JSON.stringify(values[valueKey])
+              )
+            );
+            storeTemporarily.forEach((valueKey) =>
+              sessionStorage?.setItem(
+                'formValues.' + valueKey,
+                JSON.stringify(values[valueKey])
+              )
+            );
+          }, 1000);
+          return () => clearTimeout(timer);
+        }, [values]);
 
         return (
           <form onSubmit={handleSubmit}>
@@ -280,19 +328,42 @@ const ReceiptForm = (): JSX.Element => {
 
             <Spacer y={4} />
 
-            <FormButton
-              type="submit"
-              disabled={submitting || hasValidationErrors}
-              startContent={<BiReceipt size={24} />}
-              onPress={() =>
-                hasValidationErrors &&
-                Object.keys(errors ?? {}).forEach((fieldName) =>
-                  form.blur(fieldName as keyof FormValues)
-                )
-              }
-            >
-              Generer kvittering
-            </FormButton>
+            <div className="flex gap-4">
+              <FormButton
+                startContent={<BiBlock size={24} />}
+                disabled={values === getInitialValues()}
+                onPress={() => {
+                  // Clear locally stored variables and reset the form
+                  sessionStorage?.clear();
+                  localStorage?.clear();
+                  const initialValues = getInitialValues();
+                  form.batch(() => {
+                    Object.keys(initialValues).forEach((valueKey) =>
+                      form.change(
+                        valueKey as keyof FormValues,
+                        initialValues[valueKey as keyof FormValues]
+                      )
+                    );
+                    form.restart();
+                  });
+                }}
+              >
+                Tilbakestill skjemaet
+              </FormButton>
+              <FormButton
+                type="submit"
+                disabled={submitting || hasValidationErrors}
+                startContent={<BiReceipt size={24} />}
+                onPress={() =>
+                  hasValidationErrors &&
+                  Object.keys(errors ?? {}).forEach((fieldName) =>
+                    form.blur(fieldName as keyof FormValues)
+                  )
+                }
+              >
+                Generer kvittering
+              </FormButton>
+            </div>
 
             {hasBeenTouched && hasValidationErrors && (
               <p className={'text-danger mt-3 text-sm'}>
