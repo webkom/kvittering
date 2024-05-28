@@ -52,6 +52,7 @@ def send_mail(mail_to, body, file):
     msg["From"] = mail_from
     msg["To"] = COMMASPACE.join(mail_to)
     msg["Date"] = formatdate(localtime=True)
+    msg["Reply-To"] = COMMASPACE.join(mail_to)
 
     create_mail(msg, body)
 
