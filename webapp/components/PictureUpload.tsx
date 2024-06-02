@@ -1,7 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaRegQuestionCircle, FaTrashAlt } from 'react-icons/fa';
 import { MdAttachFile } from 'react-icons/md';
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@nextui-org/react';
 import { processFiles } from 'utils/fileHelper';
 import Image from 'next/image';
 import { FormButton } from './elements';
@@ -29,7 +37,7 @@ const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
 
   return (
     <>
-      <div>
+      <div className="flex gap-3 items-center">
         <input
           ref={inputFileRef}
           id="attachments"
@@ -55,6 +63,39 @@ const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
         >
           Last opp vedlegg
         </FormButton>
+        <Popover placement="top">
+          <PopoverTrigger>
+            <span className="cursor-pointer">
+              <FaRegQuestionCircle size={20} />
+            </span>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="px-1 py-2">
+              <div className="text-small font-bold">Krav til vedlegg</div>
+              <div className="text-tiny my-1">
+                Hvis vedlegget er en kvittering må den inneholde følgende for å
+                være gyldig;
+              </div>
+              <div className="text-tiny">
+                - <b>Kvitteringsnummer</b>: et nummer som gjør transaksjonen
+                sporbar
+              </div>
+              <div className="text-tiny">
+                - <b>Tidspunkt</b> for når kvitteringen er skrevet ut
+              </div>
+              <div className="text-tiny">
+                - <b>Tidspunkt</b> og <b>sted</b> for levering av ytelsen
+              </div>
+              <div className="text-tiny">
+                - <b>Selgers navn, adresse</b> og/eller{' '}
+                <b>organisasjonsnummer</b>
+              </div>
+              <div className="text-tiny">
+                - <b>Varespesifikasjon</b> og <b>betalingsmiddel</b>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="px-2">
