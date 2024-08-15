@@ -10,3 +10,5 @@ webapp/cypress/screenshots
 
 .python-version
 .vscode
+
+.DS_store

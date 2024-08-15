@@ -2,21 +2,35 @@ import argparse
 import base64
 
 from handler import create_pdf
+from handler import get_missing_fields
 from handler import modify_data
+from handler import validate_fields
 
 
 default_data = {
     "date": "11-03-2020",
-    "amount": "153",
+    "amount": 0.25,
     "name": "Lar",
-    "accountNumber": "010101010101",
-    "group": "Komkom",
+    "accountNumber": "01010101010",
+    "group": "KomKom",
     "occasion": "Teste litt",
     "comment": "pls",
+    "mailTo": "test@demo.com",
+    "mailFrom": "test2@demo.com",
 }
 
 
 def main(data, out):
+    req_fields = get_missing_fields(data)
+    if len(req_fields) > 0:
+        print(f'Requires fields {", ".join(req_fields)}')
+        return
+
+    validation_errors = validate_fields(data)
+    if len(validation_errors) > 0:
+        print(f'Invalid fields {", ".join(validation_errors)}')
+        return
+
     data = modify_data(data)
 
     pdf = create_pdf(data)
