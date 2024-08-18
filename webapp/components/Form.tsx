@@ -50,17 +50,27 @@ const today = new Date().toISOString().split('T')[0].toString();
 
 const localStorage =
   typeof window !== 'undefined' ? window.localStorage : undefined;
-const getFromLocalStorage = (key: keyof FormValues) =>
-  JSON.parse(localStorage?.getItem('formValues.' + key) ?? '""');
+const getFromLocalStorage = (key: keyof FormValues) => {
+  try {
+    return JSON.parse(localStorage?.getItem('formValues.' + key) ?? '""');
+  } catch (e) {
+    return '';
+  }
+};
 const sessionStorage =
   typeof window !== 'undefined' ? window.sessionStorage : undefined;
 const getFromSessionStorage = (
   key: keyof FormValues,
   fallbackJsonString = '""'
-) =>
-  JSON.parse(
-    sessionStorage?.getItem('formValues.' + key) ?? fallbackJsonString
-  );
+) => {
+  try {
+    return JSON.parse(
+      sessionStorage?.getItem('formValues.' + key) ?? fallbackJsonString
+    );
+  } catch (e) {
+    return '';
+  }
+};
 
 const getInitialValues: () => FormValues = () => ({
   name: getFromLocalStorage('name'),
