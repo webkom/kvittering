@@ -34,7 +34,7 @@ field_title_map = {
 }
 
 
-def data_is_valid(data):
+def get_missing_fields(data):
     fields = [
         "images",
         "date",
@@ -45,7 +45,18 @@ def data_is_valid(data):
         "accountNumber",
         "mailFrom",
     ]
-    return [f for f in fields if f not in data or len(data[f]) == 0]
+    return [f for f in fields if f not in data or not data[f]]
+
+
+def validate_fields(data):
+    errors = []
+    try:
+        float(data["amount"])
+    except ValueError:
+        errors.append("invalid amount")
+    if len(data["accountNumber"]) != 11:
+        errors.append("account number has to be 11 digits")
+    return errors
 
 
 class PDF(FPDF):
@@ -184,9 +195,13 @@ def handle(data):
             "mailfrom": data["mailFrom"],
             "mailto": data["mailTo"],
         }
-    req_fields = data_is_valid(data)
+    req_fields = get_missing_fields(data)
     if len(req_fields) > 0:
         return f'Requires fields {", ".join(req_fields)}', 400
+
+    validation_errors = validate_fields(data)
+    if len(validation_errors) > 0:
+        return f'Invalid fields {", ".join(validation_errors)}', 400
 
     try:
         data = modify_data(data)
