@@ -14,7 +14,11 @@ import { BiBlock, BiReceipt } from 'react-icons/bi';
 import { Form } from 'react-final-form';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
-import { accountValidator, emailValidator, fullNameValidator } from 'utils/validators';
+import {
+  accountValidator,
+  emailValidator,
+  fullNameValidator,
+} from 'utils/validators';
 import { mailToDataList } from 'utils/datalists';
 import { FormButton, FormInput } from './elements';
 import FormSelect from './elements/FormSelect';
