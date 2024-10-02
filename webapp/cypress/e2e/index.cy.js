@@ -73,7 +73,7 @@ describe('Submit', () => {
     cy.get('#attachments').attachFile('abakus.png');
 
     // Submit
-    cy.get('button').contains('Generer kvittering').click();
+    cy.get('button').contains('Generer og send kvittering').click();
 
     // Wait for the submitResponse
     cy.wait('@submitResponse')
