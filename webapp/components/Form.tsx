@@ -338,7 +338,7 @@ const ReceiptForm = (): JSX.Element => {
 
             <Spacer y={4} />
 
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <FormButton
                 startContent={<BiBlock size={24} />}
                 disabled={values === getInitialValues()}
@@ -371,7 +371,7 @@ const ReceiptForm = (): JSX.Element => {
                   )
                 }
               >
-                Generer kvittering
+                Generer og send kvittering
               </FormButton>
             </div>
 
