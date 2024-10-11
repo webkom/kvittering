@@ -13,6 +13,17 @@ export const validateField =
 export const requiredValidator: FieldValidator = (value?: string) =>
   value ? undefined : 'Dette feltet er obligatorisk';
 
+export const fullNameValidator: FieldValidator = (value?: string) => {
+  const namesWithlength = value?.split(' ').filter((name) => name.length > 0);
+  if (
+    !value?.includes(' ') ||
+    !namesWithlength ||
+    namesWithlength?.length < 2
+  ) {
+    return 'Vennligst skriv inn ditt fulle navn';
+  }
+};
+
 export const emailValidator: FieldValidator = (value?: string) => {
   if (!value?.includes('@')) {
     return 'E-post må inneholde @';
