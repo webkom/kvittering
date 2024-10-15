@@ -2083,10 +2083,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-signature-canvas@^1.0.2":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@types/react-signature-canvas/-/react-signature-canvas-1.0.5.tgz#7fa2e091bda04a336e5e8d992548143e3bb8e3a2"
-  integrity sha512-jzqEeDR6kxxhg1Ck462zH+C+qMu8hoV5zz0hqnQCp0Q0tHuFEAN2/f0c4NlHyDUfAALX+HPi+eK5SBRdqsEeEg==
+"@types/react-signature-canvas@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@types/react-signature-canvas/-/react-signature-canvas-1.0.6.tgz#09539a48e966fa513a03cbe6a977e2c1a9b3c01b"
+  integrity sha512-v0IqWH6dUQoj/X0w0aP3sQuQeVo2A3hdLvmG6XFF1lO8fCfyB+KKGydWE/n2OrO7XxaKeRVNxOuKgmQ9J142nQ==
   dependencies:
     "@types/react" "*"
     "@types/signature_pad" "*"
