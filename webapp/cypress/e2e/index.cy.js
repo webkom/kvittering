@@ -1,15 +1,23 @@
+const selectItem = (selector, itemValue) => {
+  cy.get(selector).click();
+  cy.get("div[data-slot='popover']")
+    .find(`span:contains(${itemValue})`)
+    .click();
+};
+
 describe('Load', () => {
+  beforeEach(() => cy.visit('/'));
   it('should navigate to index page', () => {
-    cy.visit('/');
     cy.get('h4').contains('Kvitteringsskjema');
   });
 });
 
 describe('Form', () => {
+  beforeEach(() => cy.visit('/'));
   it('should be able to fill in basic fields', () => {
     cy.get('#name').type('John Doe');
     cy.get('#mailFrom').type('jon@doe.com');
-    cy.get('#mailTo').type('Webkom');
+    selectItem('#mailTo', 'Webkom');
     cy.get('#accountNumber').type('1234 56 78903');
     cy.get('#amount').type('1000');
     cy.get('#date').type('1970-01-01');
@@ -19,6 +27,7 @@ describe('Form', () => {
 });
 
 describe('Uploads', () => {
+  beforeEach(() => cy.visit('/'));
   it('should be able to upload signature', () => {
     cy.get('#signature').attachFile('abakus.png');
   });
@@ -40,6 +49,7 @@ describe('Uploads', () => {
 });
 
 describe('Signature drawing', () => {
+  beforeEach(() => cy.visit('/'));
   it('should be possible to draw the signature', () => {
     cy.get('#signButton').click();
     cy.get('h3').contains('Signer i feltet under');
@@ -49,8 +59,8 @@ describe('Signature drawing', () => {
 });
 
 describe('Submit', () => {
+  beforeEach(() => cy.visit('/'));
   it('should be possible to submit', () => {
-    cy.visit('/');
     // Set up a catch for the POST request
     cy.intercept(
       {
@@ -63,7 +73,7 @@ describe('Submit', () => {
     // Fill in values
     cy.get('#name').type('John Doe');
     cy.get('#mailFrom').type('jon@doe.com');
-    cy.get('#mailTo').type('Webkom');
+    selectItem('#mailTo', 'Webkom');
     cy.get('#accountNumber').type('1234 56 78903');
     cy.get('#amount').type('1000');
     cy.get('#date').type('1970-01-01');
