@@ -1,8 +1,11 @@
 import { Card, CardBody, CardHeader, Divider, Spacer } from '@nextui-org/react';
 
-import Form from 'components/Form';
+// import Form from 'components/Form';
 import Footer from 'components/Footer';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
+
+const DynamicForm = dynamic(() => import('../components/Form'), { ssr: false });
 
 const App = (): JSX.Element => (
   <div className="max-w-xl mx-auto mt-5">
@@ -21,7 +24,7 @@ const App = (): JSX.Element => (
       </CardHeader>
       <Divider />
       <CardBody>
-        <Form />
+        <DynamicForm />
       </CardBody>
     </Card>
     <Footer />
