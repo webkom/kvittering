@@ -12,3 +12,7 @@ webapp/cypress/screenshots
 .vscode
 
 .DS_store
+
+# An input folder for files to test the CLI-generator and the resulting output
+input
+output.pdf
