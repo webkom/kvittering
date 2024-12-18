@@ -1,11 +1,11 @@
-import { Field, FieldRenderProps } from 'react-final-form';
 import { Input, InputProps, Textarea, TextAreaProps } from '@nextui-org/react';
+import { Field, FieldRenderProps } from 'react-final-form';
+import { DataListItem } from 'utils/datalists';
 import {
   FieldValidator,
   requiredValidator,
   validateField,
 } from 'utils/validators';
-import { DataListItem } from 'utils/datalists';
 
 type Props = {
   name: string;
@@ -67,7 +67,7 @@ const ReceiptInput: React.FC<Props> = ({
         <Textarea
           onBlur={(event) =>
             props.input.onBlur(
-              event as React.FocusEvent<HTMLTextAreaElement, Element>
+              event as React.FocusEvent<HTMLInputElement, Element>
             )
           }
           minRows={2}
