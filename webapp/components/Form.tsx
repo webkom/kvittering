@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -9,19 +8,20 @@ import {
   Tab,
   Tabs,
 } from '@nextui-org/react';
+import { useEffect, useMemo, useState } from 'react';
 import type { FormRenderProps } from 'react-final-form';
-import { BiBlock, BiReceipt } from 'react-icons/bi';
 import { Form } from 'react-final-form';
-import PictureUpload from './PictureUpload';
-import SignatureUpload from './SignatureUpload';
+import { BiBlock, BiReceipt } from 'react-icons/bi';
+import { mailToDataList } from 'utils/datalists';
 import {
   accountValidator,
   emailValidator,
   fullNameValidator,
 } from 'utils/validators';
-import { mailToDataList } from 'utils/datalists';
 import { FormButton, FormInput } from './elements';
 import FormSelect from './elements/FormSelect';
+import PictureUpload from './PictureUpload';
+import SignatureUpload from './SignatureUpload';
 
 type FormValues = {
   name: string;
@@ -345,6 +345,7 @@ const ReceiptForm = (): JSX.Element => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <FormButton
+                color="danger"
                 startContent={<BiBlock size={24} />}
                 disabled={values === getInitialValues()}
                 onPress={() => {
@@ -367,6 +368,14 @@ const ReceiptForm = (): JSX.Element => {
               </FormButton>
               <FormButton
                 type="submit"
+                color={
+                  submitting || hasValidationErrors ? 'default' : 'success'
+                }
+                className={
+                  submitting || hasValidationErrors
+                    ? 'cursor-not-allowed'
+                    : 'cursor-pointer'
+                }
                 disabled={submitting || hasValidationErrors}
                 startContent={<BiReceipt size={24} />}
                 onPress={() =>
