@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
 body {
   padding: 1rem;
   font-family: Inter, sans-serif;
@@ -13,8 +12,8 @@ body {
 }
 
 @media screen and (max-width: 500px) {
-  html,
   body {
     margin: 1rem 0;
+    padding-top: 0;
   }
 }
