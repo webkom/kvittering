@@ -69,7 +69,7 @@ steps:
       - setup
     commands:
       - yarn build
-  
+
   - name: pytest
     image: abakus/lego-testbase:python3.11
     when:
@@ -102,7 +102,7 @@ steps:
     environment:
       CYPRESS_RECORD_KEY:
         from_secret: cypress_record_key
-      BASE_URL: "http://server:3000"
+      BASE_URL: 'http://server:3000'
     commands:
       - apt-get -y install procps
       - cypress run --record

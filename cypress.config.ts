@@ -17,10 +17,10 @@ export default defineConfig({
   e2e: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     specPattern: 'webapp/cypress/e2e/**/*.{js,jsx,ts,tsx}',
-    fixturesFolder: "webapp/cypress/fixtures",
-    downloadsFolder: "webapp/cypress/downloads",
-    screenshotsFolder: "webapp/cypress/screenshots",
-    videosFolder: "webapp/cypress/videos",
-    supportFile: "webapp/cypress/support/e2e.js"
+    fixturesFolder: 'webapp/cypress/fixtures',
+    downloadsFolder: 'webapp/cypress/downloads',
+    screenshotsFolder: 'webapp/cypress/screenshots',
+    videosFolder: 'webapp/cypress/videos',
+    supportFile: 'webapp/cypress/support/e2e.js',
   },
 });
