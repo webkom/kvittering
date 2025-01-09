@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY ./pyproject.toml ./pyproject.toml
 
-RUN pip install poetry
+RUN pip install poetry==1.8.5
 
 RUN set -e \
   && poetry config virtualenvs.create false \
