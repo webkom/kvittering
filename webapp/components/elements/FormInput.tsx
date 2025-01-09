@@ -64,29 +64,12 @@ const ReceiptInput: React.FC<Props> = ({
       };
 
       return multiLine ? (
-        <Textarea
-          onBlur={(event) =>
-            props.input.onBlur(
-              event as React.FocusEvent<HTMLInputElement, Element>
-            )
-          }
-          minRows={2}
-          {...sharedProps}
-        />
+        <Textarea {...sharedProps} minRows={2} />
       ) : (
         <>
-          <Input
-            onBlur={(event) =>
-              props.input.onBlur(
-                event as React.FocusEvent<HTMLInputElement, Element>
-              )
-            }
-            type={type}
-            list={name + 'list'}
-            {...sharedProps}
-          />
+          <Input {...sharedProps} placeholder=" " type={type} />
           {suggestions && (
-            <datalist id={name + 'list'}>
+            <datalist>
               {suggestions.map(({ value, text }) => (
                 <option value={value} key={value}>
                   {text}
