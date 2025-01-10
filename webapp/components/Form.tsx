@@ -226,6 +226,7 @@ const ReceiptForm = (): JSX.Element => {
 
               <FormInput
                 name="mailFrom"
+                type="email"
                 label="Din e-post"
                 required
                 helperText="En kopi av skjemaet vil bli sendt hit"
@@ -265,6 +266,7 @@ const ReceiptForm = (): JSX.Element => {
                       />
                       <FormInput
                         name="mailTo"
+                        type="email"
                         label="Økans e-post"
                         required
                         helperText="Økans til gruppen/komiteen"
