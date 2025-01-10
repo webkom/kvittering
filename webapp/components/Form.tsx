@@ -350,6 +350,7 @@ const ReceiptForm = (): JSX.Element => {
                 disabled={values === getInitialValues()}
                 onPress={() => {
                   // Clear locally stored variables and reset the form
+                  form.restart();
                   sessionStorage?.clear();
                   localStorage?.clear();
                   const initialValues = getInitialValues();
@@ -360,7 +361,6 @@ const ReceiptForm = (): JSX.Element => {
                         initialValues[valueKey as keyof FormValues]
                       )
                     );
-                    form.restart();
                   });
                 }}
               >
