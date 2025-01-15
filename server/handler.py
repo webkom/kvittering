@@ -62,7 +62,7 @@ def validate_fields(data):
 class PDF(FPDF):
     def header(self):
         self.image("images/abakus.png", 10, 18, 33)
-        self.image("images/netcompany.png", 160, 11, 40)
+        self.image("images/bekk.png", 160, 18, 30)
         self.set_font("Arial", "B", 15)
         self.ln(20)
 
