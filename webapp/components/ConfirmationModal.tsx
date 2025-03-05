@@ -26,21 +26,19 @@ const ConfirmationModal: React.FC<Props> = ({
     >
       <ModalContent>
         <ModalBody>
-          <p style={{ textAlign: 'center', margin: '0 10px' }}>
+          <p className="mb-3 mt-8 text-center">
             Ved å godkjenne bekrefter jeg at beløpet stemmer med kvitteringen
           </p>
           <FormButton
-            style={{ marginBottom: 10 }}
             type="submit"
             color={submitting || hasValidationErrors ? 'default' : 'success'}
             className={
-              submitting || hasValidationErrors
+              (submitting || hasValidationErrors
                 ? 'cursor-not-allowed'
-                : 'cursor-pointer'
-            }
+                : 'cursor-pointer') + " mb-3"
+            } 
             disabled={submitting || hasValidationErrors}
             startContent={<BiReceipt size={24} />}
-            onSubmit={() => console.log('hei')}
             onPress={() => {
               onOpenChange();
               onSubmitExternal();
