@@ -22,6 +22,7 @@ import { FormButton, FormInput } from './elements';
 import FormSelect from './elements/FormSelect';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
+import ConfirmationModal from './ConfirmationModal';
 
 type FormValues = {
   name: string;
@@ -125,6 +126,8 @@ const ReceiptForm = (): JSX.Element => {
   // Hooks for submission
   const [success, setSuccess] = useState<boolean | null>(null);
   const [response, setResponse] = useState<string | null>(null);
+  const [openConfirmationModal, setOpenConfirmationModal] =
+    useState<boolean>(false);
 
   const onSubmit = async (
     values: FormValues,
@@ -369,7 +372,6 @@ const ReceiptForm = (): JSX.Element => {
                 Tilbakestill skjemaet
               </FormButton>
               <FormButton
-                type="submit"
                 color={
                   submitting || hasValidationErrors ? 'default' : 'success'
                 }
@@ -381,14 +383,25 @@ const ReceiptForm = (): JSX.Element => {
                 disabled={submitting || hasValidationErrors}
                 startContent={<BiReceipt size={24} />}
                 onPress={() =>
-                  hasValidationErrors &&
-                  Object.keys(errors ?? {}).forEach((fieldName) =>
-                    form.blur(fieldName as keyof FormValues)
-                  )
+                  hasValidationErrors
+                    ? Object.keys(errors ?? {}).forEach((fieldName) =>
+                        form.blur(fieldName as keyof FormValues)
+                      )
+                    : setOpenConfirmationModal(!openConfirmationModal)
                 }
               >
                 Generer og send kvittering
               </FormButton>
+
+              <ConfirmationModal
+                isOpen={openConfirmationModal}
+                onOpenChange={() =>
+                  setOpenConfirmationModal(!openConfirmationModal)
+                }
+                submitting={submitting}
+                hasValidationErrors={hasValidationErrors}
+                onSubmitExternal={handleSubmit}
+              ></ConfirmationModal>
             </div>
 
             {hasBeenTouched && hasValidationErrors && (
