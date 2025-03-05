@@ -35,8 +35,8 @@ const ConfirmationModal: React.FC<Props> = ({
             className={
               (submitting || hasValidationErrors
                 ? 'cursor-not-allowed'
-                : 'cursor-pointer') + " mb-3"
-            } 
+                : 'cursor-pointer') + ' mb-3'
+            }
             disabled={submitting || hasValidationErrors}
             startContent={<BiReceipt size={24} />}
             onPress={() => {
