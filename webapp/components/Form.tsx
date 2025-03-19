@@ -3,6 +3,7 @@
 import {
   Card,
   CardBody,
+  CardHeader,
   CircularProgress,
   Spacer,
   Tab,
@@ -10,7 +11,7 @@ import {
 } from '@nextui-org/react';
 import { useEffect, useMemo, useState } from 'react';
 import type { FormRenderProps } from 'react-final-form';
-import { Form } from 'react-final-form';
+import { Form, FormSpy } from 'react-final-form';
 import { BiBlock, BiReceipt } from 'react-icons/bi';
 import { mailToDataList } from 'utils/datalists';
 import {
@@ -23,7 +24,7 @@ import FormSelect from './elements/FormSelect';
 import PictureUpload from './PictureUpload';
 import SignatureUpload from './SignatureUpload';
 
-type FormValues = {
+export type FormValues = {
   name: string;
   mailFrom: string;
   group: string;
@@ -123,6 +124,7 @@ const Response = ({
 
 const ReceiptForm = (): JSX.Element => {
   // Hooks for submission
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean | null>(null);
   const [response, setResponse] = useState<string | null>(null);
 
@@ -153,6 +155,7 @@ const ReceiptForm = (): JSX.Element => {
       .then((text) => {
         form.restart();
         setResponse(text);
+        setShowConfirm(false);
       })
       .catch((err) => {
         setResponse(`Error: ${err.text()}`);
@@ -369,7 +372,7 @@ const ReceiptForm = (): JSX.Element => {
                 Tilbakestill skjemaet
               </FormButton>
               <FormButton
-                type="submit"
+                type="button"
                 color={
                   submitting || hasValidationErrors ? 'default' : 'success'
                 }
@@ -381,10 +384,11 @@ const ReceiptForm = (): JSX.Element => {
                 disabled={submitting || hasValidationErrors}
                 startContent={<BiReceipt size={24} />}
                 onPress={() =>
-                  hasValidationErrors &&
-                  Object.keys(errors ?? {}).forEach((fieldName) =>
-                    form.blur(fieldName as keyof FormValues)
-                  )
+                  hasValidationErrors
+                    ? Object.keys(errors ?? {}).forEach((fieldName) =>
+                        form.blur(fieldName as keyof FormValues)
+                      )
+                    : setShowConfirm(true)
                 }
               >
                 Generer og send kvittering
@@ -396,6 +400,46 @@ const ReceiptForm = (): JSX.Element => {
                 Gå gjennom skjemaet og pass på at du har fylt ut alt du må
               </p>
             )}
+
+            <FormSpy<FormValues>>
+              {({ values }) =>
+                values.amount &&
+                showConfirm && (
+                  <Card className="mt-4 shadow-none border-red-500 border-4">
+                    <CardHeader>
+                      Er du sikker på at summen fra kvitteringene stemmer?
+                    </CardHeader>
+                    <CardBody>
+                      <p className="text-small">
+                        Stemmer beløpet &quot;
+                        <b className="font-bold">{values.amount}kr</b>&quot; med
+                        hva du har fått godkjent og hva som står på
+                        kvitteringen? (Pass på at det er nøyaktig, med
+                        desimaler)
+                      </p>
+                      <FormButton
+                        type="submit"
+                        color={
+                          submitting || hasValidationErrors
+                            ? 'default'
+                            : 'success'
+                        }
+                        className={
+                          'mt-4 ' +
+                          (submitting || hasValidationErrors
+                            ? 'cursor-not-allowed'
+                            : 'cursor-pointer')
+                        }
+                        disabled={submitting || hasValidationErrors}
+                        startContent={<BiReceipt size={24} />}
+                      >
+                        Ja, generer og send kvittering
+                      </FormButton>
+                    </CardBody>
+                  </Card>
+                )
+              }
+            </FormSpy>
 
             <Response
               response={response}

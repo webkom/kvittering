@@ -85,6 +85,8 @@ describe('Submit', () => {
     // Submit
     cy.get('button').contains('Generer og send kvittering').click();
 
+    cy.get('button').contains('Ja, generer og send kvittering').click();
+
     // Wait for the submitResponse
     cy.wait('@submitResponse')
       .its('response.statusCode')
