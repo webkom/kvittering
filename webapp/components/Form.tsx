@@ -77,22 +77,6 @@ const getFromSessionStorage = (
   }
 };
 
-const getInitialValues: () => FormValues = () => ({
-  name: getFromLocalStorage('name'),
-  mailFrom: getFromLocalStorage('mailFrom'),
-  group: getFromSessionStorage('group'),
-  mailTo: getFromSessionStorage('mailTo'),
-  accountNumber: getFromSessionStorage('accountNumber'),
-  amount: isNaN(parseInt(getFromSessionStorage('amount'), 10))
-    ? ''
-    : parseInt(getFromSessionStorage('amount') ?? '', 10),
-  date: getFromSessionStorage('date') || today,
-  occasion: getFromSessionStorage('occasion'),
-  comment: getFromSessionStorage('comment'),
-  signature: getFromSessionStorage('signature'),
-  images: getFromSessionStorage('images', '[]'),
-});
-
 const Response = ({
   response,
   success,
@@ -125,8 +109,28 @@ const Response = ({
 const ReceiptForm = (): JSX.Element => {
   // Hooks for submission
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const [resetForm, setResetForm] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean | null>(null);
   const [response, setResponse] = useState<string | null>(null);
+
+  const initialValues = useMemo<FormValues>(
+    () => ({
+      name: getFromLocalStorage('name'),
+      mailFrom: getFromLocalStorage('mailFrom'),
+      group: getFromSessionStorage('group'),
+      mailTo: getFromSessionStorage('mailTo'),
+      accountNumber: getFromSessionStorage('accountNumber'),
+      amount: isNaN(Number.parseInt(getFromSessionStorage('amount'), 10))
+        ? ''
+        : Number.parseInt(getFromSessionStorage('amount') ?? '', 10),
+      date: getFromSessionStorage('date') || today,
+      occasion: getFromSessionStorage('occasion'),
+      comment: getFromSessionStorage('comment'),
+      signature: getFromSessionStorage('signature'),
+      images: getFromSessionStorage('images', '[]'),
+    }),
+    [resetForm]
+  );
 
   const onSubmit = async (
     values: FormValues,
@@ -165,7 +169,7 @@ const ReceiptForm = (): JSX.Element => {
   return (
     <Form<FormValues>
       onSubmit={onSubmit}
-      initialValues={getInitialValues()}
+      initialValues={initialValues}
       validate={(values) => {
         const errors: { [key: string]: string } = {};
         if (values.signature === '') {
@@ -352,21 +356,12 @@ const ReceiptForm = (): JSX.Element => {
               <FormButton
                 color="danger"
                 startContent={<BiBlock size={24} />}
-                disabled={values === getInitialValues()}
+                disabled={values === initialValues}
                 onPress={() => {
                   // Clear locally stored variables and reset the form
-                  form.restart();
                   sessionStorage?.clear();
                   localStorage?.clear();
-                  const initialValues = getInitialValues();
-                  form.batch(() => {
-                    Object.keys(initialValues).forEach((valueKey) =>
-                      form.change(
-                        valueKey as keyof FormValues,
-                        initialValues[valueKey as keyof FormValues]
-                      )
-                    );
-                  });
+                  setResetForm((resetForm) => !resetForm);
                 }}
               >
                 Tilbakestill skjemaet
@@ -424,12 +419,11 @@ const ReceiptForm = (): JSX.Element => {
                             ? 'default'
                             : 'success'
                         }
-                        className={
-                          'mt-4 ' +
-                          (submitting || hasValidationErrors
+                        className={`mt-4 ${
+                          submitting || hasValidationErrors
                             ? 'cursor-not-allowed'
-                            : 'cursor-pointer')
-                        }
+                            : 'cursor-pointer'
+                        }`}
                         disabled={submitting || hasValidationErrors}
                         startContent={<BiReceipt size={24} />}
                       >
