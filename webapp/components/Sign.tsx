@@ -49,9 +49,9 @@ const Sign = ({ isOpen, onOpenChange, setSignature }: Props): JSX.Element => {
               ref={(ref: any) => setSigCanvas(ref)}
             />
             <div className="flex justify-between">
-              <Button onClick={() => sigCanvas.clear()}>Begynn på nytt</Button>
+              <Button onPress={() => sigCanvas.clear()}>Begynn på nytt</Button>
               <Spacer x={4} />
-              <Button color="primary" onClick={() => base64Encode(onClose)}>
+              <Button color="primary" onPress={() => base64Encode(onClose)}>
                 Bruk
               </Button>
             </div>

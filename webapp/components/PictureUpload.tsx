@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaRegQuestionCircle, FaTrashAlt } from 'react-icons/fa';
-import { MdAttachFile } from 'react-icons/md';
+import { FaTrashAlt } from 'react-icons/fa';
+import { MdAttachFile, MdInfo } from 'react-icons/md';
 import {
   Button,
   Card,
   CardBody,
   CardFooter,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+  CardHeader,
 } from '@nextui-org/react';
 import { processFiles } from 'utils/fileHelper';
 import Image from 'next/image';
@@ -63,39 +61,6 @@ const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
         >
           Last opp vedlegg
         </FormButton>
-        <Popover placement="top">
-          <PopoverTrigger>
-            <span className="cursor-pointer">
-              <FaRegQuestionCircle size={20} />
-            </span>
-          </PopoverTrigger>
-          <PopoverContent>
-            <div className="px-1 py-2">
-              <div className="text-small font-bold">Krav til vedlegg</div>
-              <div className="text-tiny my-1">
-                Hvis vedlegget er en kvittering må den inneholde følgende for å
-                være gyldig;
-              </div>
-              <div className="text-tiny">
-                - <b>Kvitteringsnummer</b>: et nummer som gjør transaksjonen
-                sporbar
-              </div>
-              <div className="text-tiny">
-                - <b>Tidspunkt</b> for når kvitteringen er skrevet ut
-              </div>
-              <div className="text-tiny">
-                - <b>Tidspunkt</b> og <b>sted</b> for levering av ytelsen
-              </div>
-              <div className="text-tiny">
-                - <b>Selgers navn, adresse</b> og/eller{' '}
-                <b>organisasjonsnummer</b>
-              </div>
-              <div className="text-tiny">
-                - <b>Varespesifikasjon</b> og <b>betalingsmiddel</b>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
       </div>
 
       <div className="px-2">
@@ -107,33 +72,68 @@ const PictureUpload = ({ images, setImages }: Props): JSX.Element => {
       </div>
 
       {images.length > 0 && (
-        <div
-          className={'grid grid-cols-2 mt-3 mb-6 gap-3'}
-          id="uploadedAttachments"
-        >
-          {images.map((image) => (
-            <Card key={image} className={'border-1'} shadow="none">
-              <CardBody>
-                <Image
-                  src={image}
-                  alt={fileNames[image]}
-                  width={500}
-                  height={500}
-                />
-              </CardBody>
-              <CardFooter className={'justify-between'}>
-                {fileNames[image] ?? ''}
-                <Button
-                  isIconOnly
-                  color={'danger'}
-                  onPress={() => removeImage(image)}
-                >
-                  <FaTrashAlt size={17} />
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        <>
+          <div
+            className={'grid grid-cols-2 mt-3 mb-6 gap-3'}
+            id="uploadedAttachments"
+          >
+            {images.map((image) => (
+              <Card key={image} className={'border-1'} shadow="none">
+                <CardBody>
+                  <Image
+                    src={image}
+                    alt={fileNames[image]}
+                    width={500}
+                    height={500}
+                  />
+                </CardBody>
+                <CardFooter className={'justify-between'}>
+                  {fileNames[image] ?? ''}
+                  <Button
+                    isIconOnly
+                    color={'danger'}
+                    onPress={() => removeImage(image)}
+                  >
+                    <FaTrashAlt size={17} />
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+          <Card className="mt-4 shadow-none border-red-500 border-4">
+            <CardHeader>
+              <MdInfo className="mr-1" /> Forsikre deg om at kvitteringene dine
+              er gyldige
+            </CardHeader>
+            <CardBody className="pt-0">
+              <div className="text-small">
+                <div>Kvitteringene må inneholde;</div>
+                <p>
+                  - Kvitteringsnummer
+                  <span className="text-tiny ml-1">
+                    (et nummer som gjør transaksjonen sporbar)
+                  </span>
+                </p>
+                <p>
+                  - Tidspunkt
+                  <span className="text-tiny ml-1">
+                    (for når kvitteringen er skrevet ut)
+                  </span>
+                </p>
+                <p>
+                  - Tidspunkt og sted
+                  <span className="text-tiny ml-1">
+                    (for levering av ytelsen)
+                  </span>
+                </p>
+                <p>- Selgers navn, adresse og/eller organisasjonsnummer</p>
+                <div>
+                  - <b>Varespesifikasjon</b> og <b>betalingsmiddel</b>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </>
       )}
     </>
   );

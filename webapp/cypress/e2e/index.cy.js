@@ -5,6 +5,13 @@ const selectItem = (selector, itemValue) => {
     .click();
 };
 
+const uploadFile = (selector, inputFiles) => {
+  const files = (Array.isArray(inputFiles) ? inputFiles : [inputFiles]).map(
+    (fileName) => `webapp/cypress/fixtures/${fileName}`
+  );
+  cy.get(selector).selectFile(files, { force: true });
+};
+
 describe('Load', () => {
   beforeEach(() => cy.visit('/'));
   it('should navigate to index page', () => {
@@ -29,10 +36,10 @@ describe('Form', () => {
 describe('Uploads', () => {
   beforeEach(() => cy.visit('/'));
   it('should be able to upload signature', () => {
-    cy.get('#signature').attachFile('abakus.png');
+    uploadFile('#signature', 'abakus.png');
   });
   it('should be able to upload one attachment', () => {
-    cy.get('#attachments').attachFile('abakus.png');
+    uploadFile('#attachments', 'abakus.png');
 
     // After uploading one image we should have one attachment
     cy.get('#uploadedAttachments').within(() => {
@@ -41,7 +48,7 @@ describe('Uploads', () => {
   });
   it('should be able to upload multiple attachments', () => {
     // After uploading two image more we should have three attachments
-    cy.get('#attachments').attachFile(['abakus.png', 'favicon.png']);
+    uploadFile('#attachments', ['abakus.png', 'favicon.png']);
     cy.get('#uploadedAttachments').within(() => {
       cy.get('img').should('have.length', 2);
     });
@@ -79,11 +86,18 @@ describe('Submit', () => {
     cy.get('#date').type('1970-01-01');
     cy.get('#occasion').type('Cypress');
     cy.get('#comment').type('Cypress test');
-    cy.get('#signature').attachFile('abakus.png');
-    cy.get('#attachments').attachFile('abakus.png');
+    uploadFile('#signature', 'abakus.png');
+    uploadFile('#attachments', 'abakus.png');
+
+    // Verify that the attachment was uploaded
+    cy.get('#uploadedAttachments').within(() => {
+      cy.get('img').should('have.length', 1);
+    });
 
     // Submit
     cy.get('button').contains('Generer og send kvittering').click();
+
+    cy.get('button').contains('Ja, generer og send kvittering').click();
 
     // Wait for the submitResponse
     cy.wait('@submitResponse')
