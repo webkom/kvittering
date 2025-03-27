@@ -1,4 +1,4 @@
-FROM python:3.11-slim AS build-backend
+FROM python:3.12-slim AS build-backend
 
 RUN apt-get update && apt-get install -y poppler-utils
 
@@ -24,8 +24,6 @@ ENV NODE_ENV=production
 
 COPY ./webapp ./webapp
 
-COPY ./next.config.js .
-
 COPY ./tailwind.config.js .
 COPY ./postcss.config.js .
 
@@ -35,7 +33,7 @@ FROM build-backend
 
 COPY ./server ./server
 COPY ./images ./images
-COPY --from=build-frontend /build/webapp/out ./static
+COPY --from=build-frontend /build/webapp/.next/server/pages ./static
 
 # Ensures python output is sent straight to terminal without being first buffered
 ENV PYTHONUNBUFFERED 1
