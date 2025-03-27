@@ -12,7 +12,7 @@
     "dev": "NODE_ENV=development next dev webapp",
     "build": "NODE_ENV=production next build webapp",
     "export": "NODE_ENV=production next export webapp",
-    "start": "npx serve webapp/out",
+    "start": "NODE_ENV=production next start webapp",
     "lint": "yarn run prettier:check && yarn run eslint",
     "prettier:check": "prettier --check 'webapp/**/*.{ts,tsx,css,html,md}' --ignore-path .dockerignore",
     "prettier:write": "prettier --write 'webapp/**/*.{ts,tsx,css,html,md}' --ignore-path .dockerignore",

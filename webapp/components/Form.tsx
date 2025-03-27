@@ -141,7 +141,7 @@ const ReceiptForm = (): JSX.Element => {
     setSuccess(null);
 
     // POST full body to the backend
-    await fetch(`${process.env.API_URL || ''}/generate`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

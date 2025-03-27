@@ -13,6 +13,8 @@ webapp/cypress/screenshots
 
 .DS_store
 
+.env
+
 # An input folder for files to test the CLI-generator and the resulting output
 input
 output.pdf

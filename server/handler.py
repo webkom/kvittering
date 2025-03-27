@@ -226,6 +226,10 @@ def handle(data):
                 logging.warning(f"Failed to send mail: {e}")
                 return f"Klarte ikke å sende email: {e}", 500
         else:
+            # Save the file to ./output.pdf
+            with open("output.pdf", "wb") as f:
+                f.write(file.encode("latin-1"))
+            # Test logging the mail
             from mailinglogger.summarisinglogger import SummarisingLogger
 
             handler = SummarisingLogger(data["mailFrom"], data["mailTo"])
@@ -237,6 +241,7 @@ def handle(data):
             logger = logging.getLogger()
             logger.addHandler(handler)
             logging.info("Sent by consolemail")
+            return "Kvitteringsskildring generert og lagret i output.pdf", 200
     except RuntimeError as e:
         logging.warning(f"Failed to generate pdf with exception: {e}")
         return f"Klarte ikke å generere pdf: {e}", 500
@@ -245,4 +250,4 @@ def handle(data):
         return f"Noe uventet skjedde: {e}", 400
 
     logging.info("Successfully generated pdf and sent mail")
-    return "Kvitteringsskjema generert og sendt på mail!", 200
+    return "Kvitteringsskildring generert og sendt på mail!", 200

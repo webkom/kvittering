@@ -4,16 +4,17 @@ version = "1.0.0"
 description = ""
 authors = ["Webkom Abakus <webkom@abakus.no>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 
 flask = "3.0.1"
 gevent = "23.9.1"
 fpdf = "1.7.2"
 sentry-sdk = {extras = ["flask"], version = "^1.39.2"}
 pdf2image = "1.17.0"
-pyheif = "0.7.1"
+pyheif = "^0.8.0"
 google = "3.0.0"
 google-api-python-client = "2.115.0"
 
@@ -22,6 +23,8 @@ black = "^24.3.0"
 isort = "^5.13.2"
 mailinglogger = "^6.0.0"
 pytest = "^8.0.0"
+flask-cors = "^5.0.1"
+dotenv = "^0.9.9"
 
 
 [build-system]

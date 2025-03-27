@@ -3,6 +3,11 @@ kind: pipeline
 type: docker
 name: default
 
+trigger:
+  event:
+    exclude:
+      - pull_request
+
 steps:
   - name: setup
     image: node:20-slim
@@ -13,7 +18,7 @@ steps:
       - yarn --frozen-lockfile
 
   - name: poetry
-    image: abakus/lego-testbase:python3.11
+    image: abakus/lego-testbase:python3.12poetry1.8.5
     when:
       event:
         - push
@@ -31,7 +36,7 @@ steps:
       - yarn prettier:check
 
   - name: black
-    image: abakus/lego-testbase:python3.11
+    image: abakus/lego-testbase:python3.12poetry1.8.5
     when:
       event:
         - push
@@ -41,7 +46,7 @@ steps:
       - poetry
 
   - name: isort
-    image: abakus/lego-testbase:python3.11
+    image: abakus/lego-testbase:python3.12poetry1.8.5
     when:
       event:
         - push
@@ -71,7 +76,7 @@ steps:
       - yarn build
 
   - name: pytest
-    image: abakus/lego-testbase:python3.11
+    image: abakus/lego-testbase:python3.12poetry1.8.5
     when:
       event:
         - push
