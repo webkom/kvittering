@@ -11,7 +11,7 @@ python = "^3.11"
 flask = "3.0.1"
 gevent = "23.9.1"
 fpdf = "1.7.2"
-sentry-sdk = {extras = ["flask"], version = "^1.39.2"}
+sentry-sdk = {extras = ["flask"], version = "^1.45.1"}
 pdf2image = "1.17.0"
 pyheif = "0.7.1"
 google = "3.0.0"
