@@ -32,7 +32,7 @@ $ python -m venv venv
 $ source venv/bin/activate
 
 # Install packages
-$ poetry install
+$ poetry install --with dev --no-root
 
 # Export the frontend
 $ yarn build

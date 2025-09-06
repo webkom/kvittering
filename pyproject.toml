@@ -4,7 +4,6 @@ version = "1.0.0"
 description = ""
 authors = ["Webkom Abakus <webkom@abakus.no>"]
 readme = "README.md"
-package-mode = false
 
 
 [tool.poetry.dependencies]

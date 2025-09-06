@@ -209,7 +209,6 @@ def handle(data):
         )
 
     try:
-        print("fitte")
         file = create_pdf(data)
         if os.environ.get("ENVIRONMENT") == "production":
             try:
