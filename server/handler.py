@@ -1,7 +1,3 @@
-from sentry_sdk import configure_scope
-from PIL import Image
-from pdf2image import convert_from_path
-from fpdf import FPDF
 import base64
 import functools
 import io
@@ -12,8 +8,15 @@ import tempfile
 
 from email.utils import formatdate
 
+from fpdf import FPDF
+from pdf2image import convert_from_path
+from PIL import Image
+
 # Handle HEIC photos
 from pillow_heif import register_heif_opener
+from sentry_sdk import configure_scope
+
+
 register_heif_opener()
 
 
@@ -89,8 +92,7 @@ def create_image_file(image):
         raise UnsupportedFileException(image[:30])
     parts = image.split(";base64,")
     decoded = base64.b64decode(parts[1])
-    suffix = "pdf" if "application/pdf" in image else parts[0].split("image/")[
-        1]
+    suffix = "pdf" if "application/pdf" in image else parts[0].split("image/")[1]
     suffix = suffix.lower()
     f = tempfile.NamedTemporaryFile(suffix=f".{suffix}")
     f.write(decoded)
@@ -146,8 +148,7 @@ def create_pdf(data):
     signature = data.pop("signature")
     images = data.pop("images")
 
-    pdf.cell(
-        0, 14, f"Kvitteringsskjema mottatt {formatdate(localtime=True)}", ln=1)
+    pdf.cell(0, 14, f"Kvitteringsskjema mottatt {formatdate(localtime=True)}", ln=1)
 
     pdf.set_font("Arial", "", 12)
     for key in field_title_map.keys():
