@@ -8,15 +8,16 @@ import tempfile
 
 from email.utils import formatdate
 
-# Handle HEIC photoes
-import pyheif
-
 from fpdf import FPDF
-
-# Handle PDF files
 from pdf2image import convert_from_path
 from PIL import Image
+
+# Handle HEIC photos
+from pillow_heif import register_heif_opener
 from sentry_sdk import configure_scope
+
+
+register_heif_opener()
 
 
 class UnsupportedFileException(Exception):
@@ -111,19 +112,12 @@ def create_image_file(image):
         return files
 
     """
-    FPDF does not support heic files as input, therefore we covert a image:heic image:jpg
+    FPDF does not support heic files as input, therefore we convert a image:heic to image:jpg
     """
     if suffix == "heic":
         fmt = "JPEG"
-        heif_file = pyheif.read(f.name)
-        img = Image.frombytes(
-            heif_file.mode,
-            heif_file.size,
-            heif_file.data,
-            "raw",
-            heif_file.mode,
-            heif_file.stride,
-        )
+        # With pillow-heif, we can directly open HEIC files using PIL
+        img = Image.open(f.name)
         f = tempfile.NamedTemporaryFile(suffix=f".{fmt}")
         f.write(image_to_byte_array(img, fmt))
         f.flush()

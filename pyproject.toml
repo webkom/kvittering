@@ -5,6 +5,7 @@ description = ""
 authors = ["Webkom Abakus <webkom@abakus.no>"]
 readme = "README.md"
 
+
 [tool.poetry.dependencies]
 python = "^3.11"
 
@@ -13,7 +14,7 @@ gevent = "23.9.1"
 fpdf = "1.7.2"
 sentry-sdk = {extras = ["flask"], version = "^1.39.2"}
 pdf2image = "1.17.0"
-pyheif = "0.7.1"
+pillow-heif = "^0.13.0"
 google = "3.0.0"
 google-api-python-client = "2.115.0"
 

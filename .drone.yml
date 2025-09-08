@@ -18,7 +18,7 @@ steps:
       event:
         - push
     commands:
-      - poetry install --with dev
+      - poetry install --with dev --no-root
 
   - name: prettier
     image: node:20-slim
