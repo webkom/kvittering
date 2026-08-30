@@ -61,16 +61,25 @@ def validate_fields(data):
 
 
 class PDF(FPDF):
+    def __init__(self):
+        super().__init__()
+        # Core fonts are latin-1 only; DejaVu covers Unicode, Noto Emoji fills in emojis
+        self.add_font("DejaVu", style="", fname="fonts/DejaVuSans.ttf")
+        self.add_font("DejaVu", style="B", fname="fonts/DejaVuSans-Bold.ttf")
+        self.add_font("DejaVu", style="I", fname="fonts/DejaVuSans-Oblique.ttf")
+        self.add_font("NotoEmoji", style="", fname="fonts/NotoEmoji-Regular.ttf")
+        self.set_fallback_fonts(["NotoEmoji"], exact_match=False)
+
     def header(self):
         self.image("images/abakus.png", 10, 18, 33)
         self.image("images/bekk.png", 160, 18, 30)
-        self.set_font("Arial", "B", 15)
+        self.set_font("DejaVu", "B", 15)
         self.ln(20)
 
     def footer(self):
         self.set_y(-15)
-        self.set_font("Arial", "I", 8)
-        self.cell(0, 10, f"Side {str(self.page_no())}/{{nb}}", 0, 0, "C")
+        self.set_font("DejaVu", "I", 8)
+        self.cell(0, 10, f"Side {self.page_no()}/{{nb}}", align="C")
 
 
 def image_to_byte_array(image: Image, fmt=None):
@@ -82,10 +91,8 @@ def image_to_byte_array(image: Image, fmt=None):
 
 def create_image_file(image):
     """
-    Take an image in BASE64 format and return a NamedTemporaryFile containing the image.
-    Will handle PNG, JPEG and GIF without any changes, as FPDF will handle those files
-    without problem. For PDFs we use pdf2image to convert each page to an image. For HEIC
-    pictures we use pyheif to convert it to a jpeg.
+    Take an image in BASE64 format and return a list of NamedTemporaryFiles containing
+    the image(s). PDFs are converted to one jpeg per page and HEIC to jpeg.
     """
 
     if not "image/" in image and not "application/pdf" in image:
@@ -105,25 +112,23 @@ def create_image_file(image):
         files = []
         pil_images = convert_from_path(f.name, fmt="jpeg")
         for img in pil_images:
-            f = tempfile.NamedTemporaryFile(suffix=f".{suffix}")
+            f = tempfile.NamedTemporaryFile(suffix=".jpeg")
             f.write(image_to_byte_array(img))
-            files.append({"file": f, "type": "jpeg"})
             f.flush()
+            files.append(f)
         return files
 
     """
     FPDF does not support heic files as input, therefore we convert a image:heic to image:jpg
     """
     if suffix == "heic":
-        fmt = "JPEG"
-        # With pillow-heif, we can directly open HEIC files using PIL
-        img = Image.open(f.name)
-        f = tempfile.NamedTemporaryFile(suffix=f".{fmt}")
-        f.write(image_to_byte_array(img, fmt))
+        img = Image.open(f.name).convert("RGB")
+        f = tempfile.NamedTemporaryFile(suffix=".jpeg")
+        f.write(image_to_byte_array(img, "JPEG"))
         f.flush()
-        return [{"file": f, "type": fmt}]
+        return [f]
 
-    return [{"file": f, "type": suffix.upper()}]
+    return [f]
 
 
 def modify_data(data):
@@ -143,30 +148,36 @@ def create_pdf(data):
     pdf = PDF()
     pdf.alias_nb_pages()
     pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
+    pdf.set_font("DejaVu", "B", 16)
 
     signature = data.pop("signature")
     images = data.pop("images")
 
-    pdf.cell(0, 14, f"Kvitteringsskjema mottatt {formatdate(localtime=True)}", ln=1)
+    pdf.cell(
+        0,
+        14,
+        f"Kvitteringsskjema mottatt {formatdate(localtime=True)}",
+        new_x="LMARGIN",
+        new_y="NEXT",
+    )
 
-    pdf.set_font("Arial", "", 12)
+    pdf.set_font("DejaVu", "", 12)
     for key in field_title_map.keys():
-        pdf.set_font("", "B")
-        pdf.cell(90, 5, txt=field_title_map[key])
-        pdf.set_font("", "")
+        pdf.set_font(style="B")
+        pdf.cell(90, 5, field_title_map[key])
+        pdf.set_font(style="")
         field_value = data[key] if key in data else ""
-        pdf.multi_cell(0, 5, txt=field_value)
+        pdf.multi_cell(0, 5, field_value, new_x="LMARGIN", new_y="NEXT")
 
-    pdf.set_font("", "B")
-    pdf.cell(0, 5, txt="Signatur:", ln=1)
-    pdf.image(signature["file"].name, h=30, type=signature["type"])
-    signature["file"].close()
-    pdf.cell(0, 5, txt="Vedlegg:", ln=1)
+    pdf.set_font(style="B")
+    pdf.cell(0, 5, "Signatur:", new_x="LMARGIN", new_y="NEXT")
+    pdf.image(signature.name, h=30)
+    signature.close()
+    pdf.cell(0, 5, "Vedlegg:", new_x="LMARGIN", new_y="NEXT")
     max_img_width = 190
     max_img_height = 220
     for image in images:
-        img = Image.open(image["file"].name)
+        img = Image.open(image.name)
         w, h = img.size
         img.close()
 
@@ -176,9 +187,9 @@ def create_pdf(data):
             else {"h": max_img_height}
         )
 
-        pdf.image(image["file"].name, **size, type=image["type"])
-        image["file"].close()
-    return pdf.output(dest="S")
+        pdf.image(image.name, **size)
+        image.close()
+    return bytes(pdf.output())
 
 
 def handle(data):

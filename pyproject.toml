@@ -11,10 +11,10 @@ python = "^3.11"
 
 flask = "3.0.1"
 gevent = "23.9.1"
-fpdf = "1.7.2"
+fpdf2 = "^2.8.8"
 sentry-sdk = {extras = ["flask"], version = "^1.39.2"}
 pdf2image = "1.17.0"
-pillow-heif = "^0.13.0"
+pillow-heif = "^1.5.0"
 google = "3.0.0"
 google-api-python-client = "2.115.0"
 

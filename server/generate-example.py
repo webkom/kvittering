@@ -36,7 +36,7 @@ def main(data, out):
     pdf = create_pdf(data)
 
     with open(out, "wb") as f:
-        f.write(pdf.encode("latin-1"))
+        f.write(pdf)
 
     print("Done!")
 
