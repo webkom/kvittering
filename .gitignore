@@ -2,6 +2,7 @@ node_modules/
 webapp/.next/
 webapp/out/
 venv/
+.venv/
 server/__pycache__/
 .next/
 

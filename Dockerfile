@@ -35,6 +35,7 @@ FROM build-backend
 
 COPY ./server ./server
 COPY ./images ./images
+COPY ./fonts ./fonts
 COPY --from=build-frontend /build/webapp/out ./static
 
 # Ensures python output is sent straight to terminal without being first buffered
