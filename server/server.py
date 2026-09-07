@@ -1,9 +1,18 @@
+import logging
 import os
 
 from flask import Flask
 from flask import request
 from gevent.pywsgi import WSGIServer
 
+
+logging.basicConfig(
+    format="[%(asctime)s] %(levelname)s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.INFO,
+)
+# fpdf2 font subsetting logs ~150 INFO lines per PDF through fontTools
+logging.getLogger("fontTools").setLevel(logging.WARNING)
 
 static_file_directory = os.environ.get("STATIC_DIRECTORY", "../webapp/out/")
 

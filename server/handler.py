@@ -234,11 +234,6 @@ def handle(data):
             from mailinglogger.summarisinglogger import SummarisingLogger
 
             handler = SummarisingLogger(data["mailFrom"], data["mailTo"])
-            logging.basicConfig(
-                format="%(asctime)s %(message)s",
-                datefmt="%m/%d/%Y %I:%M:%S %p",
-                level=logging.INFO,
-            )
             logger = logging.getLogger()
             logger.addHandler(handler)
             logging.info("Sent by consolemail")
