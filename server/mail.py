@@ -68,4 +68,7 @@ def send_mail(mail_to, body, file):
     raw = base64.urlsafe_b64encode(msg.as_bytes())
     body = {"raw": raw.decode()}
     messages = service.users().messages()
-    messages.send(userId="me", body=body).execute()
+    result = messages.send(userId="me", body=body).execute()
+    logging.info(
+        f'Sent mail to {", ".join(mail_to)} (Gmail message id {result.get("id")})'
+    )
