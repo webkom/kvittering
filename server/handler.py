@@ -9,8 +9,9 @@ import tempfile
 from email.utils import formatdate
 
 from fpdf import FPDF
-from pdf2image import convert_from_path
+from pdf2image import convert_from_bytes
 from PIL import Image
+from PIL import ImageOps
 
 # Handle HEIC photos
 from pillow_heif import register_heif_opener
@@ -18,6 +19,11 @@ from sentry_sdk import configure_scope
 
 
 register_heif_opener()
+
+# ~270 DPI across the A4 page, plenty for receipts
+MAX_IMAGE_SIDE = 2400
+# Gmail's send limit, counted before base64 encoding
+MAX_PDF_BYTES = 25_000_000
 
 
 class UnsupportedFileException(Exception):
@@ -82,53 +88,37 @@ class PDF(FPDF):
         self.cell(0, 10, f"Side {self.page_no()}/{{nb}}", align="C")
 
 
-def image_to_byte_array(image: Image, fmt=None):
-    imgByteArr = io.BytesIO()
-    image.save(imgByteArr, format=fmt if fmt is not None else image.format)
-    imgByteArr = imgByteArr.getvalue()
-    return imgByteArr
+def normalize_image(img):
+    """Return a NamedTemporaryFile with the image upright, downscaled and as JPEG."""
+    img.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE))
+    img = ImageOps.exif_transpose(img)
+    if img.mode != "RGB":
+        rgba = img.convert("RGBA")
+        img = Image.new("RGB", rgba.size, "white")
+        img.paste(rgba, mask=rgba.getchannel("A"))
+    f = tempfile.NamedTemporaryFile(suffix=".jpeg")
+    img.save(f, "JPEG", quality=85)
+    f.flush()
+    return f
 
 
 def create_image_file(image):
     """
-    Take an image in BASE64 format and return a list of NamedTemporaryFiles containing
-    the image(s). PDFs are converted to one jpeg per page and HEIC to jpeg.
+    Take an image or PDF in BASE64 format and return a list of NamedTemporaryFiles,
+    one normalized JPEG per image or PDF page.
     """
 
     if not "image/" in image and not "application/pdf" in image:
         raise UnsupportedFileException(image[:30])
-    parts = image.split(";base64,")
-    decoded = base64.b64decode(parts[1])
-    suffix = "pdf" if "application/pdf" in image else parts[0].split("image/")[1]
-    suffix = suffix.lower()
-    f = tempfile.NamedTemporaryFile(suffix=f".{suffix}")
-    f.write(decoded)
-    f.flush()
+    decoded = base64.b64decode(image.split(";base64,")[1])
 
-    """
-    FPDF does not support pdf files as input, therefore convert file:pdf to array[image:jpg]
-    """
-    if suffix == "pdf":
-        files = []
-        pil_images = convert_from_path(f.name, fmt="jpeg")
-        for img in pil_images:
-            f = tempfile.NamedTemporaryFile(suffix=".jpeg")
-            f.write(image_to_byte_array(img))
-            f.flush()
-            files.append(f)
-        return files
+    if "application/pdf" in image:
+        return [normalize_image(page) for page in convert_from_bytes(decoded)]
 
-    """
-    FPDF does not support heic files as input, therefore we convert a image:heic to image:jpg
-    """
-    if suffix == "heic":
-        img = Image.open(f.name).convert("RGB")
-        f = tempfile.NamedTemporaryFile(suffix=".jpeg")
-        f.write(image_to_byte_array(img, "JPEG"))
-        f.flush()
-        return [f]
-
-    return [f]
+    try:
+        return [normalize_image(Image.open(io.BytesIO(decoded)))]
+    except OSError as e:
+        raise UnsupportedFileException(f"{image[:30]}: {e}")
 
 
 def modify_data(data):
@@ -222,6 +212,16 @@ def handle(data):
 
     try:
         file = create_pdf(data)
+        if len(file) > MAX_PDF_BYTES:
+            logging.warning(f"Generated pdf is too large to mail: {len(file)} bytes")
+            return (
+                (
+                    "Kvitteringsskjemaet ble for stort til å sendes på e-post"
+                    f" ({len(file) / 1e6:.0f} MB, maks {MAX_PDF_BYTES / 1e6:.0f} MB)."
+                    " Last opp færre vedlegg."
+                ),
+                400,
+            )
         if os.environ.get("ENVIRONMENT") == "production":
             try:
                 import mail
