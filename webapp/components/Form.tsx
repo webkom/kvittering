@@ -148,21 +148,19 @@ const ReceiptForm = (): JSX.Element => {
       },
       body: JSON.stringify(values),
     })
-      .then((res) => {
-        if (!res.ok) {
-          setSuccess(false);
-        } else {
-          setSuccess(true);
+      .then(async (res) => {
+        const text = await res.text();
+        // Keep the values on errors so the user can fix them and resubmit
+        if (res.ok) {
+          form.restart();
         }
-        return res.text();
-      })
-      .then((text) => {
-        form.restart();
+        setSuccess(res.ok);
         setResponse(text);
         setShowConfirm(false);
       })
       .catch((err) => {
-        setResponse(`Error: ${err.text()}`);
+        setSuccess(false);
+        setResponse(`Error: ${err.message}`);
       });
   };
 

@@ -217,7 +217,7 @@ def handle(data):
             return (
                 (
                     "Kvitteringsskjemaet ble for stort til å sendes på e-post"
-                    f" ({len(file) / 1e6:.0f} MB, maks {MAX_PDF_BYTES / 1e6:.0f} MB)."
+                    f" ({len(file) / 1e6:.1f} MB, maks {MAX_PDF_BYTES / 1e6:.0f} MB)."
                     " Last opp færre vedlegg."
                 ),
                 400,

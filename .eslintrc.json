@@ -21,6 +21,9 @@
     "sourceType": "module"
   },
   "settings": {
+    "next": {
+      "rootDir": "webapp"
+    },
     "react": {
       "version": "detect"
     }
